@@ -3,242 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Gurizada do Agro</title>
+    <title>Gurizada do Agro | Official</title>
     <style>
-        /* CONFIGURAÇÕES DE CORES */
         :root {
-            --primary: #2d5a27;      /* Verde Safra */
-            --accent: #f8961e;       /* Laranja Colheita */
-            --bg: #f0f2f0;           /* Fundo Claro */
+            --primary: #2d5a27;
+            --accent: #f8961e;
+            --bg: #f4f4f4;
             --text: #1b1b1b;
             --card-bg: #ffffff;
-            --header-bg: #1b1b1b;
+            --overlay: rgba(0, 0, 0, 0.6);
         }
 
-        /* ESTILO MODO NOTURNO */
         .dark-mode {
             --bg: #121212;
-            --text: #e0e0e0;
+            --text: #f4f4f4;
             --card-bg: #1e1e1e;
-            --header-bg: #000000;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+        body { background-color: var(--bg); color: var(--text); transition: 0.3s; overflow-x: hidden; }
+
+        /* --- TELA INICIAL (HERO) --- */
+        #home-screen {
+            height: 100vh;
+            background: linear-gradient(var(--overlay), var(--overlay)), 
+                        url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=1500');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
         }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            transition: background 0.3s ease;
-            padding-bottom: 50px;
+        #home-screen h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 3px; }
+        #home-screen p { font-size: 1.2rem; margin-bottom: 30px; max-width: 600px; opacity: 0.9; }
+
+        .main-btn {
+            background: var(--accent);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
         }
 
-        /* CABEÇALHO */
+        .main-btn:hover { transform: scale(1.1); background: #e67e22; box-shadow: 0 0 20px rgba(248, 150, 30, 0.5); }
+
+        /* --- DASHBOARD (ESCONDIDO POR PADRÃO) --- */
+        #dashboard { display: none; padding-top: 80px; }
+
         header {
-            background: var(--header-bg);
+            background: var(--primary);
             color: white;
             padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: fixed;
+            top: 0; width: 100%; z-index: 1000;
         }
 
-        .logo {
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: var(--accent);
-        }
+        .container { max-width: 900px; margin: 20px auto; padding: 20px; }
 
-        /* CONTAINER PRINCIPAL */
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* CARDS */
         .card {
             background: var(--card-bg);
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             margin-bottom: 25px;
-            border-top: 4px solid var(--primary);
+            border-left: 8px solid var(--primary);
         }
 
-        h2 { margin-bottom: 15px; font-size: 1.2rem; text-transform: uppercase; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center; }
+        .stats-val { font-size: 2.5rem; font-weight: bold; color: var(--primary); display: block; }
 
-        /* CONTADOR */
-        .stats-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            text-align: center;
-        }
-
-        .stats-number {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--primary);
-            display: block;
-        }
-
-        /* INPUTS E BOTÕES */
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-            background: var(--card-bg);
-            color: var(--text);
-        }
-
-        input:focus { border-color: var(--primary); }
-
-        .btn-add {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-
-        .btn-theme {
-            background: var(--accent);
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            color: white;
-        }
-
-        /* LISTA DE TAREFAS */
-        ul { list-style: none; }
-        li {
-            background: rgba(45, 90, 39, 0.05);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            display: flex;
+        /* LISTA FUNCIONAL */
+        .input-group { display: flex; gap: 10px; margin-top: 15px; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: var(--card-bg); color: var(--text); }
+        
+        ul { list-style: none; margin-top: 20px; }
+        li { 
+            background: rgba(0,0,0,0.05); 
+            padding: 12px; 
+            margin-bottom: 8px; 
+            border-radius: 8px; 
+            display: flex; 
             justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid var(--accent);
-            animation: slideIn 0.3s ease;
+            animation: fadeIn 0.4s;
         }
 
-        .btn-done {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+        .btn-del { background: #ff4757; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .back-btn { background: none; border: 1px solid white; color: white; padding: 5px 10px; cursor: pointer; border-radius: 5px; margin-right: 10px; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">🚜 GURIZADA DO AGRO</div>
-        <button class="btn-theme" onclick="toggleDarkMode()">MODO ESCURO</button>
-    </header>
+    <section id="home-screen">
+        <h1>GURIZADA DO AGRO</h1>
+        <p>Gestão pesada para quem vive o trecho. Tecnologia e tradição em um só lugar.</p>
+        <button class="main-btn" onclick="showDashboard()">ACESSAR OPERAÇÕES</button>
+    </section>
 
-    <div class="container">
-        
-        <div class="card">
-            <h2>Previsão de Colheita</h2>
-            <div class="stats-container">
-                <div>
-                    <span class="stats-number" id="dias-count">114</span>
-                    <p>Dias Restantes</p>
-                </div>
-                <div style="border-left: 1px solid #ddd; padding-left: 20px;">
-                    <span class="stats-number">98%</span>
-                    <p>Eficiência da Frota</p>
+    <main id="dashboard">
+        <header>
+            <div>
+                <button class="back-btn" onclick="showHome()">← Sair</button>
+                <strong>DASHBOARD AGRO</strong>
+            </div>
+            <button class="main-btn" style="padding: 5px 15px; font-size: 0.8rem;" onclick="toggleTheme()">Mudar Clima</button>
+        </header>
+
+        <div class="container">
+            <div class="card">
+                <h2>Status da Safra</h2>
+                <div class="stats-grid">
+                    <div>
+                        <span class="stats-val">114</span>
+                        <p>Dias p/ Colheita</p>
+                    </div>
+                    <div>
+                        <span class="stats-val">82%</span>
+                        <p>Umidade Solo</p>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card">
-            <h2>Caderno de Campo Digital</h2>
-            <div class="input-group">
-                <input type="text" id="taskInput" placeholder="Nova tarefa (ex: Revisar plantadeira)...">
-                <button class="btn-add" onclick="addTask()">SALVAR</button>
-            </div>
-            <ul id="taskList">
+            <div class="card">
+                <h2>Caderno de Campo Digital</h2>
+                <div class="input-group">
+                    <input type="text" id="taskInput" placeholder="Ex: Adubar talhão 04...">
+                    <button class="main-btn" style="border-radius: 8px;" onclick="addTask()">OK</button>
+                </div>
+                <ul id="taskList">
+                    <li><span>Revisar filtros da colheitadeira</span><button class="btn-del" onclick="this.parentElement.remove()">X</button></li>
                 </ul>
+            </div>
         </div>
-
-    </div>
+    </main>
 
     <script>
-        // Função para Alternar Modo Escuro
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const btn = document.querySelector('.btn-theme');
-            if(document.body.classList.contains('dark-mode')) {
-                btn.innerText = "MODO CLARO";
-            } else {
-                btn.innerText = "MODO ESCURO";
-            }
+        // Navegação entre telas
+        function showDashboard() {
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            window.scrollTo(0,0);
         }
 
-        // Função para Adicionar Tarefas
+        function showHome() {
+            document.getElementById('home-screen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+
+        // Modo Escuro
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Adicionar Tarefa
         function addTask() {
             const input = document.getElementById('taskInput');
-            const list = document.getElementById('taskList');
-
-            if (input.value.trim() === '') {
-                alert("Digite uma tarefa, moçada!");
-                return;
-            }
-
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <span>${input.value}</span>
-                <button class="btn-done" onclick="removeTask(this)">OK</button>
-            `;
+            if (input.value.trim() === "") return;
             
-            list.appendChild(li);
-            input.value = ''; // Limpa o campo
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${input.value}</span><button class="btn-del" onclick="this.parentElement.remove()">X</button>`;
+            document.getElementById('taskList').appendChild(li);
+            input.value = "";
         }
 
-        // Função para Remover Tarefa
-        function removeTask(button) {
-            const item = button.parentElement;
-            item.style.opacity = '0';
-            setTimeout(() => item.remove(), 300);
-        }
-
-        // Evento para apertar 'Enter' no input
+        // Atalho Enter
         document.getElementById('taskInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') addTask();
         });
     </script>
-
 </body>
 </html>
