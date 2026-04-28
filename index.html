@@ -3,189 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gurizada do Agro | Official</title>
+    <title>Gurizada do Agro | Pro Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #2d5a27;
-            --accent: #f8961e;
-            --bg: #f4f4f4;
-            --text: #1b1b1b;
-            --card-bg: #ffffff;
-            --overlay: rgba(0, 0, 0, 0.6);
+            --primary: #1b4332;
+            --accent: #74c69d;
+            --warning: #ffb703;
+            --danger: #e63946;
+            --bg: #0b090a;
+            --card-bg: #161a1d;
+            --text: #f5f3f4;
         }
 
-        .dark-mode {
-            --bg: #121212;
-            --text: #f4f4f4;
-            --card-bg: #1e1e1e;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background-color: var(--bg); color: var(--text); }
+
+        /* Splash Screen */
+        #splash {
+            position: fixed; height: 100vh; width: 100%; background: var(--primary);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 2000; transition: 0.8s;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-
-        body { background-color: var(--bg); color: var(--text); transition: 0.3s; overflow-x: hidden; }
-
-        /* --- TELA INICIAL (HERO) --- */
-        #home-screen {
-            height: 100vh;
-            background: linear-gradient(var(--overlay), var(--overlay)), 
-                        url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=1500');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            padding: 20px;
+        /* Dashboard Layout */
+        .app-container { display: none; min-height: 100vh; }
+        
+        nav {
+            background: var(--card-bg); padding: 15px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid var(--primary);
         }
 
-        #home-screen h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 3px; }
-        #home-screen p { font-size: 1.2rem; margin-bottom: 30px; max-width: 600px; opacity: 0.9; }
-
-        .main-btn {
-            background: var(--accent);
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-        }
-
-        .main-btn:hover { transform: scale(1.1); background: #e67e22; box-shadow: 0 0 20px rgba(248, 150, 30, 0.5); }
-
-        /* --- DASHBOARD (ESCONDIDO POR PADRÃO) --- */
-        #dashboard { display: none; padding-top: 80px; }
-
-        header {
-            background: var(--primary);
-            color: white;
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0; width: 100%; z-index: 1000;
-        }
-
-        .container { max-width: 900px; margin: 20px auto; padding: 20px; }
+        .main-content { padding: 30px 5%; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
 
         .card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-            border-left: 8px solid var(--primary);
+            background: var(--card-bg); padding: 20px; border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5); margin-bottom: 20px;
         }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center; }
-        .stats-val { font-size: 2.5rem; font-weight: bold; color: var(--primary); display: block; }
+        h2 { color: var(--accent); margin-bottom: 15px; font-size: 1rem; text-transform: uppercase; }
 
-        /* LISTA FUNCIONAL */
-        .input-group { display: flex; gap: 10px; margin-top: 15px; }
-        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ddd; background: var(--card-bg); color: var(--text); }
-        
-        ul { list-style: none; margin-top: 20px; }
-        li { 
-            background: rgba(0,0,0,0.05); 
-            padding: 12px; 
-            margin-bottom: 8px; 
-            border-radius: 8px; 
-            display: flex; 
-            justify-content: space-between;
-            animation: fadeIn 0.4s;
+        /* Form Estilizado */
+        input, select {
+            width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px;
+            border: 1px solid #333; background: #0b090a; color: white;
         }
 
-        .btn-del { background: #ff4757; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        .btn {
+            background: var(--primary); color: white; padding: 12px 20px;
+            border: none; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold;
+        }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn:hover { background: var(--accent); color: var(--primary); }
 
-        .back-btn { background: none; border: 1px solid white; color: white; padding: 5px 10px; cursor: pointer; border-radius: 5px; margin-right: 10px; }
+        /* Listagem */
+        .task-item {
+            display: flex; justify-content: space-between; padding: 10px;
+            border-bottom: 1px solid #333; align-items: center;
+        }
+
+        .badge { background: var(--warning); color: black; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
+
+        @media (max-width: 900px) { .main-content { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <section id="home-screen">
-        <h1>GURIZADA DO AGRO</h1>
-        <p>Gestão pesada para quem vive o trecho. Tecnologia e tradição em um só lugar.</p>
-        <button class="main-btn" onclick="showDashboard()">ACESSAR OPERAÇÕES</button>
-    </section>
+    <div id="splash">
+        <h1 style="font-size: 3rem; letter-spacing: 5px;">AGRO-TECH</h1>
+        <p>SISTEMA OPERACIONAL GURIZADA DO AGRO</p>
+        <button class="btn" onclick="startApp()" style="margin-top: 20px; width: auto;">INICIALIZAR MOTORES</button>
+    </div>
 
-    <main id="dashboard">
-        <header>
-            <div>
-                <button class="back-btn" onclick="showHome()">← Sair</button>
-                <strong>DASHBOARD AGRO</strong>
-            </div>
-            <button class="main-btn" style="padding: 5px 15px; font-size: 0.8rem;" onclick="toggleTheme()">Mudar Clima</button>
-        </header>
+    <div class="app-container" id="app">
+        <nav>
+            <div style="font-weight: bold; color: var(--accent);">🚜 GURIZADA DO AGRO <span style="color:white">| PRO</span></div>
+            <div id="clock">00:00:00</div>
+        </nav>
 
-        <div class="container">
-            <div class="card">
-                <h2>Status da Safra</h2>
-                <div class="stats-grid">
-                    <div>
-                        <span class="stats-val">114</span>
-                        <p>Dias p/ Colheita</p>
+        <div class="main-content">
+            <section>
+                <div class="card">
+                    <h2>Análise de Produtividade (Simulação)</h2>
+                    <canvas id="yieldChart" height="100"></canvas>
+                </div>
+
+                <div class="card">
+                    <h2>Calculadora de Calagem (Método V%)</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <input type="number" id="v2" placeholder="V% Desejado">
+                        <input type="number" id="v1" placeholder="V% Atual (Análise)">
+                        <input type="number" id="ctc" placeholder="CTC Total">
+                        <input type="number" id="prnt" placeholder="PRNT do Calcário">
                     </div>
-                    <div>
-                        <span class="stats-val">82%</span>
-                        <p>Umidade Solo</p>
+                    <button class="btn" onclick="calcCalagem()">CALCULAR TON/HA</button>
+                    <div id="resultCalagem" style="margin-top: 15px; font-weight: bold; color: var(--warning);"></div>
+                </div>
+            </section>
+
+            <aside>
+                <div class="card">
+                    <h2>Logística de Trecho</h2>
+                    <input type="text" id="taskInput" placeholder="Nova ordem de serviço...">
+                    <button class="btn" onclick="saveTask()">REGISTRAR NO SISTEMA</button>
+                    <div id="taskList" style="margin-top: 15px;"></div>
+                </div>
+
+                <div class="card">
+                    <h2>Status da Máquina</h2>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Combustível</span>
+                        <span style="color: var(--danger);">12% - ABASTECER</span>
+                    </div>
+                    <div style="width: 100%; background: #333; height: 10px; border-radius: 5px;">
+                        <div style="width: 12%; background: var(--danger); height: 100%; border-radius: 5px;"></div>
                     </div>
                 </div>
-            </div>
-
-            <div class="card">
-                <h2>Caderno de Campo Digital</h2>
-                <div class="input-group">
-                    <input type="text" id="taskInput" placeholder="Ex: Adubar talhão 04...">
-                    <button class="main-btn" style="border-radius: 8px;" onclick="addTask()">OK</button>
-                </div>
-                <ul id="taskList">
-                    <li><span>Revisar filtros da colheitadeira</span><button class="btn-del" onclick="this.parentElement.remove()">X</button></li>
-                </ul>
-            </div>
+            </aside>
         </div>
-    </main>
+    </div>
 
     <script>
-        // Navegação entre telas
-        function showDashboard() {
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            window.scrollTo(0,0);
+        // Inicialização e Relógio
+        function startApp() {
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('splash').style.display = 'none';
+                document.getElementById('app').style.display = 'block';
+                renderChart();
+                loadTasks();
+            }, 800);
         }
 
-        function showHome() {
-            document.getElementById('home-screen').style.display = 'flex';
-            document.getElementById('dashboard').style.display = 'none';
-        }
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
 
-        // Modo Escuro
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-        }
-
-        // Adicionar Tarefa
-        function addTask() {
+        // Lógica de Tarefas com LocalStorage (Persistência)
+        function saveTask() {
             const input = document.getElementById('taskInput');
-            if (input.value.trim() === "") return;
+            if(!input.value) return;
             
-            const li = document.createElement('li');
-            li.innerHTML = `<span>${input.value}</span><button class="btn-del" onclick="this.parentElement.remove()">X</button>`;
-            document.getElementById('taskList').appendChild(li);
-            input.value = "";
+            let tasks = JSON.parse(localStorage.getItem('agroTasks')) || [];
+            tasks.push({ text: input.value, time: new Date().toLocaleDateString() });
+            localStorage.setItem('agroTasks', JSON.stringify(tasks));
+            input.value = '';
+            loadTasks();
         }
 
-        // Atalho Enter
-        document.getElementById('taskInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') addTask();
-        });
+        function loadTasks() {
+            const list = document.getElementById('taskList');
+            let tasks = JSON.parse(localStorage.getItem('agroTasks')) || [];
+            list.innerHTML = tasks.map((t, i) => `
+                <div class="task-item">
+                    <span>${t.text}</span>
+                    <button onclick="deleteTask(${i})" style="background:none; border:none; color:var(--danger); cursor:pointer;">✖</button>
+                </div>
+            `).join('');
+        }
+
+        function deleteTask(index) {
+            let tasks = JSON.parse(localStorage.getItem('agroTasks'));
+            tasks.splice(index, 1);
+            localStorage.setItem('agroTasks', JSON.stringify(tasks));
+            loadTasks();
+        }
+
+        // Engenharia: Cálculo de Calagem
+        function calcCalagem() {
+            const v2 = parseFloat(document.getElementById('v2').value);
+            const v1 = parseFloat(document.getElementById('v1').value);
+            const ctc = parseFloat(document.getElementById('ctc').value);
+            const prnt = parseFloat(document.getElementById('prnt').value);
+
+            if(v2 && v1 && ctc && prnt) {
+                // Fórmula: NC (t/ha) = [CTC x (V2 - V1)] / (10 x PRNT)
+                const nc = (ctc * (v2 - v1)) / prnt;
+                document.getElementById('resultCalagem').innerText = `Necessidade: ${nc.toFixed(2)} Ton/ha`;
+            } else {
+                alert("Preencha todos os dados da análise de solo!");
+            }
+        }
+
+        // Gráfico de Performance (Chart.js)
+        function renderChart() {
+            const ctx = document.getElementById('yieldChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Safra 21', 'Safra 22', 'Safra 23', 'Safra 24', 'Safra 25', 'Safra 26'],
+                    datasets: [{
+                        label: 'Sacas por Hectare',
+                        data: [62, 68, 65, 74, 82, 88],
+                        borderColor: '#74c69d',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(116, 198, 157, 0.1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: false }, x: { grid: { color: '#333' } } },
+                    plugins: { legend: { labels: { color: '#f5f3f4' } } }
+                }
+            });
+        }
     </script>
 </body>
 </html>
