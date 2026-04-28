@@ -1,1 +1,191 @@
 
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gurizada do Agro | Official</title>
+    <style>
+        /* Variáveis de Cores */
+        :root {
+            --primary: #2d5a27; /* Verde Oliva Escuro */
+            --secondary: #a3b18a; /* Verde Musgo Claro */
+            --accent: #f8961e; /* Laranja Trator/Colheita */
+            --dark: #1b1b1b;
+            --light: #f4f4f4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header e Navegação */
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section (Banner) */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background: #e67e22;
+        }
+
+        /* Seção de Conteúdo (Cards) */
+        .container {
+            max-width: 1200px;
+            margin: -50px auto 50px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-bottom: 5px solid var(--primary);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            nav { display: none; } /* Simplicidade para mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">GURIZADA DO AGRO</div>
+        <nav>
+            <a href="#">Início</a>
+            <a href="#">Maquinário</a>
+            <a href="#">Lavoura</a>
+            <a href="#">Contato</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>RESPEITA O CAMPO</h1>
+        <p>A nova geração que move o Brasil. Tecnologia, tradição e o pé na terra.</p>
+        <a href="#" class="btn">VER OPERAÇÕES</a>
+    </section>
+
+    <main class="container">
+        <div class="card">
+            <h3>🌱 Plantio</h3>
+            <p>Monitoramento de safra em tempo real com precisão tecnológica de última geração.</p>
+        </div>
+
+        <div class="card">
+            <h3>🚜 Maquinário</h3>
+            <p>Gestão de frota e manutenção preventiva para não parar a produção no trecho.</p>
+        </div>
+
+        <div class="card">
+            <h3>📊 Mercado</h3>
+            <p>Análise de commodities e tendências do agronegócio global direto no seu dashboard.</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Gurizada do Agro - Do Brasil para o Mundo.</p>
+    </footer>
+
+</body>
+</html>
