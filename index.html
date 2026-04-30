@@ -3,242 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroOS Pro | Gestão Inteligente de Safra</title>
+    <title>AgroOS Grand Enterprise | Gestão 360°</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         :root {
-            --primary: #2ebc59;
-            --primary-dark: #1e7e3a;
-            --bg-dark: #0d1117;
-            --bg-card: #161b22;
-            --border: #30363d;
-            --text-main: #c9d1d9;
-            --text-white: #ffffff;
-            --danger: #f85149;
-            --warning: #d29922;
+            --p-green: #2ebc59; --p-dark: #1a1d21; --p-card: #22272e;
+            --border: #30363d; --text: #adbac7; --white: #ffffff;
+            --danger: #f85149; --warn: #d29922; --info: #58a6ff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        body { background: var(--p-dark); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar Navegação */
-        aside { 
-            width: 280px; background: var(--bg-card); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; 
+        /* --- SIDEBAR --- */
+        aside { width: 280px; background: var(--p-card); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 10; }
+        .logo { padding: 30px; text-align: center; border-bottom: 1px solid var(--border); }
+        .logo h1 { color: var(--p-green); font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; }
+        .nav-group { flex: 1; padding: 20px 0; overflow-y: auto; }
+        .nav-item { 
+            padding: 14px 25px; display: flex; align-items: center; gap: 15px; 
+            cursor: pointer; transition: 0.3s; border-left: 4px solid transparent; 
         }
-        .sidebar-header { padding: 30px; border-bottom: 1px solid var(--border); text-align: center; }
-        .sidebar-header h1 { color: var(--primary); font-size: 1.5rem; font-weight: 800; }
+        .nav-item:hover, .nav-item.active { background: rgba(46, 188, 89, 0.1); color: var(--p-green); border-left-color: var(--p-green); }
 
-        .nav-link { 
-            padding: 15px 30px; display: flex; align-items: center; gap: 15px;
-            text-decoration: none; color: var(--text-main); cursor: pointer; transition: 0.2s;
-        }
-        .nav-link:hover, .nav-link.active { background: #21262d; color: var(--primary); border-left: 4px solid var(--primary); }
-
-        /* Área de Conteúdo */
-        main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
-        .top-bar { 
-            padding: 20px 40px; background: var(--bg-card); border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
+        /* --- CONTEÚDO PRINCIPAL --- */
+        main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        header { 
+            height: 70px; background: var(--p-card); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
         }
 
-        .container { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; }
+        #app-viewport { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* Widgets e Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-        .card-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-
-        /* Formulários e Botões */
-        input, select, textarea { 
-            width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border);
-            border-radius: 8px; color: white; margin-bottom: 15px; outline: none;
-        }
-        .btn { 
-            padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; 
-            cursor: pointer; transition: 0.3s; width: 100%;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); }
-
-        /* Instruções */
-        .instruction-box { background: rgba(46, 188, 89, 0.1); border-left: 4px solid var(--primary); padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+        /* --- COMPONENTES UI --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-bottom: 30px; }
+        .card { background: var(--p-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; position: relative; }
+        .card-header { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: 600; color: var(--white); }
         
-        /* Clima */
-        .weather-selector { display: flex; gap: 10px; margin-bottom: 20px; }
-        .weather-btn { flex: 1; padding: 10px; background: #21262d; border: 1px solid var(--border); border-radius: 8px; color: white; cursor: pointer; text-align: center; }
-        .weather-btn.active { border-color: var(--primary); background: rgba(46, 188, 89, 0.2); }
+        /* Instruções Estilizadas */
+        .info-box { 
+            background: rgba(88, 166, 255, 0.1); border: 1px solid var(--info); 
+            padding: 15px; border-radius: 8px; margin-bottom: 25px; display: flex; gap: 15px; align-items: center;
+        }
 
-        /* Responsividade */
-        @media (max-width: 768px) { aside { display: none; } }
+        /* Forms Profissionais */
+        input, select, textarea { 
+            width: 100%; padding: 12px; background: #0d1117; border: 1px solid var(--border);
+            border-radius: 8px; color: var(--white); margin-bottom: 15px; outline: none;
+        }
+        input:focus { border-color: var(--p-green); }
+        .btn { 
+            padding: 12px 20px; border-radius: 8px; border: none; font-weight: 700;
+            cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn-success { background: var(--p-green); color: white; }
+        .btn-success:hover { background: #26a64d; transform: translateY(-2px); }
+
+        /* Telemetria de Frota */
+        .machine-row { background: #0d1117; padding: 15px; border-radius: 10px; margin-bottom: 12px; }
+        .fuel-bar-bg { width: 100%; height: 8px; background: #333; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+        .fuel-bar-fill { height: 100%; transition: 1s ease-in-out; }
+
+        /* Clima Visual */
+        .weather-card { text-align: center; background: linear-gradient(135deg, #1c2128 0%, #2d333b 100%); }
+        .temp-display { font-size: 3rem; font-weight: 800; color: var(--white); margin: 10px 0; }
+
+        /* Animação de Entrada */
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
     </style>
 </head>
 <body>
 
 <aside>
-    <div class="sidebar-header">
-        <h1>AGRO-OS <span style="color:white">PRO</span></h1>
+    <div class="logo"><h1>AGRO<span style="color:white">OS</span> PRO</h1></div>
+    <div class="nav-group">
+        <div class="nav-item active" onclick="Core.route('dash')"><i class="fas fa-chart-pie"></i> Painel de Controle</div>
+        <div class="nav-item" onclick="Core.route('clima')"><i class="fas fa-cloud-sun"></i> Planejamento Climático</div>
+        <div class="nav-item" onclick="Core.route('frota')"><i class="fas fa-truck-monster"></i> Telemetria de Frota</div>
+        <div class="nav-item" onclick="Core.route('custos')"><i class="fas fa-calculator"></i> Calculadora Safra</div>
+        <div class="nav-item" onclick="Core.route('estoque')"><i class="fas fa-warehouse"></i> Gestão de Insumos</div>
     </div>
-    <div class="nav-menu">
-        <div class="nav-link active" onclick="App.view('dash')"><i class="fas fa-chart-line"></i> Dashboard</div>
-        <div class="nav-link" onclick="App.view('plantio')"><i class="fas fa-seedling"></i> Plantio & Clima</div>
-        <div class="nav-link" onclick="App.view('frota')"><i class="fas fa-tractor"></i> Frota & Telemetria</div>
-        <div class="nav-link" onclick="App.view('estoque')"><i class="fas fa-warehouse"></i> Estoque Insumos</div>
+    <div style="padding: 20px; font-size: 0.8rem; border-top: 1px solid var(--border);">
+        <i class="fas fa-circle" style="color: var(--p-green); font-size: 0.6rem;"></i> Servidor: Operacional
     </div>
 </aside>
 
 <main>
-    <div class="top-bar">
-        <div id="view-title">Dashboard Operacional</div>
-        <div id="sys-clock">00:00:00</div>
-    </div>
+    <header>
+        <div id="route-title" style="font-weight: 600; font-size: 1.1rem; color: var(--white);">Painel de Controle</div>
+        <div id="clock" style="font-family: monospace; font-size: 1.1rem;">00:00:00</div>
+    </header>
 
-    <div class="container" id="app-content">
+    <div id="app-viewport" class="fade-in">
         </div>
 </main>
 
 <script>
-/** * AGRO-OS PRO CORE ENGINE
- * Gerencia visualizações, cálculos e clima.
+/** * CORE ENGINE - AGRO OS 
+ * Este objeto gerencia toda a lógica, estados e renderização do sistema.
  */
-
-const App = {
+const Core = {
     state: {
-        currentView: 'dash',
-        weather: 'Limpo',
-        temp: 28,
-        data: JSON.parse(localStorage.getItem('agro_pro_db')) || { tasks: [], inventory: [] }
+        view: 'dash',
+        weather: { city: 'Cascavel-PR', temp: 29, cond: 'Limpo', humidity: 45 },
+        fleet: [
+            { id: 1, name: "JD 8R 370", diesel: 82, horimetro: 1240, status: 'Operando' },
+            { id: 2, name: "Case Magnum 340", diesel: 18, horimetro: 850, status: 'Alerta' }
+        ],
+        inventory: JSON.parse(localStorage.getItem('agro_v3_inv')) || [
+            { id: 1, prod: 'Glifosato', qtd: 500, unit: 'L' },
+            { id: 2, prod: 'NPK 04-14-08', qtd: 12000, unit: 'kg' }
+        ]
     },
 
     init() {
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
-        this.render();
+        this.route('dash');
     },
 
     updateClock() {
-        document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString();
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
     },
 
-    view(v) {
-        this.state.currentView = v;
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    route(v) {
+        this.state.view = v;
+        document.querySelectorAll('.nav-item').forEach(el => {
+            el.classList.toggle('active', el.innerText.toLowerCase().includes(v.substring(0,3)));
+        });
         this.render();
     },
 
-    // --- MÓDULO DE CLIMA ---
-    setWeather(type, temp) {
-        this.state.weather = type;
-        this.state.temp = temp;
-        this.render();
+    save() {
+        localStorage.setItem('agro_v3_inv', JSON.stringify(this.state.inventory));
     },
 
-    // --- RENDERIZAÇÃO DE TELAS ---
     render() {
-        const content = document.getElementById('app-content');
-        const title = document.getElementById('view-title');
+        const viewport = document.getElementById('app-viewport');
+        const title = document.getElementById('route-title');
+        viewport.className = 'fade-in';
 
-        if (this.state.currentView === 'dash') {
-            title.innerText = "Dashboard Geral";
-            content.innerHTML = `
-                <div class="instruction-box">
-                    <strong><i class="fas fa-info-circle"></i> Instruções:</strong> 
-                    Bem-vindo ao AgroOS Pro. Aqui você monitora a saúde financeira e operacional da fazenda. 
-                    Mantenha o diesel acima de 20% para evitar paradas críticas.
-                </div>
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-title">PRODUTIVIDADE ESTIMADA</div>
-                        <canvas id="prodChart"></canvas>
+        switch(this.state.view) {
+            case 'dash':
+                title.innerText = "Painel de Controle de Safra";
+                viewport.innerHTML = `
+                    <div class="info-box">
+                        <i class="fas fa-seedling fa-2x" style="color: var(--p-green)"></i>
+                        <div>
+                            <strong>Instrução do Dia:</strong> Janela de plantio aberta. 
+                            Solo com umidade de 55%. Recomendado iniciar talhão norte.
+                        </div>
                     </div>
-                    <div class="card">
-                        <div class="card-title">CUSTO POR HECTARE</div>
-                        <h2 style="font-size: 2.5rem; color: var(--primary);">R$ 3.450</h2>
-                        <p style="color: var(--warning);">Acima da média: +5.2%</p>
+                    <div class="grid">
+                        <div class="card">
+                            <div class="card-header">PRODUTIVIDADE ESTIMADA (SC/HA)</div>
+                            <canvas id="chartProd"></canvas>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">CUSTO POR HECTARE (TOTAL)</div>
+                            <h2 style="font-size: 3rem; color: var(--white); margin: 15px 0;">R$ 3.840</h2>
+                            <p style="color: var(--p-green)"><i class="fas fa-caret-down"></i> 2% abaixo da projeção</p>
+                            <button class="btn btn-success" style="margin-top:20px; width:100%">DETALHAR CUSTOS</button>
+                        </div>
                     </div>
-                </div>
-            `;
-            this.initCharts();
-        }
+                `;
+                this.initChart();
+                break;
 
-        if (this.state.currentView === 'plantio') {
-            title.innerText = "Monitoramento de Plantio & Clima";
-            content.innerHTML = `
-                <div class="instruction-box">
-                    <strong>Guia de Plantio:</strong> A janela ideal para soja é com umidade do solo entre 50-70%. 
-                    Verifique a previsão antes de liberar os tratores.
-                </div>
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-title">SELEÇÃO DE CLIMA (SIMULAÇÃO)</div>
-                        <div class="weather-selector">
-                            <button class="weather-btn ${this.state.weather === 'Limpo' ? 'active' : ''}" onclick="App.setWeather('Limpo', 31)">Ensolarado</button>
-                            <button class="weather-btn ${this.weather === 'Chuva' ? 'active' : ''}" onclick="App.setWeather('Chuva', 22)">Chuva</button>
-                            <button class="weather-btn" onclick="App.setWeather('Nublado', 25)">Nublado</button>
+            case 'clima':
+                title.innerText = "Planejamento Climático";
+                viewport.innerHTML = `
+                    <div class="grid">
+                        <div class="card weather-card">
+                            <div class="card-header">CONDIÇÃO ATUAL: ${this.state.weather.city}</div>
+                            <i class="fas fa-sun fa-5x" style="color: var(--warn); margin: 20px 0;"></i>
+                            <div class="temp-display">${this.state.weather.temp}°C</div>
+                            <p>Umidade Relativa: ${this.state.weather.humidity}%</p>
                         </div>
-                        <div style="text-align: center; padding: 20px;">
-                            <i class="fas ${this.state.weather === 'Limpo' ? 'fa-sun' : 'fa-cloud-rain'} fa-4x" style="color: var(--warning);"></i>
-                            <h2 style="margin-top: 10px;">${this.state.temp}°C - ${this.state.weather}</h2>
+                        <div class="card">
+                            <div class="card-header">SIMULADOR DE JANELA</div>
+                            <label>Cultura Selecionada</label>
+                            <select>
+                                <option>Soja 24/25</option>
+                                <option>Milho Safrinha</option>
+                            </select>
+                            <div class="info-box" style="background: rgba(46, 188, 89, 0.1); border-color: var(--p-green);">
+                                <strong>Status:</strong> Condição excelente para pulverização. Ventos a 8km/h.
+                            </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-title">CONDIÇÃO DO SOLO</div>
-                        <p>Umidade: 62% (Ideal)</p>
-                        <p>PH: 6.2</p>
-                        <hr style="margin: 10px 0; border: 0; border-top: 1px solid var(--border);">
-                        <button class="btn btn-primary">REGISTRAR ANALISE</button>
-                    </div>
-                </div>
-            `;
-        }
+                `;
+                break;
 
-        if (this.state.currentView === 'frota') {
-            title.innerText = "Frota & Máquinas";
-            content.innerHTML = `
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-title">JOHN DEERE 8R 370</div>
-                        <div style="background: #333; height: 10px; border-radius: 5px;">
-                            <div style="width: 75%; background: var(--primary); height: 100%; border-radius: 5px;"></div>
+            case 'frota':
+                title.innerText = "Telemetria de Máquinas";
+                const machines = this.state.fleet.map(m => `
+                    <div class="machine-row">
+                        <div style="display:flex; justify-content:space-between">
+                            <b style="color:var(--white)">${m.name}</b>
+                            <span>${m.status}</span>
                         </div>
-                        <p style="margin-top: 10px;">Diesel: 75% | Status: Operando</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">CASE MAGNUM 340</div>
-                        <div style="background: #333; height: 10px; border-radius: 5px;">
-                            <div style="width: 15%; background: var(--danger); height: 100%; border-radius: 5px;"></div>
+                        <div class="fuel-bar-bg">
+                            <div class="fuel-bar-fill" style="width:${m.diesel}%; background:${m.diesel < 20 ? 'var(--danger)' : 'var(--p-green)'}"></div>
                         </div>
-                        <p style="margin-top: 10px;">Diesel: 15% | <span style="color: var(--danger);">Abastecer Agora!</span></p>
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-top:10px;">
+                            <span>Diesel: ${m.diesel}%</span>
+                            <span>Horímetro: ${m.horimetro}h</span>
+                        </div>
                     </div>
-                </div>
-            `;
+                `).join('');
+                viewport.innerHTML = `<div class="grid"><div class="card">${machines}</div></div>`;
+                break;
+
+            case 'custos':
+                title.innerText = "Calculadora Técnica";
+                viewport.innerHTML = `
+                    <div class="card" style="max-width: 600px; margin: auto;">
+                        <h3>Cálculo de Pulverização</h3>
+                        <div style="margin-top:20px;">
+                            <label>Vazão do Bico (L/min)</label>
+                            <input type="number" id="calc-q" value="1.2" oninput="Core.runCalc()">
+                            <label>Velocidade (km/h)</label>
+                            <input type="number" id="calc-v" value="8" oninput="Core.runCalc()">
+                            <div id="calc-res" style="padding:20px; text-align:center; background:#0d1117; border-radius:10px;">
+                                <h2 style="color:var(--p-green)">180.00 L/ha</h2>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                break;
+
+            case 'estoque':
+                title.innerText = "Gestão de Almoxarifado";
+                const items = this.state.inventory.map(i => `
+                    <div class="machine-row" style="display:flex; justify-content:space-between">
+                        <span>${i.prod}</span>
+                        <b style="color:var(--white)">${i.qtd} ${i.unit}</b>
+                    </div>
+                `).join('');
+                viewport.innerHTML = `
+                    <div class="grid">
+                        <div class="card">
+                            <h3>Lançar Entrada/Saída</h3>
+                            <input type="text" placeholder="Produto">
+                            <input type="number" placeholder="Quantidade">
+                            <button class="btn btn-success" style="width:100%">REGISTRAR</button>
+                        </div>
+                        <div class="card">
+                            <h3>Saldos Atuais</h3>
+                            <div style="margin-top:15px;">${items}</div>
+                        </div>
+                    </div>
+                `;
+                break;
         }
     },
 
-    initCharts() {
-        const ctx = document.getElementById('prodChart').getContext('2d');
+    runCalc() {
+        const q = parseFloat(document.getElementById('calc-q').value) || 0;
+        const v = parseFloat(document.getElementById('calc-v').value) || 1;
+        const res = (600 * q) / (v * 0.5); // 0.5 é o espaçamento entre bicos
+        document.getElementById('calc-res').innerHTML = `<h2 style="color:var(--p-green)">${res.toFixed(2)} L/ha</h2>`;
+    },
+
+    initChart() {
+        const ctx = document.getElementById('chartProd').getContext('2d');
         new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
-                labels: ['Safra 21', 'Safra 22', 'Safra 23', 'Safra 24'],
+                labels: ['Soja', 'Milho', 'Trigo', 'Feijão'],
                 datasets: [{
                     label: 'Sacas/ha',
-                    data: [62, 68, 65, 72],
-                    borderColor: '#2ebc59',
-                    backgroundColor: 'rgba(46, 188, 89, 0.2)',
-                    fill: true,
-                    tension: 0.4
+                    data: [68, 145, 58, 42],
+                    backgroundColor: '#2ebc59',
+                    borderRadius: 5
                 }]
             },
-            options: { responsive: true, plugins: { legend: { display: false } } }
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { grid: { color: '#30363d' } } }
+            }
         });
     }
 };
 
-App.init();
+// Start
+Core.init();
 </script>
 </body>
 </html>
