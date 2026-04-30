@@ -2,226 +2,294 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroOS AI | Enterprise Intelligence 2026</title>
-    
+    <title>AgroOS Pro | Gestão Funcional 360°</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-
     <style>
         :root {
-            --neon-green: #00ff66; --dark-bg: #05070a; --card-bg: #0f1218;
-            --border-color: #1e2631; --text-gray: #94a3b8; --white: #f8fafc;
-            --accent-blue: #38bdf8; --danger-red: #ef4444;
+            --neon: #00ff66; --dark: #05070a; --surface: #0f1218;
+            --border: #1e2631; --text: #94a3b8; --white: #f8fafc;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
-        body { background: var(--dark-bg); color: var(--text-gray); display: flex; height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--dark); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- Glassmorphism Sidebar --- */
-        aside { 
-            width: 300px; background: var(--card-bg); border-right: 1px solid var(--border-color);
-            display: flex; flex-direction: column; position: relative; z-index: 10;
-        }
-        .ai-status { padding: 25px; border-bottom: 1px solid var(--border-color); background: rgba(0, 255, 102, 0.05); }
-        .ai-pulse { display: inline-block; width: 10px; height: 10px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); animation: pulse 2s infinite; }
+        /* Sidebar */
+        aside { width: 280px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .nav-item { padding: 18px 25px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; }
+        .nav-item:hover, .nav-item.active { background: #161b22; color: var(--neon); border-right: 3px solid var(--neon); }
+
+        /* Content */
+        main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        header { height: 70px; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+        #viewport { flex: 1; padding: 30px; overflow-y: auto; }
+
+        /* UI Components */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         
-        .nav-list { flex: 1; padding: 20px 0; }
-        .nav-item { 
-            padding: 16px 30px; display: flex; align-items: center; gap: 15px; 
-            cursor: pointer; transition: 0.3s; color: var(--text-gray);
-        }
-        .nav-item:hover, .nav-item.active { background: #161b22; color: var(--neon-green); border-right: 3px solid var(--neon-green); }
+        input, select { width: 100%; background: #0a0d12; border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: white; margin-bottom: 10px; }
+        .btn { background: var(--neon); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(0,255,102,0.3); }
 
-        /* --- Main Content Engine --- */
-        main { flex: 1; display: flex; flex-direction: column; position: relative; }
-        header { 
-            height: 80px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between;
-            border-bottom: 1px solid var(--border-color); background: rgba(15, 18, 24, 0.8); backdrop-filter: blur(10px);
-        }
+        /* Chat IA */
+        #ai-log { height: 200px; overflow-y: auto; background: #05070a; border-radius: 8px; padding: 15px; font-size: 0.85rem; border: 1px solid var(--border); }
+        .ai-line { margin-bottom: 8px; border-left: 2px solid var(--neon); padding-left: 8px; }
 
-        #viewport { flex: 1; padding: 40px; overflow-y: auto; scroll-behavior: smooth; }
-
-        /* --- Módulos Inteligentes --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
-        .agro-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; transition: 0.4s; }
-        .agro-card:hover { border-color: var(--neon-green); transform: translateY(-5px); }
-
-        /* IA Chat Interface */
-        .ai-chat-box { 
-            height: 250px; background: #0a0d12; border-radius: 12px; padding: 15px; 
-            overflow-y: auto; font-size: 0.9rem; border: 1px solid #1e2631; margin-bottom: 15px;
-        }
-        .ai-msg { color: var(--neon-green); margin-bottom: 10px; display: flex; gap: 10px; }
-
-        /* Data Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); color: var(--white); font-size: 0.8rem; }
-        td { padding: 12px; border-bottom: 1px solid #161b22; font-size: 0.85rem; }
-
-        /* Buttons & Inputs */
-        .btn-ai { background: var(--neon-green); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-ai:hover { box-shadow: 0 0 20px rgba(0, 255, 102, 0.4); }
-        input { width: 100%; background: #161b22; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; color: white; margin-top: 10px; }
-
-        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: var(--white); font-size: 0.8rem; padding: 10px; border-bottom: 1px solid var(--border); }
+        td { padding: 10px; border-bottom: 1px solid #161b22; font-size: 0.85rem; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <aside>
-    <div class="ai-status">
-        <div class="ai-pulse"></div> <span style="color: var(--white); font-weight: 800;">AGRO GPT 4.0</span>
-        <p style="font-size: 0.7rem; margin-top: 5px;">Sistemas de IA Otimizados</p>
+    <div style="padding: 30px; border-bottom: 1px solid var(--border);">
+        <h2 style="color: var(--neon);"><i class="fas fa-microchip"></i> AGRO OS</h2>
     </div>
     <div class="nav-list">
-        <div class="nav-item active" onclick="Core.route('ia-dash')"><i class="fas fa-brain"></i> IA Insights</div>
-        <div class="nav-item" onclick="Core.route('telemetria')"><i class="fas fa-satellite"></i> Telemetria 360°</div>
-        <div class="nav-item" onclick="Core.route('financeiro')"><i class="fas fa-chart-line"></i> Predição Financeira</div>
-        <div class="nav-item" onclick="Core.route('clima')"><i class="fas fa-bolt"></i> Hiper-Local Clima</div>
-        <div class="nav-item" onclick="Core.route('estoque')"><i class="fas fa-boxes-stacked"></i> Smart Inventory</div>
+        <div class="nav-item active" onclick="Core.route('dash')"><i class="fas fa-home"></i> Painel Geral</div>
+        <div class="nav-item" onclick="Core.route('fleet')"><i class="fas fa-tractor"></i> Frota Ativa</div>
+        <div class="nav-item" onclick="Core.route('stock')"><i class="fas fa-boxes-stacked"></i> Almoxarifado</div>
+        <div class="nav-item" onclick="Core.route('calc')"><i class="fas fa-calculator"></i> Calculadora Técnica</div>
     </div>
 </aside>
 
 <main>
     <header>
-        <div id="breadcrumb">Enterprise / <span id="view-name">IA Insights</span></div>
-        <div style="display: flex; gap: 25px; align-items: center;">
-            <div id="weather-top" style="font-size: 0.9rem;"><i class="fas fa-sun"></i> 29°C Reserva-PR</div>
-            <div id="main-clock" style="font-weight: 600; color: var(--white);">00:00:00</div>
+        <div id="path">Dashboard / Home</div>
+        <div style="display:flex; gap:20px;">
+            <div id="sys-clock">00:00:00</div>
+            <div style="color: var(--neon); cursor:pointer;" onclick="Core.exportData()"><i class="fas fa-download"></i> Backup</div>
         </div>
     </header>
-
-    <div id="viewport">
-        </div>
+    <div id="viewport"></div>
 </main>
 
 <script>
 /**
- * ENGINE CENTRAL AGRO-AI
+ * AGROOS ENGINE 2026 - TOTALMENTE FUNCIONAL
  */
 const Core = {
-    state: {
-        activeView: 'ia-dash',
-        history: [],
-        fleet: [
-            { id: 1, name: "JD 8R 370", fuel: 78, task: "Plantio Lote A", heat: "Normal" },
-            { id: 2, name: "Case IH 340", fuel: 12, task: "Inativo", heat: "Crítico" }
+    db: {
+        fleet: JSON.parse(localStorage.getItem('agro_fleet')) || [
+            { id: 1, name: "JD 8R 370", fuel: 85, status: "Operacional" }
         ],
-        stocks: JSON.parse(localStorage.getItem('agro_stock')) || [
-            { item: "Ureia", qtd: 2500, unit: "kg" },
-            { item: "Diesel S10", qtd: 800, unit: "L" }
-        ]
+        stock: JSON.parse(localStorage.getItem('agro_stock')) || [
+            { id: 1, item: "Diesel S10", qty: 5000, unit: "L" },
+            { id: 2, item: "Semente Soja", qty: 120, unit: "sc" }
+        ],
+        logs: ["Sistema online. Monitorando telemetria..."]
+    },
+
+    save() {
+        localStorage.setItem('agro_fleet', JSON.stringify(this.db.fleet));
+        localStorage.setItem('agro_stock', JSON.stringify(this.db.stock));
     },
 
     init() {
-        this.updateClock();
-        setInterval(() => this.updateClock(), 1000);
-        this.route('ia-dash');
-        this.aiThink("Sistema operacional iniciado. Analisando talhões...");
+        setInterval(() => {
+            document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+        this.route('dash');
     },
 
-    updateClock() {
-        document.getElementById('main-clock').innerText = new Date().toLocaleTimeString();
-    },
+    route(page) {
+        const vp = document.getElementById('viewport');
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('path').innerText = `AgroOS / ${page.toUpperCase()}`;
 
-    async aiThink(msg) {
-        const chat = document.getElementById('ai-chat');
-        if(chat) {
-            const div = document.createElement('div');
-            div.className = 'ai-msg';
-            div.innerHTML = `<i class="fas fa-robot"></i> <span>[AgroGPT]: ${msg}</span>`;
-            chat.prepend(div);
-            anime({ targets: div, opacity: [0, 1], translateX: [-20, 0], duration: 800 });
+        switch(page) {
+            case 'dash': this.renderDash(vp); break;
+            case 'fleet': this.renderFleet(vp); break;
+            case 'stock': this.renderStock(vp); break;
+            case 'calc': this.renderCalc(vp); break;
         }
     },
 
-    route(view) {
-        this.state.activeView = view;
-        document.getElementById('view-name').innerText = view.toUpperCase();
-        const vp = document.getElementById('viewport');
-        
-        // Router Logic
-        if(view === 'ia-dash') {
-            vp.innerHTML = `
-                <div class="grid">
-                    <div class="agro-card" style="grid-column: span 2;">
-                        <div class="card-header">TERMINAL DE COMANDO IA</div>
-                        <div class="ai-chat-box" id="ai-chat"></div>
-                        <div style="display:flex; gap:10px;">
-                            <input type="text" id="ai-input" placeholder="Pergunte à IA (Ex: Qual a melhor janela de plantio?)">
-                            <button class="btn-ai" onclick="Core.processIA()">ANALISAR</button>
-                        </div>
-                    </div>
-                    <div class="agro-card">
-                        <div class="card-header">SAÚDE DA SAFRA (NDVI)</div>
-                        <canvas id="ndviChart"></canvas>
+    // --- DASHBOARD FUNCIONAL ---
+    renderDash(vp) {
+        vp.innerHTML = `
+            <div class="grid">
+                <div class="card" style="grid-column: span 2;">
+                    <h3><i class="fas fa-brain"></i> AgroGPT - Diagnóstico de IA</h3>
+                    <div id="ai-log" style="margin: 15px 0;"></div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="ai-input" placeholder="Pergunte algo (ex: status da frota)">
+                        <button class="btn" onclick="Core.askAI()" style="width:120px;">ANALISAR</button>
                     </div>
                 </div>
-            `;
-            this.initNdvi();
-        } 
-        
-        else if(view === 'telemetria') {
-            const rows = this.state.fleet.map(f => `
-                <tr>
-                    <td>${f.name}</td>
-                    <td style="color: ${f.fuel < 20 ? 'var(--danger-red)' : 'var(--neon-green)'}">${f.fuel}%</td>
-                    <td>${f.task}</td>
-                    <td><span style="background:${f.heat === 'Crítico' ? '#442222' : '#224422'}; padding:4px 8px; border-radius:4px;">${f.heat}</span></td>
-                </tr>
-            `).join('');
-            vp.innerHTML = `
-                <div class="agro-card">
-                    <div class="card-header">FROTA CONECTADA EM TEMPO REAL</div>
+                <div class="card">
+                    <h3>Resumo de Ativos</h3>
+                    <div style="margin-top:15px;">
+                        <p>Máquinas: ${this.db.fleet.length}</p>
+                        <p>Itens em Estoque: ${this.db.stock.length}</p>
+                        <p>Status: <span class="badge" style="background:var(--neon); color:#000;">ESTÁVEL</span></p>
+                    </div>
+                </div>
+            </div>
+        `;
+        this.updateAILog();
+    },
+
+    // --- GESTÃO DE FROTA (FUNCIONAL) ---
+    renderFleet(vp) {
+        const rows = this.db.fleet.map(f => `
+            <tr>
+                <td>${f.name}</td>
+                <td>
+                    <div style="width:100px; height:8px; background:#333; border-radius:4px; overflow:hidden;">
+                        <div style="width:${f.fuel}%; height:100%; background:${f.fuel < 20 ? 'red' : 'var(--neon)'}"></div>
+                    </div>
+                </td>
+                <td>${f.fuel}%</td>
+                <td><button onclick="Core.removeFleet(${f.id})" style="background:none; border:none; color:red; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
+            </tr>
+        `).join('');
+
+        vp.innerHTML = `
+            <div class="grid">
+                <div class="card">
+                    <h3>Cadastrar Máquina</h3>
+                    <input type="text" id="f-name" placeholder="Modelo (ex: Case IH 340)">
+                    <input type="number" id="f-fuel" placeholder="Nível de Diesel (%)">
+                    <button class="btn" onclick="Core.addFleet()">ADICIONAR À FROTA</button>
+                </div>
+                <div class="card" style="grid-column: span 2;">
+                    <h3>Telemetria Ativa</h3>
                     <table>
-                        <thead><tr><th>MAQUINÁRIO</th><th>DIESEL</th><th>TAREFA</th><th>TEMP. MOTOR</th></tr></thead>
+                        <thead><tr><th>Máquina</th><th>Tanque</th><th>Nível</th><th>Ações</th></tr></thead>
                         <tbody>${rows}</tbody>
                     </table>
                 </div>
-            `;
-        }
+            </div>
+        `;
     },
 
-    processIA() {
-        const input = document.getElementById('ai-input').value;
+    addFleet() {
+        const name = document.getElementById('f-name').value;
+        const fuel = document.getElementById('f-fuel').value;
+        if(!name || !fuel) return alert("Preencha os dados");
+        this.db.fleet.push({ id: Date.now(), name, fuel: parseInt(fuel) });
+        this.save();
+        this.route('fleet');
+        this.aiLog(`Nova máquina detectada: ${name}. Sincronizando sensores...`);
+    },
+
+    removeFleet(id) {
+        this.db.fleet = this.db.fleet.filter(f => f.id !== id);
+        this.save();
+        this.route('fleet');
+    },
+
+    // --- GESTÃO DE ESTOQUE (FUNCIONAL) ---
+    renderStock(vp) {
+        const rows = this.db.stock.map(s => `
+            <tr>
+                <td>${s.item}</td>
+                <td>${s.qty} ${s.unit}</td>
+                <td><button onclick="Core.removeStock(${s.id})" style="color:red; background:none; border:none; cursor:pointer;"><i class="fas fa-minus-circle"></i></button></td>
+            </tr>
+        `).join('');
+
+        vp.innerHTML = `
+            <div class="grid">
+                <div class="card">
+                    <h3>Entrada de Insumo</h3>
+                    <input type="text" id="s-item" placeholder="Produto">
+                    <input type="number" id="s-qty" placeholder="Qtd">
+                    <select id="s-unit"><option>L</option><option>sc</option><option>kg</option></select>
+                    <button class="btn" onclick="Core.addStock()">SALVAR NO ALMOXARIFADO</button>
+                </div>
+                <div class="card">
+                    <h3>Inventário Real</h3>
+                    <table><thead><tr><th>Item</th><th>Qtd</th><th>Remover</th></tr></thead><tbody>${rows}</tbody></table>
+                </div>
+            </div>
+        `;
+    },
+
+    addStock() {
+        const item = document.getElementById('s-item').value;
+        const qty = document.getElementById('s-qty').value;
+        const unit = document.getElementById('s-unit').value;
+        this.db.stock.push({ id: Date.now(), item, qty, unit });
+        this.save();
+        this.route('stock');
+    },
+
+    removeStock(id) {
+        this.db.stock = this.db.stock.filter(s => s.id !== id);
+        this.save();
+        this.route('stock');
+    },
+
+    // --- CALCULADORA (FUNCIONAL) ---
+    renderCalc(vp) {
+        vp.innerHTML = `
+            <div class="card" style="max-width:500px; margin:auto;">
+                <h3>Cálculo de Pulverização (L/ha)</h3>
+                <label style="font-size:0.7rem;">VAZÃO (L/min)</label>
+                <input type="number" id="c-q" value="1.2" oninput="Core.calcV()">
+                <label style="font-size:0.7rem;">VELOCIDADE (km/h)</label>
+                <input type="number" id="c-v" value="8" oninput="Core.calcV()">
+                <div id="c-res" style="background:#0a0d12; padding:20px; text-align:center; border-radius:8px; border:1px dashed var(--neon);">
+                    <h2 style="color:var(--neon)">180.00 L/ha</h2>
+                </div>
+            </div>
+        `;
+    },
+
+    calcV() {
+        const q = parseFloat(document.getElementById('c-q').value) || 0;
+        const v = parseFloat(document.getElementById('c-v').value) || 1;
+        const res = (600 * q) / (v * 0.5);
+        document.getElementById('c-res').innerHTML = `<h2 style="color:var(--neon)">${res.toFixed(2)} L/ha</h2>`;
+    },
+
+    // --- INTELIGÊNCIA ARTIFICIAL ---
+    askAI() {
+        const input = document.getElementById('ai-input').value.toLowerCase();
         if(!input) return;
-        this.aiThink(`Analisando solicitação: "${input}"...`);
+        this.aiLog(`Usuário: ${input}`);
+        
         setTimeout(() => {
-            if(input.toLowerCase().includes('plantio')) {
-                this.aiThink("Baseado na umidade do solo (65%) e previsão de chuva para amanhã, o plantio deve ser acelerado nas próximas 6 horas.");
+            if(input.includes('frota') || input.includes('máquina')) {
+                const lowFuel = this.db.fleet.filter(f => f.fuel < 20);
+                this.aiLog(`AgroGPT: Você tem ${this.db.fleet.length} máquinas. ${lowFuel.length > 0 ? 'Alerta: '+lowFuel[0].name+' está com diesel crítico!' : 'Toda a frota está operacional.'}`);
+            } else if(input.includes('estoque') || input.includes('diesel')) {
+                const diesel = this.db.stock.find(s => s.item.toLowerCase().includes('diesel'));
+                this.aiLog(`AgroGPT: Estoque de Diesel atual: ${diesel ? diesel.qty + 'L' : 'Não encontrado'}.`);
             } else {
-                this.aiThink("Relatórios financeiros indicam alta de 3% nos fertilizantes. Recomendo compra antecipada.");
+                this.aiLog("AgroGPT: Análise climática sugere estabilidade. Dados de solo ok para plantio.");
             }
-        }, 1500);
+        }, 800);
         document.getElementById('ai-input').value = "";
     },
 
-    initNdvi() {
-        const ctx = document.getElementById('ndviChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
-                datasets: [{
-                    label: 'Índice de Vigor Vegetativo',
-                    data: [0.4, 0.6, 0.85, 0.82],
-                    borderColor: '#00ff66',
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(0, 255, 102, 0.1)'
-                }]
-            },
-            options: {
-                plugins: { legend: { display: false } },
-                scales: { y: { grid: { color: '#1e2631' } }, x: { grid: { display: false } } }
-            }
-        });
+    aiLog(msg) {
+        this.db.logs.unshift(msg);
+        this.updateAILog();
+    },
+
+    updateAILog() {
+        const log = document.getElementById('ai-log');
+        if(log) log.innerHTML = this.db.logs.map(l => `<div class="ai-line">${l}</div>`).join('');
+    },
+
+    exportData() {
+        const blob = new Blob([JSON.stringify(this.db)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'backup_agroos_2026.json';
+        a.click();
     }
 };
 
-window.onload = () => Core.init();
+Core.init();
 </script>
 </body>
 </html>
