@@ -3,263 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroOS | Night Precision</title>
+    <title>AgroOS Enterprise | Sistema de Gestão</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --neon: #00ff88;
-            --deep-black: #020304;
-            --card-night: rgba(10, 12, 16, 0.85);
-            --border: rgba(0, 255, 136, 0.15);
-            --text-gray: #7e8c9a;
+            --bg: #0d1117;
+            --surface: #161b22;
+            --border: #30363d;
+            --accent: #238636;
+            --accent-hover: #2ea043;
+            --text: #c9d1d9;
+            --white: #f0f6fc;
+            --danger: #da3633;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        aside { width: 260px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .logo { padding: 30px; font-weight: 800; color: var(--white); font-size: 1.2rem; border-bottom: 1px solid var(--border); }
+        .nav-link { padding: 15px 30px; cursor: pointer; border-bottom: 1px solid transparent; transition: 0.2s; }
+        .nav-link:hover { background: rgba(255,255,255,0.05); }
+        .nav-link.active { color: var(--accent); border-left: 4px solid var(--accent); background: rgba(35, 134, 54, 0.1); }
+
+        /* Main Section */
+        main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        header { height: 70px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; background: var(--surface); }
+        .content { padding: 30px; overflow-y: auto; flex: 1; }
+
+        /* Componentes de Dados */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         
-        body { 
-            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), 
-                        url('https://images.unsplash.com/photo-1511735111819-9a3f7709049c?q=80&w=2000&auto=format&fit=crop');
-            background-size: cover; background-attachment: fixed;
-            color: #fff; height: 100vh; display: flex; overflow: hidden;
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); color: var(--white); font-size: 0.8rem; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+
+        /* Formulários */
+        input, select { 
+            width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); 
+            border-radius: 6px; color: var(--white); margin: 8px 0;
         }
-
-        /* --- NAVEGAÇÃO VERTICAL --- */
-        aside { 
-            width: 90px; background: rgba(0, 0, 0, 0.95);
-            border-right: 1px solid var(--border); display: flex;
-            flex-direction: column; align-items: center; padding: 25px 0;
-            transition: width 0.4s cubic-bezier(0.075, 0.82, 0.165, 1); z-index: 100;
+        .btn { 
+            background: var(--accent); color: white; border: none; padding: 12px 20px; 
+            border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px;
         }
-        aside:hover { width: 240px; }
+        .btn:hover { background: var(--accent-hover); }
+        .btn-danger { background: var(--danger); }
 
-        .logo { 
-            width: 50px; height: 50px; background: var(--neon); border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5); margin-bottom: 40px;
-        }
-
-        .nav-link {
-            width: 100%; padding: 18px 30px; display: flex; align-items: center;
-            gap: 20px; color: var(--text-gray); cursor: pointer; transition: 0.3s;
-            white-space: nowrap; text-decoration: none;
-        }
-        .nav-link i { font-size: 1.3rem; min-width: 30px; }
-        .nav-link:hover, .nav-link.active { color: var(--neon); background: rgba(0, 255, 136, 0.05); }
-
-        /* --- CONTEÚDO PRINCIPAL --- */
-        main { flex: 1; padding: 35px; overflow-y: auto; background: radial-gradient(circle at top right, rgba(0, 255, 136, 0.03), transparent); }
-
-        .header-glass {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 25px; background: var(--card-night); border-radius: 20px;
-            border: 1px solid var(--border); margin-bottom: 35px;
-            backdrop-filter: blur(20px);
-        }
-
-        /* --- CALCULADORA STYLE --- */
-        .calc-container {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
-        }
-
-        .calc-card {
-            background: var(--card-night); border: 1px solid var(--border);
-            border-radius: 24px; padding: 30px; position: relative; overflow: hidden;
-        }
-
-        .calc-card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon);
-        }
-
-        .calc-input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.75rem; color: var(--text-gray); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        input {
-            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border);
-            padding: 15px; border-radius: 12px; color: #fff; font-size: 1rem;
-            transition: 0.3s;
-        }
-        input:focus { border-color: var(--neon); outline: none; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
-
-        .result-box {
-            background: rgba(0, 255, 136, 0.1); border: 1px dashed var(--neon);
-            padding: 25px; border-radius: 16px; text-align: center; margin-top: 20px;
-        }
-        .result-box h2 { font-size: 2rem; color: var(--neon); }
-
-        /* --- IMAGENS ILUSTRATIVAS --- */
-        .illustration {
-            width: 100%; height: 160px; border-radius: 16px; object-fit: cover;
-            margin-bottom: 20px; border: 1px solid var(--border);
-            filter: saturate(1.2) brightness(0.8); transition: 0.5s;
-        }
-        .calc-card:hover .illustration { filter: saturate(1.5) brightness(1); }
-
-        .btn-calc {
-            background: var(--neon); color: #000; border: none; padding: 18px;
-            border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%;
-            transition: 0.3s; text-transform: uppercase;
-        }
-        .btn-calc:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4); }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 10px; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .badge-success { background: rgba(35, 134, 54, 0.2); color: #3fb950; }
     </style>
 </head>
 <body>
 
 <aside>
-    <div class="logo"><i class="fas fa-satellite-dish"></i></div>
-    <div class="nav-link active" onclick="Core.route('dash')"><i class="fas fa-chart-line"></i> <span>Dashboard</span></div>
-    <div class="nav-link" onclick="Core.route('calc')"><i class="fas fa-calculator"></i> <span>Calculadora</span></div>
-    <div class="nav-link" onclick="Core.route('fleet')"><i class="fas fa-tractor"></i> <span>Frota Ativa</span></div>
-    <div class="nav-link" onclick="Core.route('weather')"><i class="fas fa-bolt"></i> <span>Clima IA</span></div>
+    <div class="logo"><i class="fas fa-leaf"></i> AGRO OS PRO</div>
+    <div class="nav-link active" onclick="App.route('home')"><i class="fas fa-home"></i> Painel Geral</div>
+    <div class="nav-link" onclick="App.route('stock')"><i class="fas fa-boxes"></i> Inventário Insumos</div>
+    <div class="nav-link" onclick="App.route('finance')"><i class="fas fa-wallet"></i> Financeiro</div>
+    <div class="nav-link" onclick="App.route('calc')"><i class="fas fa-calculator"></i> Calculadora Agrícola</div>
+    <div class="nav-link" onclick="App.route('fleet')"><i class="fas fa-tractor"></i> Frota</div>
 </aside>
 
 <main>
-    <div class="header-glass">
-        <div>
-            <h1 id="view-title">AgroOS Night Horizon</h1>
-            <p style="color: var(--neon); font-size: 0.8rem; font-weight: 600;">OPERANDO EM MODO NOTURNO ALTO CONTRASTE</p>
+    <header>
+        <div id="page-title">Dashboard</div>
+        <div id="weather-api" style="color: var(--accent); font-weight: 600;">Reserva-PR: 28°C Sol</div>
+    </header>
+    <div class="content" id="view">
         </div>
-        <div style="text-align: right">
-            <div id="sys-clock" style="font-size: 1.2rem; font-weight: 800;">00:00:00</div>
-            <p style="font-size: 0.7rem; opacity: 0.5;">RESERVA - PR</p>
-        </div>
-    </div>
-
-    <div id="app-content"></div>
 </main>
 
 <script>
-const Core = {
-    init() {
-        this.route('dash');
-        setInterval(() => {
-            document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString();
-        }, 1000);
+// --- LÓGICA DE NEGÓCIO (DATABASE) ---
+const App = {
+    db: {
+        stock: JSON.parse(localStorage.getItem('db_stock')) || [],
+        finance: JSON.parse(localStorage.getItem('db_finance')) || [],
+        fleet: JSON.parse(localStorage.getItem('db_fleet')) || [
+            { id: 1, nome: "Trator 7J 210", status: "Operando", diesel: 80 }
+        ]
+    },
+
+    save() {
+        localStorage.setItem('db_stock', JSON.stringify(this.db.stock));
+        localStorage.setItem('db_finance', JSON.stringify(this.db.finance));
+        localStorage.setItem('db_fleet', JSON.stringify(this.db.fleet));
     },
 
     route(page) {
-        const container = document.getElementById('app-content');
-        document.getElementById('view-title').innerText = page.toUpperCase();
-        
-        // Ativar link na sidebar
+        const view = document.getElementById('view');
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-
+        
         switch(page) {
-            case 'dash': this.renderDash(container); break;
-            case 'calc': this.renderCalc(container); break;
-            case 'fleet': container.innerHTML = `<div class="calc-card"><h2>Frota Sincronizada</h2><p>Todos os tratores JD 8R em operação noturna.</p></div>`; break;
-            case 'weather': container.innerHTML = `<div class="calc-card"><h2>Previsão IA</h2><p>Céu limpo. Visibilidade: 15km.</p></div>`; break;
+            case 'home': this.renderHome(view); break;
+            case 'stock': this.renderStock(view); break;
+            case 'finance': this.renderFinance(view); break;
+            case 'calc': this.renderCalc(view); break;
+            case 'fleet': this.renderFleet(view); break;
         }
     },
 
-    renderDash(el) {
+    // --- PAINEL GERAL ---
+    renderHome(el) {
+        const saldo = this.db.finance.reduce((acc, cur) => cur.tipo === 'receita' ? acc + cur.valor : acc - cur.valor, 0);
         el.innerHTML = `
-            <div class="calc-container">
-                <div class="calc-card">
-                    <img src="https://images.unsplash.com/photo-1595113316349-9fa4eb24f884?q=80&w=1000&auto=format&fit=crop" class="illustration">
-                    <h3>Status da Safra</h3>
-                    <p style="margin: 15px 0; font-size: 0.9rem; opacity: 0.7;">Monitoramento térmico detectou solo em 22°C. Condição ideal para absorção de nitrogênio.</p>
-                    <div class="result-box">
-                        <small>PRODUTIVIDADE ESTIMADA</small>
-                        <h2>74 sc/ha</h2>
-                    </div>
+            <div class="grid">
+                <div class="card">
+                    <h3>Saldo Disponível</h3>
+                    <h2 style="color:var(--accent); font-size:2rem; margin-top:10px;">R$ ${saldo.toLocaleString('pt-BR')}</h2>
                 </div>
-                <div class="calc-card">
-                    <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=1000&auto=format&fit=crop" class="illustration">
-                    <h3>Fluxo Financeiro</h3>
-                    <canvas id="nightChart" height="180"></canvas>
+                <div class="card">
+                    <h3>Insumos no Estoque</h3>
+                    <h2 style="color:var(--white); font-size:2rem; margin-top:10px;">${this.db.stock.length} Itens</h2>
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h3>Status da Frota</h3>
+                <table>
+                    <thead><tr><th>Máquina</th><th>Status</th><th>Combustível</th></tr></thead>
+                    <tbody>${this.db.fleet.map(f => `<tr><td>${f.nome}</td><td><span class="badge badge-success">${f.status}</span></td><td>${f.diesel}%</td></tr>`).join('')}</tbody>
+                </table>
+            </div>
+        `;
+    },
+
+    // --- GESTÃO DE ESTOQUE (FUNCIONAL) ---
+    renderStock(el) {
+        el.innerHTML = `
+            <div class="grid">
+                <div class="card">
+                    <h3>Cadastrar Insumo</h3>
+                    <input type="text" id="s-nome" placeholder="Nome do Produto (Ex: Glifosato)">
+                    <input type="number" id="s-qtd" placeholder="Quantidade">
+                    <select id="s-un"><option>Litros</option><option>Sacos</option><option>Kg</option></select>
+                    <button class="btn" onclick="App.addStock()">Adicionar ao Estoque</button>
+                </div>
+                <div class="card" style="grid-column: span 2;">
+                    <h3>Inventário Atual</h3>
+                    <table>
+                        <thead><tr><th>Produto</th><th>Qtd</th><th>Unidade</th><th>Ação</th></tr></thead>
+                        <tbody id="stock-list">${this.db.stock.map((s, i) => `<tr><td>${s.nome}</td><td>${s.qtd}</td><td>${s.un}</td><td><button onclick="App.delStock(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer;">Remover</button></td></tr>`).join('')}</tbody>
+                    </table>
                 </div>
             </div>
         `;
-        this.initChart();
     },
 
+    addStock() {
+        const nome = document.getElementById('s-nome').value;
+        const qtd = document.getElementById('s-qtd').value;
+        const un = document.getElementById('s-un').value;
+        if(nome && qtd) {
+            this.db.stock.push({nome, qtd, un});
+            this.save(); this.route('stock');
+        }
+    },
+
+    delStock(i) { this.db.stock.splice(i, 1); this.save(); this.route('stock'); },
+
+    // --- FINANCEIRO (FUNCIONAL) ---
+    renderFinance(el) {
+        el.innerHTML = `
+            <div class="grid">
+                <div class="card">
+                    <h3>Novo Lançamento</h3>
+                    <select id="f-tipo"><option value="receita">Receita (Venda)</option><option value="despesa">Despesa (Custo)</option></select>
+                    <input type="text" id="f-desc" placeholder="Descrição">
+                    <input type="number" id="f-valor" placeholder="Valor R$">
+                    <button class="btn" onclick="App.addFinance()">Lançar</button>
+                </div>
+                <div class="card" style="grid-column: span 2;">
+                    <h3>Extrato Recente</h3>
+                    <table>
+                        <thead><tr><th>Descrição</th><th>Tipo</th><th>Valor</th></tr></thead>
+                        <tbody>${this.db.finance.map(f => `<tr><td>${f.desc}</td><td style="color:${f.tipo === 'receita' ? '#3fb950' : '#da3633'}">${f.tipo.toUpperCase()}</td><td>R$ ${f.valor}</td></tr>`).join('')}</tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    },
+
+    addFinance() {
+        const desc = document.getElementById('f-desc').value;
+        const valor = parseFloat(document.getElementById('f-valor').value);
+        const tipo = document.getElementById('f-tipo').value;
+        if(desc && valor) {
+            this.db.finance.push({desc, valor, tipo});
+            this.save(); this.route('finance');
+        }
+    },
+
+    // --- CALCULADORA AGRONÔMICA (LÓGICA REAL) ---
     renderCalc(el) {
         el.innerHTML = `
-            <div class="calc-container">
-                <div class="calc-card">
-                    <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=1000&auto=format&fit=crop" class="illustration">
-                    <h3>Dosagem de Defensivos</h3>
-                    <div class="calc-input-group">
-                        <label>Área do Talhão (Hectares)</label>
-                        <input type="number" id="calc-area" value="100" oninput="Core.runCalc()">
-                    </div>
-                    <div class="calc-input-group">
-                        <label>Dose Recomendada (L/ha)</label>
-                        <input type="number" id="calc-dose" value="1.5" oninput="Core.runCalc()">
-                    </div>
-                    <div class="result-box">
-                        <small>VOLUME TOTAL NECESSÁRIO</small>
-                        <h2 id="res-total">150 Litros</h2>
-                    </div>
-                </div>
-
-                <div class="calc-card">
-                    <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=1000&auto=format&fit=crop" class="illustration">
-                    <h3>Calibragem de Bicos (Vazão)</h3>
-                    <div class="calc-input-group">
-                        <label>Velocidade do Trator (km/h)</label>
-                        <input type="number" id="calc-vel" value="8" oninput="Core.runCalc()">
-                    </div>
-                    <div class="calc-input-group">
-                        <label>Espaçamento entre Bicos (m)</label>
-                        <input type="number" id="calc-esp" value="0.5" oninput="Core.runCalc()">
-                    </div>
-                    <div class="result-box" style="border-color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
-                        <small style="color: #38bdf8;">VAZÃO DO BICO (L/min)</small>
-                        <h2 id="res-vazao" style="color: #38bdf8;">1.25</h2>
-                    </div>
+            <div class="card" style="max-width: 500px; margin: auto;">
+                <h3 style="text-align:center; margin-bottom:20px;">Calculadora de Vazão (Pulverização)</h3>
+                <label>Taxa de Aplicação Desejada (L/ha)</label>
+                <input type="number" id="c-taxa" value="100">
+                <label>Velocidade do Pulverizador (km/h)</label>
+                <input type="number" id="c-vel" value="8">
+                <label>Espaçamento entre Bicos (metros)</label>
+                <input type="number" id="c-esp" value="0.5">
+                <button class="btn" onclick="App.calculate()">Calcular Vazão do Bico</button>
+                
+                <div id="res-calc" class="card" style="margin-top:20px; background:rgba(35, 134, 54, 0.1); border-color:var(--accent); display:none;">
+                    <p style="text-align:center;">Vazão necessária por bico:</p>
+                    <h2 id="vazao-final" style="text-align:center; color:var(--accent);">0.00 L/min</h2>
                 </div>
             </div>
         `;
     },
 
-    runCalc() {
-        const area = parseFloat(document.getElementById('calc-area')?.value) || 0;
-        const dose = parseFloat(document.getElementById('calc-dose')?.value) || 0;
-        const vel = parseFloat(document.getElementById('calc-vel')?.value) || 1;
-        const esp = parseFloat(document.getElementById('calc-esp')?.value) || 0.5;
-
-        // Total Calcs
-        if(document.getElementById('res-total')) {
-            document.getElementById('res-total').innerText = (area * dose).toFixed(1) + " Litros";
-        }
+    calculate() {
+        const taxa = document.getElementById('c-taxa').value;
+        const vel = document.getElementById('c-vel').value;
+        const esp = document.getElementById('c-esp').value;
         
-        // Vazão Calc: (L/ha * km/h * esp) / 600
-        if(document.getElementById('res-vazao')) {
-            const vazao = (150 * vel * esp) / 600; // Exemplo baseado em 150L/ha padrão
-            document.getElementById('res-vazao').innerText = vazao.toFixed(2);
-        }
+        // Fórmula: q = (L/ha * km/h * esp) / 600
+        const q = (taxa * vel * esp) / 600;
+        
+        const resDiv = document.getElementById('res-calc');
+        resDiv.style.display = 'block';
+        document.getElementById('vazao-final').innerText = q.toFixed(2) + " L/min";
     },
 
-    initChart() {
-        const ctx = document.getElementById('nightChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
-                datasets: [{
-                    data: [400, 450, 420, 500, 480],
-                    borderColor: '#00ff88',
-                    borderWidth: 3,
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(0, 255, 136, 0.05)'
-                }]
-            },
-            options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
-        });
+    renderFleet(el) {
+        el.innerHTML = `
+            <div class="card">
+                <h3>Máquinas no Campo</h3>
+                <table>
+                    <thead><tr><th>ID</th><th>Modelo</th><th>Status</th><th>Tanque</th></tr></thead>
+                    <tbody>${this.db.fleet.map(f => `<tr><td>#${f.id}</td><td>${f.nome}</td><td>${f.status}</td><td>${f.diesel}%</td></tr>`).join('')}</tbody>
+                </table>
+            </div>
+        `;
     }
 };
 
-window.onload = () => Core.init();
+// Inicialização
+window.onload = () => App.route('home');
 </script>
 </body>
 </html>
