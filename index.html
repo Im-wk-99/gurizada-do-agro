@@ -3,270 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroOS Grand Enterprise | Safra 2026</title>
+    <title>AgroOS AI | Enterprise Intelligence 2026</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 
     <style>
         :root {
-            --primary: #2ebc59; --primary-dark: #1e7e3a; --bg-main: #0d1117;
-            --bg-card: #161b22; --border: #30363d; --text: #adbac7;
-            --white: #ffffff; --danger: #f85149; --warn: #d29922; --info: #58a6ff;
+            --neon-green: #00ff66; --dark-bg: #05070a; --card-bg: #0f1218;
+            --border-color: #1e2631; --text-gray: #94a3b8; --white: #f8fafc;
+            --accent-blue: #38bdf8; --danger-red: #ef4444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg-main); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: var(--dark-bg); color: var(--text-gray); display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- NAVEGAÇÃO LATERAL --- */
+        /* --- Glassmorphism Sidebar --- */
         aside { 
-            width: 280px; background: var(--bg-card); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; z-index: 100;
+            width: 300px; background: var(--card-bg); border-right: 1px solid var(--border-color);
+            display: flex; flex-direction: column; position: relative; z-index: 10;
         }
-        .brand { padding: 30px; text-align: center; border-bottom: 1px solid var(--border); }
-        .brand h1 { color: var(--primary); font-size: 1.6rem; font-weight: 800; }
+        .ai-status { padding: 25px; border-bottom: 1px solid var(--border-color); background: rgba(0, 255, 102, 0.05); }
+        .ai-pulse { display: inline-block; width: 10px; height: 10px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); animation: pulse 2s infinite; }
         
-        .nav-list { flex: 1; padding: 20px 0; overflow-y: auto; }
+        .nav-list { flex: 1; padding: 20px 0; }
         .nav-item { 
-            padding: 15px 30px; display: flex; align-items: center; gap: 15px;
-            cursor: pointer; transition: 0.2s; border-left: 4px solid transparent;
+            padding: 16px 30px; display: flex; align-items: center; gap: 15px; 
+            cursor: pointer; transition: 0.3s; color: var(--text-gray);
         }
-        .nav-item:hover, .nav-item.active { 
-            background: rgba(46, 188, 89, 0.1); color: var(--primary); border-left-color: var(--primary);
-        }
+        .nav-item:hover, .nav-item.active { background: #161b22; color: var(--neon-green); border-right: 3px solid var(--neon-green); }
 
-        /* --- CONTEÚDO --- */
-        main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .top-nav { 
-            height: 70px; background: var(--bg-card); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
+        /* --- Main Content Engine --- */
+        main { flex: 1; display: flex; flex-direction: column; position: relative; }
+        header { 
+            height: 80px; padding: 0 40px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color); background: rgba(15, 18, 24, 0.8); backdrop-filter: blur(10px);
         }
 
-        #viewport { flex: 1; padding: 30px; overflow-y: auto; }
+        #viewport { flex: 1; padding: 40px; overflow-y: auto; scroll-behavior: smooth; }
 
-        /* --- COMPONENTES --- */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; }
-        .card-header { margin-bottom: 20px; font-weight: 600; color: var(--white); display: flex; justify-content: space-between; }
-        
-        .instruction-banner { 
-            background: rgba(88, 166, 255, 0.1); border: 1px solid var(--info); 
-            padding: 20px; border-radius: 8px; margin-bottom: 30px; display: flex; gap: 20px;
+        /* --- Módulos Inteligentes --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
+        .agro-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; transition: 0.4s; }
+        .agro-card:hover { border-color: var(--neon-green); transform: translateY(-5px); }
+
+        /* IA Chat Interface */
+        .ai-chat-box { 
+            height: 250px; background: #0a0d12; border-radius: 12px; padding: 15px; 
+            overflow-y: auto; font-size: 0.9rem; border: 1px solid #1e2631; margin-bottom: 15px;
         }
+        .ai-msg { color: var(--neon-green); margin-bottom: 10px; display: flex; gap: 10px; }
 
-        /* Forms */
-        .field-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: var(--text); }
-        input, select { 
-            width: 100%; padding: 12px; background: var(--bg-main); border: 1px solid var(--border);
-            border-radius: 8px; color: white; outline: none; transition: 0.3s;
-        }
-        input:focus { border-color: var(--primary); }
-        .btn { 
-            padding: 14px 25px; border-radius: 8px; border: none; font-weight: 700;
-            cursor: pointer; transition: 0.3s; width: 100%;
-        }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        /* Data Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); color: var(--white); font-size: 0.8rem; }
+        td { padding: 12px; border-bottom: 1px solid #161b22; font-size: 0.85rem; }
 
-        /* Telemetria */
-        .unit-card { background: var(--bg-main); padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-        .fuel-container { width: 100%; height: 8px; background: #333; border-radius: 4px; margin: 10px 0; }
-        .fuel-fill { height: 100%; border-radius: 4px; transition: 1s ease; }
+        /* Buttons & Inputs */
+        .btn-ai { background: var(--neon-green); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-ai:hover { box-shadow: 0 0 20px rgba(0, 255, 102, 0.4); }
+        input { width: 100%; background: #161b22; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; color: white; margin-top: 10px; }
 
-        /* Animações */
-        .fade-in { animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
     </style>
 </head>
 <body>
 
 <aside>
-    <div class="brand"><h1>AGRO<span style="color:white">OS</span></h1></div>
+    <div class="ai-status">
+        <div class="ai-pulse"></div> <span style="color: var(--white); font-weight: 800;">AGRO GPT 4.0</span>
+        <p style="font-size: 0.7rem; margin-top: 5px;">Sistemas de IA Otimizados</p>
+    </div>
     <div class="nav-list">
-        <div class="nav-item active" onclick="Core.go('dash')"><i class="fas fa-chart-line"></i> Dashboard</div>
-        <div class="nav-item" onclick="Core.go('weather')"><i class="fas fa-cloud-sun-rain"></i> Clima & Solo</div>
-        <div class="nav-item" onclick="Core.go('fleet')"><i class="fas fa-tractor"></i> Frota & Máquinas</div>
-        <div class="nav-item" onclick="Core.go('calc')"><i class="fas fa-calculator"></i> Calculadoras</div>
-        <div class="nav-item" onclick="Core.go('stock')"><i class="fas fa-warehouse"></i> Estoque</div>
+        <div class="nav-item active" onclick="Core.route('ia-dash')"><i class="fas fa-brain"></i> IA Insights</div>
+        <div class="nav-item" onclick="Core.route('telemetria')"><i class="fas fa-satellite"></i> Telemetria 360°</div>
+        <div class="nav-item" onclick="Core.route('financeiro')"><i class="fas fa-chart-line"></i> Predição Financeira</div>
+        <div class="nav-item" onclick="Core.route('clima')"><i class="fas fa-bolt"></i> Hiper-Local Clima</div>
+        <div class="nav-item" onclick="Core.route('estoque')"><i class="fas fa-boxes-stacked"></i> Smart Inventory</div>
     </div>
 </aside>
 
 <main>
-    <header class="top-nav">
-        <div id="breadcrumb" style="font-weight: 600;">Início / Dashboard</div>
-        <div id="clock">00:00:00</div>
+    <header>
+        <div id="breadcrumb">Enterprise / <span id="view-name">IA Insights</span></div>
+        <div style="display: flex; gap: 25px; align-items: center;">
+            <div id="weather-top" style="font-size: 0.9rem;"><i class="fas fa-sun"></i> 29°C Reserva-PR</div>
+            <div id="main-clock" style="font-weight: 600; color: var(--white);">00:00:00</div>
+        </div>
     </header>
 
-    <div id="viewport" class="fade-in">
+    <div id="viewport">
         </div>
 </main>
 
 <script>
-/** * AGROOS PRO ENGINE 
- * Gerencia o estado global, roteamento e lógica técnica da fazenda.
+/**
+ * ENGINE CENTRAL AGRO-AI
  */
-
 const Core = {
     state: {
-        view: 'dash',
-        weather: { temp: 28, cond: 'Limpo', hum: 45 },
+        activeView: 'ia-dash',
+        history: [],
         fleet: [
-            { id: 1, name: "JD 8R 370", fuel: 82, horometro: 1250, status: "Operando" },
-            { id: 2, name: "Case Magnum 340", fuel: 15, horometro: 940, status: "Alerta" }
+            { id: 1, name: "JD 8R 370", fuel: 78, task: "Plantio Lote A", heat: "Normal" },
+            { id: 2, name: "Case IH 340", fuel: 12, task: "Inativo", heat: "Crítico" }
         ],
-        inventory: JSON.parse(localStorage.getItem('agro_v4_inv')) || [
-            { name: "Semente Soja RR", qtd: 450, unit: "sc" },
-            { name: "Fertilizante NPK", qtd: 12000, unit: "kg" }
+        stocks: JSON.parse(localStorage.getItem('agro_stock')) || [
+            { item: "Ureia", qtd: 2500, unit: "kg" },
+            { item: "Diesel S10", qtd: 800, unit: "L" }
         ]
     },
 
     init() {
         this.updateClock();
         setInterval(() => this.updateClock(), 1000);
-        this.go('dash');
+        this.route('ia-dash');
+        this.aiThink("Sistema operacional iniciado. Analisando talhões...");
     },
 
     updateClock() {
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        document.getElementById('main-clock').innerText = new Date().toLocaleTimeString();
     },
 
-    go(route) {
-        this.state.view = route;
-        document.querySelectorAll('.nav-item').forEach(el => {
-            el.classList.toggle('active', el.innerText.toLowerCase().includes(route.substring(0,3)));
-        });
-        document.getElementById('breadcrumb').innerText = `AgroOS / ${route.toUpperCase()}`;
-        this.render();
+    async aiThink(msg) {
+        const chat = document.getElementById('ai-chat');
+        if(chat) {
+            const div = document.createElement('div');
+            div.className = 'ai-msg';
+            div.innerHTML = `<i class="fas fa-robot"></i> <span>[AgroGPT]: ${msg}</span>`;
+            chat.prepend(div);
+            anime({ targets: div, opacity: [0, 1], translateX: [-20, 0], duration: 800 });
+        }
     },
 
-    render() {
-        const viewport = document.getElementById('viewport');
-        viewport.className = 'fade-in';
-
-        if(this.state.view === 'dash') {
-            viewport.innerHTML = `
-                <div class="instruction-banner">
-                    <i class="fas fa-lightbulb fa-2x" style="color: var(--primary)"></i>
-                    <div>
-                        <strong>Instrução Técnica:</strong> Monitoramento de Safra 2026 ativo. 
-                        A janela de plantio para o talhão 04 encerra em 48h devido à frente fria prevista.
-                    </div>
-                </div>
+    route(view) {
+        this.state.activeView = view;
+        document.getElementById('view-name').innerText = view.toUpperCase();
+        const vp = document.getElementById('viewport');
+        
+        // Router Logic
+        if(view === 'ia-dash') {
+            vp.innerHTML = `
                 <div class="grid">
-                    <div class="card">
-                        <div class="card-header">PRODUTIVIDADE HISTÓRICA</div>
-                        <canvas id="prodChart"></canvas>
+                    <div class="agro-card" style="grid-column: span 2;">
+                        <div class="card-header">TERMINAL DE COMANDO IA</div>
+                        <div class="ai-chat-box" id="ai-chat"></div>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="ai-input" placeholder="Pergunte à IA (Ex: Qual a melhor janela de plantio?)">
+                            <button class="btn-ai" onclick="Core.processIA()">ANALISAR</button>
+                        </div>
                     </div>
-                    <div class="card">
-                        <div class="card-header">CUSTO OPERACIONAL / HA</div>
-                        <h2 style="font-size: 3rem; color: var(--white); margin: 15px 0;">R$ 3.840</h2>
-                        <span style="color: var(--primary)"><i class="fas fa-arrow-down"></i> 2.4% vs Safra 2025</span>
-                        <button class="btn btn-primary" style="margin-top: 30px;">EXPORTAR RELATÓRIO</button>
+                    <div class="agro-card">
+                        <div class="card-header">SAÚDE DA SAFRA (NDVI)</div>
+                        <canvas id="ndviChart"></canvas>
                     </div>
                 </div>
             `;
-            this.initProdChart();
-        }
-
-        if(this.state.view === 'weather') {
-            viewport.innerHTML = `
-                <div class="grid">
-                    <div class="card" style="text-align: center;">
-                        <div class="card-header">CLIMA ATUAL - SEDE</div>
-                        <i class="fas fa-sun fa-5x" style="color: var(--warn); margin: 20px 0;"></i>
-                        <h2 style="font-size: 3.5rem; color: #fff;">${this.state.weather.temp}°C</h2>
-                        <p>Umidade do Ar: ${this.state.weather.hum}%</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">CONDIÇÃO DO SOLO</div>
-                        <div class="field-group">
-                            <p>Umidade Solo (30cm): <strong>65%</strong></p>
-                            <p>Temperatura Solo: <strong>22.4°C</strong></p>
-                        </div>
-                        <div class="instruction-banner" style="margin: 0; background: rgba(46, 188, 89, 0.1);">
-                            Condição Ideal para Emergência de Plântulas.
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        if(this.state.view === 'fleet') {
-            const units = this.state.fleet.map(u => `
-                <div class="unit-card">
-                    <div style="display: flex; justify-content: space-between;">
-                        <b>${u.name}</b>
-                        <span style="color: ${u.status === 'Alerta' ? 'var(--danger)' : 'var(--primary)'}">${u.status}</span>
-                    </div>
-                    <div class="fuel-container">
-                        <div class="fuel-fill" style="width: ${u.fuel}%; background: ${u.fuel < 20 ? 'var(--danger)' : 'var(--primary)'}"></div>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
-                        <span>Diesel: ${u.fuel}%</span>
-                        <span>Horímetro: ${u.horometro}h</span>
-                    </div>
-                </div>
+            this.initNdvi();
+        } 
+        
+        else if(view === 'telemetria') {
+            const rows = this.state.fleet.map(f => `
+                <tr>
+                    <td>${f.name}</td>
+                    <td style="color: ${f.fuel < 20 ? 'var(--danger-red)' : 'var(--neon-green)'}">${f.fuel}%</td>
+                    <td>${f.task}</td>
+                    <td><span style="background:${f.heat === 'Crítico' ? '#442222' : '#224422'}; padding:4px 8px; border-radius:4px;">${f.heat}</span></td>
+                </tr>
             `).join('');
-            viewport.innerHTML = `<div class="grid"><div class="card"><div class="card-header">MONITORAMENTO DE FROTA</div>${units}</div></div>`;
-        }
-
-        if(this.state.view === 'calc') {
-            viewport.innerHTML = `
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-header">CALCULADORA DE PULVERIZAÇÃO</div>
-                        <div class="field-group">
-                            <label>Velocidade (km/h)</label>
-                            <input type="number" id="vaz-v" value="8" oninput="Core.calcVazao()">
-                        </div>
-                        <div class="field-group">
-                            <label>Vazão do Bico (L/min)</label>
-                            <input type="number" id="vaz-q" value="1.2" oninput="Core.calcVazao()">
-                        </div>
-                        <div id="vaz-res" style="background: var(--bg-main); padding: 20px; text-align: center; border-radius: 8px;">
-                            <h2 style="color: var(--primary)">180.00 L/ha</h2>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">POPULAÇÃO DE PLANTAS</div>
-                        <div class="field-group">
-                            <label>Sementes por Metro</label>
-                            <input type="number" value="12">
-                        </div>
-                        <label>Espaçamento (m)</label>
-                        <input type="number" value="0.45">
-                        <button class="btn btn-primary">CALCULAR STAND</button>
-                    </div>
+            vp.innerHTML = `
+                <div class="agro-card">
+                    <div class="card-header">FROTA CONECTADA EM TEMPO REAL</div>
+                    <table>
+                        <thead><tr><th>MAQUINÁRIO</th><th>DIESEL</th><th>TAREFA</th><th>TEMP. MOTOR</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
                 </div>
             `;
         }
     },
 
-    calcVazao() {
-        const v = parseFloat(document.getElementById('vaz-v').value) || 1;
-        const q = parseFloat(document.getElementById('vaz-q').value) || 0;
-        const lha = (600 * q) / (v * 0.5);
-        document.getElementById('vaz-res').innerHTML = `<h2 style="color: var(--primary)">${lha.toFixed(2)} L/ha</h2>`;
+    processIA() {
+        const input = document.getElementById('ai-input').value;
+        if(!input) return;
+        this.aiThink(`Analisando solicitação: "${input}"...`);
+        setTimeout(() => {
+            if(input.toLowerCase().includes('plantio')) {
+                this.aiThink("Baseado na umidade do solo (65%) e previsão de chuva para amanhã, o plantio deve ser acelerado nas próximas 6 horas.");
+            } else {
+                this.aiThink("Relatórios financeiros indicam alta de 3% nos fertilizantes. Recomendo compra antecipada.");
+            }
+        }, 1500);
+        document.getElementById('ai-input').value = "";
     },
 
-    initProdChart() {
-        const ctx = document.getElementById('prodChart').getContext('2d');
+    initNdvi() {
+        const ctx = document.getElementById('ndviChart').getContext('2d');
         new Chart(ctx, {
-            type: 'bar',
+            type: 'line',
             data: {
-                labels: ['Soja 23', 'Soja 24', 'Soja 25', 'Soja 26 (Est)'],
+                labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
                 datasets: [{
-                    label: 'Sacas/ha',
-                    data: [62, 65, 59, 72],
-                    backgroundColor: '#2ebc59'
+                    label: 'Índice de Vigor Vegetativo',
+                    data: [0.4, 0.6, 0.85, 0.82],
+                    borderColor: '#00ff66',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(0, 255, 102, 0.1)'
                 }]
             },
             options: {
                 plugins: { legend: { display: false } },
-                scales: { y: { grid: { color: '#30363d' }, ticks: { color: '#adbac7' } } }
+                scales: { y: { grid: { color: '#1e2631' } }, x: { grid: { display: false } } }
             }
         });
     }
