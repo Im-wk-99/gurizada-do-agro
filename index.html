@@ -3,168 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroOS | Enterprise Intelligence v2.6</title>
+    <title>AgroOS | Nebula Intelligence</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --p-green: #00f576;
-            --p-bg: #08090a;
-            --p-surface: #121418;
-            --p-border: rgba(255, 255, 255, 0.08);
-            --p-text: #94a3b8;
-            --p-white: #ffffff;
-            --p-accent: #38bdf8;
-            --p-danger: #ff4757;
+            --purple: #bc13fe;
+            --green: #20ff88;
+            --bg: #030005;
+            --surface: rgba(20, 10, 30, 0.6);
+            --border: rgba(188, 19, 254, 0.3);
+            --text: #e0d0ff;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
         
         body { 
-            background: var(--p-bg); 
-            color: var(--p-text); 
-            display: flex; 
+            background: var(--bg); 
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(32, 255, 136, 0.05) 0%, transparent 40%);
+            color: var(--text); 
             height: 100vh; 
-            overflow: hidden; 
+            display: flex; 
+            overflow: hidden;
         }
 
-        /* --- SIDEBAR DE ALTA PERFORMANCE --- */
+        /* --- SIDEBAR FLUTUANTE --- */
         aside { 
-            width: 280px; 
-            background: var(--p-surface); 
-            border-right: 1px solid var(--p-border); 
+            width: 90px; 
+            background: var(--surface); 
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            margin: 20px;
+            border-radius: 24px;
             display: flex; 
             flex-direction: column;
-            padding: 20px;
-        }
-        
-        .brand { 
-            padding: 20px 10px; 
-            font-size: 1.4rem; 
-            font-weight: 800; 
-            color: var(--p-white);
-            display: flex;
             align-items: center;
-            gap: 12px;
-            letter-spacing: -1px;
+            padding: 30px 0;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            box-shadow: var(--shadow);
         }
-        .brand span { color: var(--p-green); }
+        aside:hover { width: 260px; border-color: var(--purple); }
 
-        .nav-group { margin-top: 30px; flex: 1; }
-        .nav-item { 
-            padding: 12px 16px; 
-            margin-bottom: 8px;
-            border-radius: 10px;
-            display: flex; 
-            align-items: center; 
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-        .nav-item:hover { background: rgba(255, 255, 255, 0.03); color: var(--p-white); }
-        .nav-item.active { background: rgba(0, 245, 118, 0.1); color: var(--p-green); }
-
-        /* --- MAIN VIEWPORT --- */
-        main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: radial-gradient(circle at top right, rgba(0, 245, 118, 0.03), transparent); }
-        
-        header { 
-            height: 80px; 
-            padding: 0 40px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            border-bottom: 1px solid var(--p-border);
+        .logo-box {
+            width: 50px; height: 50px;
+            background: linear-gradient(135deg, var(--purple), #7a00ff);
+            border-radius: 16px;
+            display: grid; place-items: center;
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.5);
+            margin-bottom: 40px;
+            flex-shrink: 0;
         }
 
-        #viewport { flex: 1; padding: 40px; overflow-y: auto; scroll-behavior: smooth; }
+        .nav-item {
+            width: calc(100% - 20px);
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 16px;
+            display: flex; align-items: center; gap: 20px;
+            cursor: pointer; transition: 0.3s;
+            color: var(--text);
+            overflow: hidden;
+        }
+        .nav-item i { font-size: 1.4rem; min-width: 30px; text-align: center; }
+        .nav-item span { opacity: 0; font-weight: 600; white-space: nowrap; }
+        aside:hover .nav-item span { opacity: 1; }
+        .nav-item:hover { background: rgba(188, 19, 254, 0.15); color: var(--green); }
+        .nav-item.active { background: var(--purple); color: #fff; box-shadow: 0 0 20px rgba(188, 19, 254, 0.4); }
 
-        /* --- FERRAMENTAS DE UI (CARDS & TABLES) --- */
-        .card { 
-            background: rgba(18, 20, 24, 0.5); 
-            border: 1px solid var(--p-border); 
-            border-radius: 16px; 
-            padding: 24px; 
+        /* --- MAIN AREA --- */
+        main { flex: 1; padding: 20px 40px 20px 20px; display: flex; flex-direction: column; overflow-y: auto; }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 0; margin-bottom: 20px;
+        }
+
+        .user-pill {
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 10px 20px; border-radius: 50px; display: flex; align-items: center; gap: 15px;
             backdrop-filter: blur(10px);
         }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        /* --- CARDS FLUTUANTES --- */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+            transition: 0.4s;
+            animation: floatIn 0.8s ease-out;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--green); }
+
+        @keyframes floatIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+
+        /* --- UI ELEMENTS --- */
+        .neon-text { color: var(--green); text-shadow: 0 0 10px rgba(32, 255, 136, 0.5); }
         
-        .stat-card h4 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--p-text); margin-bottom: 10px; }
-        .stat-card .value { font-size: 1.8rem; font-weight: 700; color: var(--p-white); }
-
-        /* --- FORMULÁRIOS DE ÚLTIMA LINHA --- */
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: var(--p-white); }
-        input, select { 
-            width: 100%; background: #000; border: 1px solid var(--p-border);
-            padding: 12px 16px; border-radius: 8px; color: var(--p-white);
-            outline: none; transition: 0.2s;
+        input, select {
+            width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+            padding: 15px; border-radius: 15px; color: #fff; margin-top: 10px;
         }
-        input:focus { border-color: var(--p-green); box-shadow: 0 0 0 2px rgba(0, 245, 118, 0.1); }
+        input:focus { border-color: var(--green); outline: none; }
 
-        .btn { 
-            background: var(--p-green); color: #000; border: none; padding: 12px 24px;
-            border-radius: 8px; font-weight: 700; cursor: pointer; display: inline-flex;
-            align-items: center; gap: 8px; transition: 0.2s;
+        .btn-action {
+            background: linear-gradient(90deg, var(--purple), #7a00ff);
+            color: #fff; border: none; padding: 15px 30px; border-radius: 15px;
+            font-weight: 800; cursor: pointer; margin-top: 20px; width: 100%;
+            text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
         }
-        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
-        .btn-sec { background: rgba(255,255,255,0.05); color: var(--p-white); }
+        .btn-action:hover { box-shadow: 0 0 30px var(--purple); transform: scale(1.02); }
 
-        /* --- TERMINAL IA --- */
-        .ai-terminal {
-            background: #000; border: 1px solid var(--p-border); border-radius: 12px;
-            height: 200px; padding: 15px; font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem; overflow-y: auto; color: var(--p-green);
+        .terminal {
+            background: rgba(0,0,0,0.6); border-radius: 20px; padding: 20px;
+            font-family: 'monospace'; font-size: 0.85rem; color: var(--green);
+            height: 150px; overflow-y: auto; border: 1px solid var(--border);
         }
 
+        /* --- TABLES --- */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { text-align: left; padding: 12px; font-size: 0.75rem; color: var(--p-text); border-bottom: 1px solid var(--p-border); }
-        td { padding: 16px 12px; font-size: 0.9rem; color: var(--p-white); border-bottom: 1px solid var(--p-border); }
+        th { text-align: left; padding: 15px; color: var(--purple); font-weight: 900; text-transform: uppercase; font-size: 0.75rem; }
+        td { padding: 15px; border-bottom: 1px solid rgba(188, 19, 254, 0.1); }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: var(--p-border); border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <aside>
-    <div class="brand">
-        <div style="background: var(--p-green); width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;">
-            <i class="fas fa-leaf" style="color: #000; font-size: 1rem;"></i>
-        </div>
-        AGRO<span>OS</span>
-    </div>
-
-    <nav class="nav-group">
-        <div class="nav-item active" onclick="Core.route('dash')"><i class="fas fa-chart-pie"></i> Intelligence</div>
-        <div class="nav-item" onclick="Core.route('stock')"><i class="fas fa-box"></i> Inventário</div>
-        <div class="nav-item" onclick="Core.route('finance')"><i class="fas fa-vault"></i> Tesouraria</div>
-        <div class="nav-item" onclick="Core.route('eng')"><i class="fas fa-microscope"></i> Engenharia</div>
-    </nav>
-
-    <div class="card" style="padding: 15px; font-size: 0.8rem; border-color: var(--p-green);">
-        <p style="color: var(--p-green);"><i class="fas fa-shield-halved"></i> 256-bit Encryption</p>
-        <p>System Online: 2026.4.30</p>
-    </div>
+    <div class="logo-box"><i class="fas fa-atom" style="color: #fff; font-size: 1.5rem;"></i></div>
+    <div class="nav-item active" onclick="Core.route('dash')"><i class="fas fa-project-diagram"></i> <span>CORE</span></div>
+    <div class="nav-item" onclick="Core.route('stock')"><i class="fas fa-biostat"></i> <span>ESTOQUE</span></div>
+    <div class="nav-item" onclick="Core.route('fin')"><i class="fas fa-ethereum"></i> <span>FINANCEIRO</span></div>
+    <div class="nav-item" onclick="Core.route('eng')"><i class="fas fa-microchip"></i> <span>ENGENHARIA</span></div>
 </aside>
 
 <main>
     <header>
-        <div style="display: flex; gap: 40px; align-items: center;">
-            <h2 id="page-title" style="color: #fff; letter-spacing: -0.5px;">Dashboard</h2>
-            <div id="ai-status" style="font-size: 0.8rem; color: var(--p-green);">● AgroGPT Core v4.0 Active</div>
+        <div>
+            <h1 style="font-size: 2.2rem; font-weight: 900; letter-spacing: -1px;">NEBULA <span class="neon-text">OS</span></h1>
+            <p style="opacity: 0.6; font-size: 0.9rem;">Reserva Interface | <span id="clock">00:00</span></p>
         </div>
-        <div style="display: flex; gap: 20px; align-items: center;">
-            <div style="text-align: right;">
-                <p id="clock" style="color: #fff; font-weight: 700; font-size: 0.9rem;">00:00:00</p>
-                <p style="font-size: 0.7rem;">RESERVA, PR</p>
+        <div class="user-pill">
+            <div style="text-align: right">
+                <p style="font-size: 0.8rem; font-weight: 800;">OP_CENTRAL</p>
+                <p style="font-size: 0.6rem; color: var(--green);">SISTEMA ESTÁVEL</p>
             </div>
-            <img src="https://ui-avatars.com/api/?name=Admin&background=00f576&color=000" style="width: 40px; height: 40px; border-radius: 10px;">
+            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--purple);"></div>
         </div>
     </header>
 
@@ -173,220 +168,174 @@
 </main>
 
 <script>
-// --- CORE ENGINE (LÓGICA FUNCIONAL) ---
 const Core = {
-    state: {
-        stock: JSON.parse(localStorage.getItem('aos_stock')) || [],
-        finance: JSON.parse(localStorage.getItem('aos_finance')) || [],
-        logs: ["Iniciando kernel agrícola...", "Sincronizando com satélites Sentinel-2..."]
+    db: {
+        stock: JSON.parse(localStorage.getItem('nebula_stock')) || [],
+        finance: JSON.parse(localStorage.getItem('nebula_fin')) || [],
+        logs: ["Interface Orbital Iniciada.", "Conectando ao banco de dados..."]
     },
 
     init() {
         this.route('dash');
-        this.updateClock();
-        setInterval(() => this.updateClock(), 1000);
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
     },
 
     save() {
-        localStorage.setItem('aos_stock', JSON.stringify(this.state.stock));
-        localStorage.setItem('aos_finance', JSON.stringify(this.state.finance));
-    },
-
-    updateClock() {
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        localStorage.setItem('nebula_stock', JSON.stringify(this.db.stock));
+        localStorage.setItem('nebula_fin', JSON.stringify(this.db.finance));
     },
 
     route(page) {
         const vp = document.getElementById('viewport');
         document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        document.getElementById('page-title').innerText = page.charAt(0).toUpperCase() + page.slice(1);
-
+        
         switch(page) {
             case 'dash': this.renderDash(vp); break;
             case 'stock': this.renderStock(vp); break;
-            case 'finance': this.renderFinance(vp); break;
+            case 'fin': this.renderFin(vp); break;
             case 'eng': this.renderEng(vp); break;
         }
     },
 
-    // --- VIEW: DASHBOARD ---
     renderDash(el) {
-        const saldo = this.state.finance.reduce((acc, cur) => cur.type === 'in' ? acc + cur.val : acc - cur.val, 0);
+        const saldo = this.db.finance.reduce((acc, cur) => cur.tipo === 'in' ? acc + cur.val : acc - cur.val, 0);
         el.innerHTML = `
-            <div class="stats-grid">
-                <div class="card stat-card">
-                    <h4>Liquidez em Caixa</h4>
-                    <div class="value">R$ ${saldo.toLocaleString()}</div>
-                </div>
-                <div class="card stat-card">
-                    <h4>SKUs em Estoque</h4>
-                    <div class="value">${this.state.stock.length}</div>
-                </div>
-                <div class="card stat-card">
-                    <h4>Clima / Umidade</h4>
-                    <div class="value" style="color: var(--p-accent);">28.5°C / 62%</div>
-                </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+            <div class="grid-layout">
                 <div class="card">
-                    <h3>AgroGPT - IA Predictiva</h3>
-                    <div class="ai-terminal" id="terminal" style="margin: 20px 0;"></div>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="ai-input" placeholder="Comando de voz ou texto para análise de solo...">
-                        <button class="btn" onclick="Core.askAI()">EXECUTAR</button>
+                    <h3 style="margin-bottom: 20px;">Análise Preditiva AgroGPT</h3>
+                    <div class="terminal" id="term"></div>
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <input type="text" id="ai-in" placeholder="Solicitar diagnóstico de talhão...">
+                        <button class="btn-action" style="width: 150px; margin: 0;" onclick="Core.askAI()">ANALISAR</button>
                     </div>
                 </div>
-                <div class="card">
-                    <h3>Atividade Recente</h3>
-                    <div id="activity-list" style="margin-top: 15px; font-size: 0.85rem;">
-                        ${this.state.logs.slice(-5).map(l => `<p style="margin-bottom: 8px; border-left: 2px solid var(--p-green); padding-left: 10px;">${l}</p>`).join('')}
-                    </div>
+                <div class="card" style="text-align: center;">
+                    <h4 style="opacity: 0.6;">SALDO LÍQUIDO</h4>
+                    <h1 class="neon-text" style="font-size: 2.5rem; margin: 15px 0;">R$ ${saldo.toLocaleString()}</h1>
+                    <canvas id="miniChart"></canvas>
                 </div>
             </div>
         `;
-        this.updateTerminal();
+        this.logTerminal("Kernel pronto para processamento.");
+        this.initChart();
     },
 
-    // --- VIEW: ESTOQUE ---
     renderStock(el) {
         el.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 2.5fr; gap: 30px;">
+            <div class="grid-layout">
                 <div class="card">
-                    <h3>Novo Insumo</h3>
-                    <div class="form-group" style="margin-top: 20px;">
-                        <label>Produto</label>
-                        <input type="text" id="stk-name" placeholder="Ex: Ureia">
-                    </div>
-                    <div class="form-group">
-                        <label>Quantidade</label>
-                        <input type="number" id="stk-qty" placeholder="0">
-                    </div>
-                    <button class="btn" onclick="Core.addStock()">REGISTRAR</button>
+                    <h3>Registrar Insumo</h3>
+                    <input type="text" id="s-nome" placeholder="Produto">
+                    <input type="number" id="s-qtd" placeholder="Qtd">
+                    <button class="btn-action" onclick="Core.addStock()">ADICIONAR AO INVENTÁRIO</button>
                 </div>
                 <div class="card">
-                    <h3>Relatório de Materiais</h3>
+                    <h3>Lista de Materiais</h3>
                     <table>
-                        <thead><tr><th>ID</th><th>PRODUTO</th><th>QUANTIDADE</th><th>STATUS</th></tr></thead>
-                        <tbody>
-                            ${this.state.stock.map((s, i) => `<tr><td>#${i+1}</td><td>${s.name}</td><td>${s.qty}</td><td><span style="color: var(--p-green);">● Disponível</span></td></tr>`).join('')}
-                        </tbody>
+                        <thead><tr><th>PRODUTO</th><th>QTD</th></tr></thead>
+                        <tbody>${this.db.stock.map(s => `<tr><td>${s.name}</td><td class="neon-text">${s.qty}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>
             </div>
         `;
     },
 
-    // --- VIEW: FINANCEIRO ---
-    renderFinance(el) {
+    renderFin(el) {
         el.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div class="grid-layout" style="grid-template-columns: 1fr 1fr;">
                 <div class="card">
-                    <h3>Lançamento de Caixa</h3>
-                    <div class="form-group" style="margin-top:20px;">
-                        <label>Tipo</label>
-                        <select id="fin-type"><option value="in">Receita (+)</option><option value="out">Despesa (-)</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Valor (R$)</label>
-                        <input type="number" id="fin-val">
-                    </div>
-                    <button class="btn" onclick="Core.addFinance()">EFETIVAR LANÇAMENTO</button>
+                    <h3>Novo Lançamento</h3>
+                    <select id="f-tipo"><option value="in">Receita</option><option value="out">Despesa</option></select>
+                    <input type="number" id="f-val" placeholder="Valor R$">
+                    <button class="btn-action" onclick="Core.addFin()">EFETUAR TRANSAÇÃO</button>
                 </div>
                 <div class="card">
-                    <canvas id="finChart"></canvas>
+                    <h3>Histórico de Fluxo</h3>
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        <table>
+                            <tbody>${this.db.finance.reverse().map(f => `<tr><td>${f.tipo == 'in' ? 'RECEITA' : 'CUSTO'}</td><td style="color:${f.tipo == 'in' ? 'var(--green)' : '#ff4757'}">R$ ${f.val}</td></tr>`).join('')}</tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         `;
-        this.initChart();
     },
 
-    // --- VIEW: ENGENHARIA ---
     renderEng(el) {
         el.innerHTML = `
             <div class="card" style="max-width: 600px; margin: auto;">
-                <h3>Cálculo de Calagem (Vant Hoff)</h3>
-                <p style="font-size: 0.8rem; margin-bottom: 20px;">Engenharia Agronômica de Precisão</p>
-                <div class="form-group"><label>V2 (Saturação Desejada %)</label><input type="number" id="e-v2" value="70"></div>
-                <div class="form-group"><label>V1 (Saturação Atual %)</label><input type="number" id="e-v1" value="40"></div>
-                <div class="form-group"><label>CTC (mmolc/dm³)</label><input type="number" id="e-ctc" value="12"></div>
-                <button class="btn" onclick="Core.calcCalagem()">PROCESSAR RESULTADO</button>
-                <div id="res-eng" style="margin-top: 30px; display:none;">
-                    <div class="card" style="border-color: var(--p-green); text-align: center;">
-                        <p>Necessidade de Calcário:</p>
-                        <h2 id="res-val" style="color: var(--p-green);">0 Ton/ha</h2>
-                    </div>
+                <h3 class="neon-text">Cálculo de Pulverização Profissional</h3>
+                <p style="font-size: 0.8rem; margin: 10px 0 20px 0; opacity: 0.7;">Calibração de vazão de bico (L/min)</p>
+                <label>Velocidade (km/h)</label><input type="number" id="e-vel" value="8">
+                <label>Taxa Desejada (L/ha)</label><input type="number" id="e-tax" value="100">
+                <label>Espaçamento Bicos (m)</label><input type="number" id="e-esp" value="0.5">
+                <button class="btn-action" onclick="Core.calcEng()">PROCESSAR ENGENHARIA</button>
+                <div id="res-eng" class="card" style="margin-top: 30px; display:none; border-color: var(--green);">
+                    <h2 id="res-val" class="neon-text" style="text-align: center;">0.00 L/min</h2>
                 </div>
             </div>
         `;
     },
 
-    // --- LOGIC FUNCTIONS ---
     addStock() {
-        const name = document.getElementById('stk-name').value;
-        const qty = document.getElementById('stk-qty').value;
+        const name = document.getElementById('s-nome').value;
+        const qty = document.getElementById('s-qtd').value;
         if(name && qty) {
-            this.state.stock.push({name, qty});
-            this.state.logs.push(`Estoque: ${name} adicionado.`);
+            this.db.stock.push({name, qty});
             this.save(); this.route('stock');
         }
     },
 
-    addFinance() {
-        const type = document.getElementById('fin-type').value;
-        const val = parseFloat(document.getElementById('fin-val').value);
+    addFin() {
+        const tipo = document.getElementById('f-tipo').value;
+        const val = parseFloat(document.getElementById('f-val').value);
         if(val) {
-            this.state.finance.push({type, val});
-            this.state.logs.push(`Financeiro: ${type === 'in' ? 'Receita' : 'Despesa'} de R$ ${val} registrada.`);
-            this.save(); this.route('finance');
+            this.db.finance.push({tipo, val});
+            this.save(); this.route('fin');
         }
     },
 
-    calcCalagem() {
-        const v2 = document.getElementById('e-v2').value;
-        const v1 = document.getElementById('e-v1').value;
-        const ctc = document.getElementById('e-ctc').value;
-        const nc = (ctc * (v2 - v1)) / 100; // Fórmula simplificada NC = (CTC * (V2 - V1)) / PRNT
+    calcEng() {
+        const vel = document.getElementById('e-vel').value;
+        const tax = document.getElementById('e-tax').value;
+        const esp = document.getElementById('e-esp').value;
+        const res = (tax * vel * esp) / 600;
         document.getElementById('res-eng').style.display = 'block';
-        document.getElementById('res-val').innerText = nc.toFixed(2) + " Ton/ha";
+        document.getElementById('res-val').innerText = res.toFixed(2) + " L/min";
     },
 
     askAI() {
-        const input = document.getElementById('ai-input').value;
-        if(!input) return;
-        this.state.logs.push(`Usuário: ${input}`);
-        this.updateTerminal(`> Analisando: ${input}...`);
-        setTimeout(() => {
-            this.updateTerminal(`> AgroGPT: Com base nos dados do talhão 04, a necessidade hídrica aumentará 12% nos próximos 3 dias. Recomendo acionar irrigação setorizada.`);
-        }, 1000);
-        document.getElementById('ai-input').value = '';
+        const txt = document.getElementById('ai-in').value;
+        if(!txt) return;
+        this.logTerminal(`> Analisando comando: ${txt}`);
+        setTimeout(() => this.logTerminal(`> AgroGPT: Com base nos sensores de Reserva, o solo apresenta saturação de 42%. Aumentar irrigação em 15% nas próximas 4 horas.`), 800);
+        document.getElementById('ai-in').value = '';
     },
 
-    updateTerminal(msg) {
-        const term = document.getElementById('terminal');
-        if(term) {
-            if(msg) term.innerHTML += `<p>${msg}</p>`;
-            else term.innerHTML = `<p>> Sistema pronto para análise preditiva...</p>`;
-            term.scrollTop = term.scrollHeight;
+    logTerminal(m) {
+        const t = document.getElementById('term');
+        if(t) {
+            t.innerHTML += `<p style="margin-bottom:5px;">[${new Date().toLocaleTimeString()}] ${m}</p>`;
+            t.scrollTop = t.scrollHeight;
         }
     },
 
     initChart() {
-        const ctx = document.getElementById('finChart').getContext('2d');
+        const ctx = document.getElementById('miniChart').getContext('2d');
         new Chart(ctx, {
-            type: 'doughnut',
+            type: 'line',
             data: {
-                labels: ['Entradas', 'Saídas'],
+                labels: ['1', '2', '3', '4', '5'],
                 datasets: [{
-                    data: [
-                        this.state.finance.filter(f => f.type === 'in').reduce((a, b) => a + b.val, 0),
-                        this.state.finance.filter(f => f.type === 'out').reduce((a, b) => a + b.val, 0)
-                    ],
-                    backgroundColor: ['#00f576', '#ff4757'],
-                    borderWidth: 0
+                    data: [10, 25, 15, 35, 30],
+                    borderColor: '#20ff88',
+                    tension: 0.4,
+                    pointRadius: 0,
+                    fill: true,
+                    backgroundColor: 'rgba(32, 255, 136, 0.05)'
                 }]
             },
-            options: { cutout: '80%', plugins: { legend: { labels: { color: '#fff' } } } }
+            options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
         });
     }
 };
