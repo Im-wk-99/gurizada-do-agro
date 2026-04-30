@@ -15,59 +15,66 @@
             --text-dim: #8b949e;
             --danger: #da3633;
             --warning: #d29922;
+            --card-img-height: 120px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: var(--bg-deep); color: var(--text-main); overflow-x: hidden; }
 
-        /* Layout */
         .app-grid { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
         
-        aside { background: var(--bg-card); border-right: 1px solid #30363d; padding: 20px; }
+        aside { background: var(--bg-card); border-right: 1px solid #30363d; padding: 20px; position: sticky; top: 0; height: 100vh; }
         main { padding: 30px; }
 
         .logo { font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
 
-        /* Cards e Componentes */
+        /* Stats */
         .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--bg-card); padding: 20px; border-radius: 10px; border: 1px solid #30363d; }
-        .stat-card span { font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; }
-        .stat-card h2 { font-size: 1.8rem; margin-top: 5px; }
+        .stat-card { background: var(--bg-card); padding: 20px; border-radius: 10px; border: 1px solid #30363d; position: relative; overflow: hidden; }
+        .stat-card i { position: absolute; right: 15px; bottom: 15px; font-size: 2rem; opacity: 0.1; }
 
-        .module-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .card { background: var(--bg-card); border: 1px solid #30363d; border-radius: 12px; overflow: hidden; }
+        /* Module Grid */
+        .module-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; }
+        .card { background: var(--bg-card); border: 1px solid #30363d; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+        
+        /* Imagens Ilustrativas */
+        .card-banner { 
+            width: 100%; 
+            height: var(--card-img-height); 
+            background-size: cover; 
+            background-position: center;
+            border-bottom: 1px solid #30363d;
+            filter: grayscale(30%) brightness(70%);
+        }
+
         .card-header { background: #21262d; padding: 15px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        .card-body { padding: 20px; }
+        .card-body { padding: 20px; flex-grow: 1; }
 
-        /* Formulários */
+        /* Forms */
         input, select { 
             width: 100%; padding: 10px; margin-bottom: 15px; 
             background: var(--bg-deep); border: 1px solid #30363d; 
             border-radius: 6px; color: white; outline: none; 
         }
-        input:focus { border-color: var(--accent); }
-        .btn { 
-            width: 100%; padding: 12px; border: none; border-radius: 6px; 
-            font-weight: bold; cursor: pointer; transition: 0.2s; 
-        }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--accent); }
 
-        /* Listas Funcionais */
-        .data-list { max-height: 300px; overflow-y: auto; }
+        /* Listas */
+        .data-list { max-height: 200px; overflow-y: auto; margin-top: 15px; }
         .item { 
-            background: var(--bg-deep); padding: 12px; border-radius: 8px; 
-            margin-bottom: 10px; display: flex; justify-content: space-between; 
-            align-items: center; border-left: 4px solid var(--primary);
+            background: var(--bg-deep); padding: 10px; border-radius: 8px; 
+            margin-bottom: 8px; display: flex; justify-content: space-between; 
+            align-items: center; border-left: 4px solid var(--primary); font-size: 0.9rem;
         }
-        .item.urgent { border-left-color: var(--danger); }
         .delete-btn { color: var(--danger); cursor: pointer; background: none; border: none; }
 
-        /* Barra de Progresso Maquinário */
-        .progress-container { width: 100%; background: #333; height: 12px; border-radius: 6px; margin: 10px 0; }
-        .progress-fill { height: 100%; border-radius: 6px; transition: 0.5s; }
+        /* Progresso */
+        .progress-container { width: 100%; background: #333; height: 8px; border-radius: 4px; margin: 8px 0; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: 0.5s; }
 
-        @media (max-width: 900px) { .app-grid { grid-template-columns: 1fr; } aside { display: none; } .module-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 1100px) { .module-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .app-grid { grid-template-columns: 1fr; } aside { display: none; } }
     </style>
 </head>
 <body>
@@ -75,10 +82,16 @@
 <div class="app-grid">
     <aside>
         <div class="logo"><i class="fas fa-leaf"></i> AGRO-OS</div>
-        <div style="color: var(--text-dim); font-size: 0.9rem;">
-            <p><i class="fas fa-calendar"></i> <span id="current-date">--/--/--</span></p>
+        <div style="color: var(--text-dim); font-size: 0.85rem;">
+            <p><i class="fas fa-calendar-alt"></i> <span id="current-date">--/--/--</span></p>
             <p><i class="fas fa-clock"></i> <span id="current-time">00:00</span></p>
         </div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #30363d;">
+        <nav style="display: flex; flex-direction: column; gap: 10px; color: var(--text-dim);">
+            <span><i class="fas fa-chart-line"></i> Dashboard</span>
+            <span><i class="fas fa-tractor"></i> Maquinário</span>
+            <span><i class="fas fa-seedling"></i> Safra 2024/25</span>
+        </nav>
     </aside>
 
     <main>
@@ -86,81 +99,80 @@
             <div class="stat-card">
                 <span>Tarefas Ativas</span>
                 <h2 id="count-os">0</h2>
+                <i class="fas fa-clipboard-list"></i>
             </div>
             <div class="stat-card">
-                <span>Itens em Estoque</span>
+                <span>Insumos</span>
                 <h2 id="count-insumos">0</h2>
+                <i class="fas fa-boxes"></i>
             </div>
             <div class="stat-card">
-                <span>Combustível Médio</span>
+                <span>Diesel Médio</span>
                 <h2 id="avg-fuel">0%</h2>
+                <i class="fas fa-gas-pump"></i>
             </div>
         </div>
 
         <div class="module-grid">
             <div class="card">
-                <div class="card-header">LANÇAR ORDEM DE SERVIÇO <i class="fas fa-tasks"></i></div>
+                <div class="card-banner" style="background-image: url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=500&q=80')"></div>
+                <div class="card-header">ORDENS DE SERVIÇO</div>
                 <div class="card-body">
-                    <input type="text" id="os-task" placeholder="Descrição da Operação (ex: Plantio Talhão 2)">
+                    <input type="text" id="os-task" placeholder="Ex: Aplicação de Ureia Lote 4">
                     <select id="os-priority">
-                        <option value="normal">Prioridade Normal</option>
-                        <option value="urgent">Urgente / Crítico</option>
+                        <option value="normal">Normal</option>
+                        <option value="urgent">Urgente</option>
                     </select>
-                    <button class="btn btn-primary" onclick="Core.addOS()">REGISTRAR OPERAÇÃO</button>
-                    <div class="data-list" id="list-os" style="margin-top: 20px;"></div>
+                    <button class="btn btn-primary" onclick="Core.addOS()">REGISTRAR</button>
+                    <div class="data-list" id="list-os"></div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-header">ESTOQUE DE INSUMOS <i class="fas fa-warehouse"></i></div>
+                <div class="card-banner" style="background-image: url('https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=500&q=80')"></div>
+                <div class="card-header">ESTOQUE</div>
                 <div class="card-body">
                     <div style="display: flex; gap: 10px;">
                         <input type="text" id="ins-name" placeholder="Produto">
-                        <input type="number" id="ins-qty" placeholder="Qtd">
+                        <input type="number" id="ins-qty" style="width: 80px" placeholder="Qtd">
                     </div>
-                    <button class="btn btn-primary" onclick="Core.addInsumo()">ATUALIZAR ESTOQUE</button>
-                    <div class="data-list" id="list-insumos" style="margin-top: 20px;"></div>
+                    <button class="btn btn-primary" onclick="Core.addInsumo()">ATUALIZAR</button>
+                    <div class="data-list" id="list-insumos"></div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-header">CALCULADORA DE VAZÃO <i class="fas fa-calculator"></i></div>
+                <div class="card-banner" style="background-image: url('https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=500&q=80')"></div>
+                <div class="card-header">PULVERIZAÇÃO (L/ha)</div>
                 <div class="card-body">
-                    <label>Velocidade (km/h)</label>
-                    <input type="number" id="calc-v" value="8" oninput="Core.calculateVazao()">
-                    <label>Espaçamento entre Bicos (m)</label>
-                    <input type="number" id="calc-e" value="0.5" oninput="Core.calculateVazao()">
-                    <label>Vazão do Bico (L/min)</label>
-                    <input type="number" id="calc-q" value="1.2" oninput="Core.calculateVazao()">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <label style="font-size: 0.7rem;">VELOC. (km/h)</label>
+                            <input type="number" id="calc-v" value="8" oninput="Core.calculateVazao()">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.7rem;">VAZÃO BICO (L/min)</label>
+                            <input type="number" id="calc-q" value="1.2" oninput="Core.calculateVazao()">
+                        </div>
+                    </div>
                     <div style="background: var(--bg-deep); padding: 15px; border-radius: 8px; text-align: center;">
-                        <span style="color: var(--accent); font-size: 0.8rem;">VOLUME DE APLICAÇÃO</span>
-                        <h2 id="calc-res">180.00 L/ha</h2>
+                        <h2 id="calc-res" style="color: var(--accent);">180.00 L/ha</h2>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-header">STATUS DA FROTA <i class="fas fa-truck-monster"></i></div>
+                <div class="card-banner" style="background-image: url('https://images.unsplash.com/photo-1594411633005-779836374026?auto=format&fit=crop&w=500&q=80')"></div>
+                <div class="card-header">TELEMÉTRIA</div>
                 <div class="card-body">
                     <div class="machine-item">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>John Deere 6125J</span>
-                            <span id="fuel-val-1">75%</span>
-                        </div>
-                        <div class="progress-container">
-                            <div id="fuel-bar-1" class="progress-fill" style="width: 75%; background: var(--accent);"></div>
-                        </div>
+                        <span style="font-size: 0.8rem;">JD 6125J</span>
+                        <div class="progress-container"><div id="fuel-bar-1" class="progress-fill"></div></div>
                         <input type="range" min="0" max="100" value="75" oninput="Core.updateFuel(1, this.value)">
                     </div>
-                    
-                    <div class="machine-item" style="margin-top: 20px;">
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>Case IH Magnum 340</span>
-                            <span id="fuel-val-2">30%</span>
-                        </div>
-                        <div class="progress-container">
-                            <div id="fuel-bar-2" class="progress-fill" style="width: 30%; background: var(--warning);"></div>
-                        </div>
+                    <div class="machine-item" style="margin-top: 15px;">
+                        <span style="font-size: 0.8rem;">CASE MAGNUM 340</span>
+                        <div class="progress-container"><div id="fuel-bar-2" class="progress-fill"></div></div>
                         <input type="range" min="0" max="100" value="30" oninput="Core.updateFuel(2, this.value)">
                     </div>
                 </div>
@@ -182,6 +194,8 @@
             setInterval(() => this.updateClock(), 1000);
             this.renderAll();
             this.calculateVazao();
+            this.updateFuel(1, this.db.fuel[1]);
+            this.updateFuel(2, this.db.fuel[2]);
         },
 
         updateClock() {
@@ -190,12 +204,10 @@
             document.getElementById('current-time').innerText = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
         },
 
-        // --- LÓGICA DE ORDENS DE SERVIÇO ---
         addOS() {
             const task = document.getElementById('os-task').value;
             const priority = document.getElementById('os-priority').value;
             if(!task) return;
-
             this.db.os.push({ id: Date.now(), task, priority });
             this.save();
             document.getElementById('os-task').value = "";
@@ -203,17 +215,15 @@
         },
 
         removeOS(id) {
-            this.db.os = this.db.os.filter(item => item.id !== id);
+            this.db.os = this.db.os.filter(i => i.id !== id);
             this.save();
             this.renderAll();
         },
 
-        // --- LÓGICA DE INVENTÁRIO ---
         addInsumo() {
             const name = document.getElementById('ins-name').value;
             const qty = document.getElementById('ins-qty').value;
             if(!name || !qty) return;
-
             this.db.insumos.push({ id: Date.now(), name, qty });
             this.save();
             document.getElementById('ins-name').value = "";
@@ -222,41 +232,28 @@
         },
 
         removeInsumo(id) {
-            this.db.insumos = this.db.insumos.filter(item => item.id !== id);
+            this.db.insumos = this.db.insumos.filter(i => i.id !== id);
             this.save();
             this.renderAll();
         },
 
-        // --- LÓGICA DE TELEMETRIA ---
         updateFuel(id, val) {
             this.db.fuel[id] = val;
             const bar = document.getElementById(`fuel-bar-${id}`);
-            const text = document.getElementById(`fuel-val-${id}`);
-            
             bar.style.width = val + '%';
-            text.innerText = val + '%';
-            
-            // Cor dinâmica
-            if(val < 20) bar.style.background = 'var(--danger)';
-            else if(val < 50) bar.style.background = 'var(--warning)';
-            else bar.style.background = 'var(--accent)';
-
+            bar.style.background = val < 20 ? 'var(--danger)' : val < 50 ? 'var(--warning)' : 'var(--accent)';
             this.save();
             this.updateStats();
         },
 
-        // --- CÁLCULO TÉCNICO ---
         calculateVazao() {
-            const v = parseFloat(document.getElementById('calc-v').value);
-            const e = parseFloat(document.getElementById('calc-e').value);
-            const q = parseFloat(document.getElementById('calc-q').value);
-            
-            // Fórmula: L/ha = (600 * q) / (v * e)
+            const v = parseFloat(document.getElementById('calc-v').value) || 1;
+            const q = parseFloat(document.getElementById('calc-q').value) || 0;
+            const e = 0.5; // Espaçamento fixo para o exemplo
             const res = (600 * q) / (v * e);
             document.getElementById('calc-res').innerText = res.toFixed(2) + " L/ha";
         },
 
-        // --- MOTOR DE RENDERIZAÇÃO ---
         save() {
             localStorage.setItem('agro_os', JSON.stringify(this.db.os));
             localStorage.setItem('agro_ins', JSON.stringify(this.db.insumos));
@@ -271,24 +268,19 @@
         },
 
         renderAll() {
-            // Render OS
-            const listOS = document.getElementById('list-os');
-            listOS.innerHTML = this.db.os.map(i => `
-                <div class="item ${i.priority === 'urgent' ? 'urgent' : ''}">
+            document.getElementById('list-os').innerHTML = this.db.os.map(i => `
+                <div class="item ${i.priority === 'urgent' ? 'urgent' : ''}" style="${i.priority === 'urgent' ? 'border-left-color: var(--danger)' : ''}">
                     <span>${i.task}</span>
-                    <button class="delete-btn" onclick="Core.removeOS(${i.id})"><i class="fas fa-check-circle"></i></button>
+                    <button class="delete-btn" onclick="Core.removeOS(${i.id})"><i class="fas fa-check"></i></button>
                 </div>
             `).join('');
 
-            // Render Insumos
-            const listIns = document.getElementById('list-insumos');
-            listIns.innerHTML = this.db.insumos.map(i => `
+            document.getElementById('list-insumos').innerHTML = this.db.insumos.map(i => `
                 <div class="item">
                     <span>${i.name}</span>
-                    <span><strong>${i.qty}</strong> <button class="delete-btn" onclick="Core.removeInsumo(${i.id})"> <i class="fas fa-trash"></i></button></span>
+                    <span><strong>${i.qty}</strong> <button class="delete-btn" onclick="Core.removeInsumo(${i.id})"><i class="fas fa-trash"></i></button></span>
                 </div>
             `).join('');
-
             this.updateStats();
         }
     };
