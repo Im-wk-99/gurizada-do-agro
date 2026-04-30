@@ -3,131 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nebula OS | Elite Command</title>
+    <title>Nebula Enterprise v4.0 | Command & Control</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@200;400;600;800&display=swap" rel="stylesheet">
 
-    <div id="nebula-canvas"></div>
-    <div class="scanline"></div>
+    <style>
+        /* [CAMADA CSS - DESIGN DE SISTEMA] */
+        :root {
+            --neon-p: #bc13fe; --neon-g: #20ff88; --neon-b: #00d2ff;
+            --danger: #ff4757; --warning: #ffa502; --bg-deep: #020205;
+            --glass: rgba(12, 10, 20, 0.85); --border: rgba(188, 19, 254, 0.3);
+            --font-head: 'Orbitron', sans-serif; --font-body: 'Outfit', sans-serif;
+            --shadow-p: 0 0 20px rgba(188, 19, 254, 0.4);
+        }
 
-    <aside id="main-nav">
-        <div class="cyber-logo">
-            <div class="logo-core"></div>
-            <i class="fas fa-biohazard"></i>
-        </div>
+        * { margin: 0; padding: 0; box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--neon-p) transparent; }
+        body { background: var(--bg-deep); color: #e0e0e0; font-family: var(--font-body); height: 100vh; overflow: hidden; display: flex; }
+
+        /* Background Visual Engine */
+        #nebula-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5; background-size: cover; background-position: center; filter: brightness(0.15) blur(2px); transition: 1.5s; }
+        .grid-overlay { position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.05; z-index: -4; }
+
+        /* Sidebar Architecture */
+        aside { width: 110px; background: var(--glass); backdrop-filter: blur(50px); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 30px 0; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; box-shadow: 10px 0 50px rgba(0,0,0,0.8); }
+        aside:hover { width: 280px; }
+
+        .logo-container { width: 60px; height: 60px; background: linear-gradient(135deg, var(--neon-p), #6a00ff); border-radius: 18px; display: grid; place-items: center; box-shadow: var(--shadow-p); margin-bottom: 50px; position: relative; }
+        .logo-container i { font-size: 1.8rem; color: #fff; }
         
+        .nav-item { width: 85%; padding: 18px; margin: 10px 0; border-radius: 20px; display: flex; align-items: center; gap: 25px; cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.4); position: relative; overflow: hidden; }
+        .nav-item i { font-size: 1.5rem; min-width: 40px; text-align: center; }
+        .nav-item span { font-family: var(--font-head); font-size: 0.75rem; opacity: 0; white-space: nowrap; transition: 0.3s; }
+        aside:hover .nav-item span { opacity: 1; }
+        .nav-item:hover, .nav-item.active { background: rgba(188, 19, 254, 0.15); color: #fff; }
+        .nav-item.active { border-left: 4px solid var(--neon-p); box-shadow: inset 0 0 20px rgba(188, 19, 254, 0.2); color: var(--neon-g); }
+
+        /* Main Workspace */
+        main { flex: 1; display: flex; flex-direction: column; padding: 40px; overflow-y: auto; position: relative; }
+        header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
+        .glitch-title { font-family: var(--font-head); font-size: 2.8rem; letter-spacing: -2px; text-transform: uppercase; }
+        .neon-glow { color: var(--neon-p); text-shadow: 0 0 15px var(--neon-p); }
+
+        /* Component Architecture */
+        .card { background: var(--glass); border: 1px solid var(--border); border-radius: 35px; padding: 30px; backdrop-filter: blur(20px); box-shadow: 0 20px 60px rgba(0,0,0,0.7); animation: fadeInUp 0.6s ease-out; position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, transparent, var(--neon-p), transparent); }
+
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        
+        /* Terminal & System Logs */
+        .terminal { background: rgba(0,0,0,0.6); border-radius: 20px; padding: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; height: 250px; overflow-y: auto; border: 1px solid rgba(32, 255, 136, 0.2); color: var(--neon-g); }
+        .log-entry { margin-bottom: 8px; border-left: 2px solid var(--neon-g); padding-left: 10px; animation: slideIn 0.3s ease-out; }
+
+        /* Data Tables */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 12px; margin-top: 15px; }
+        th { font-family: var(--font-head); font-size: 0.7rem; color: var(--neon-p); text-transform: uppercase; padding: 10px; text-align: left; }
+        td { padding: 20px 15px; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(188, 19, 254, 0.1); border-bottom: 1px solid rgba(188, 19, 254, 0.1); }
+        td:first-child { border-radius: 15px 0 0 15px; border-left: 1px solid rgba(188, 19, 254, 0.1); }
+        td:last-child { border-radius: 0 15px 15px 0; border-right: 1px solid rgba(188, 19, 254, 0.1); }
+
+        /* Inputs & Cyber-Buttons */
+        .cyber-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); padding: 18px; border-radius: 15px; color: #fff; font-size: 1rem; margin-bottom: 20px; outline: none; transition: 0.3s; }
+        .cyber-input:focus { border-color: var(--neon-g); box-shadow: 0 0 15px rgba(32, 255, 136, 0.2); }
+        .action-btn { width: 100%; background: linear-gradient(135deg, var(--neon-p), #6a00ff); border: none; padding: 20px; border-radius: 18px; color: #fff; font-family: var(--font-head); font-weight: 800; letter-spacing: 2px; cursor: pointer; transition: 0.4s; }
+        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(188, 19, 254, 0.5); }
+
+        /* Metrics */
+        .metric-box { text-align: center; padding: 20px; }
+        .metric-val { font-family: var(--font-head); font-size: 2.5rem; color: var(--neon-g); display: block; }
+        .metric-label { font-size: 0.8rem; opacity: 0.6; text-transform: uppercase; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-p); border-radius: 10px; }
+    </style>
+</head>
+<body class="nebula-os">
+
+    <div id="nebula-bg"></div>
+    <div class="grid-overlay"></div>
+
+    <aside>
+        <div class="logo-container">
+            <i class="fas fa-brain"></i>
+        </div>
         <nav>
-            <div class="nav-btn active" data-page="dash" onclick="App.route('dash')">
-                <i class="fas fa-th-large"></i>
-                <span>OVERVIEW</span>
+            <div class="nav-item active" onclick="Core.navigate('dash')" data-link="dash">
+                <i class="fas fa-tachometer-alt"></i><span>DASHBOARD</span>
             </div>
-            <div class="nav-btn" data-page="stock" onclick="App.route('stock')">
-                <i class="fas fa-microchip"></i>
-                <span>ASSETS</span>
+            <div class="nav-item" onclick="Core.navigate('stock')" data-link="stock">
+                <i class="fas fa-warehouse"></i><span>INVENTÁRIO</span>
             </div>
-            <div class="nav-btn" data-page="fin" onclick="App.route('fin')">
-                <i class="fas fa-satellite-dish"></i>
-                <span>MARKET</span>
+            <div class="nav-item" onclick="Core.navigate('fin')" data-link="fin">
+                <i class="fas fa-chart-area"></i><span>FINANCEIRO</span>
             </div>
-            <div class="nav-btn" data-page="eng" onclick="App.route('eng')">
-                <i class="fas fa-atom"></i>
-                <span>BIO-ENG</span>
+            <div class="nav-item" onclick="Core.navigate('eng')" data-link="eng">
+                <i class="fas fa-flask"></i><span>ENGENHARIA</span>
             </div>
         </nav>
-
-        <div class="system-health">
-            <div class="bar"><div class="fill" style="width: 85%"></div></div>
-            <small>CORE TEMP: 32°C</small>
+        <div style="margin-top: auto; padding-bottom: 30px;">
+            <div class="nav-item" onclick="Core.resetData()"><i class="fas fa-sync-alt"></i><span>RESET</span></div>
         </div>
     </aside>
 
-    <main id="app-core">
-        <header class="glass-header">
-            <div class="title-group">
-                <h1 class="glitch" data-text="NEBULA">NEBULA <span class="neon-purple">v4.0</span></h1>
-                <p class="subtitle">SISTEMA DE GESTÃO ESTRATÉGICA</p>
+    <main>
+        <header>
+            <div class="title-block">
+                <h1 class="glitch-title">NEBULA <span class="neon-glow">CORP</span></h1>
+                <p id="sub-path" style="opacity: 0.5; font-weight: 200;">SYSTEM / ROOT / OVERVIEW</p>
             </div>
-            
-            <div class="clock-module">
-                <div id="digital-clock">00:00:00</div>
-                <div class="date-stmp">30.APR.2026</div>
+            <div class="telemetry-pill" style="text-align: right; background: var(--glass); padding: 15px 30px; border-radius: 20px; border: 1px solid var(--border);">
+                <div id="clock" style="font-family: var(--font-head); font-size: 1.4rem; color: var(--neon-g);">00:00:00</div>
+                <small id="sensor-temp">TEMP: 24.5°C | HUM: 48%</small>
             </div>
         </header>
 
-        <section id="viewport" class="content-scroll">
+        <section id="viewport">
             </section>
     </main>
 
     <script>
-        // Lógica de Transição e Renderização
-        const App = {
+        /* [CAMADA JAVASCRIPT - KERNEL DO SISTEMA] */
+        const Core = {
+            // Banco de Dados em Memória e LocalStorage
             state: {
                 current: 'dash',
-                bgs: {
-                    dash: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000',
-                    stock: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2000',
-                    fin: 'https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2000',
-                    eng: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000'
+                inventory: JSON.parse(localStorage.getItem('nebula_inv')) || [
+                    {id: 101, name: 'Semente Soja Platinum', qty: 500, cat: 'Sementes'},
+                    {id: 102, name: 'Fertilizante NPK 10-10-10', qty: 1200, cat: 'Insumos'}
+                ],
+                finance: JSON.parse(localStorage.getItem('nebula_fin')) || [
+                    {date: '2026-04-28', desc: 'Venda Safra Milho', val: 125000, type: 'in'},
+                    {date: '2026-04-29', desc: 'Manutenção Trator JD', val: 12000, type: 'out'}
+                ],
+                assets: {
+                    dash: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80',
+                    stock: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80',
+                    fin: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80',
+                    eng: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80'
                 }
             },
 
             init() {
-                this.route('dash');
+                console.log("Kernel Iniciado...");
+                this.navigate('dash');
+                this.startTelemetry();
                 this.updateClock();
                 setInterval(() => this.updateClock(), 1000);
+                setInterval(() => this.simulateSensors(), 5000);
             },
 
             updateClock() {
-                document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString();
+                document.getElementById('clock').innerText = new Date().toLocaleTimeString();
             },
 
-            route(page) {
-                const vp = document.getElementById('viewport');
-                const canvas = document.getElementById('nebula-canvas');
-                
-                // Transição de Fundo
-                canvas.style.backgroundImage = `url('${this.state.bgs[page]}')`;
-                
-                // Estilo Ativo
-                document.querySelectorAll('.nav-btn').forEach(b => {
-                    b.classList.remove('active');
-                    if(b.dataset.page === page) b.classList.add('active');
-                });
-
-                this.render(page, vp);
+            startTelemetry() {
+                this.log("Sincronizando com satélites Starlink...");
+                this.log("Interface Neural Nebula v4.0.0 estável.");
             },
 
-            render(page, target) {
-                const templates = {
-                    dash: `
-                        <div class="dashboard-grid">
-                            <div class="cyber-card glass tall">
-                                <h3 class="neon-purple">SITREP TERMINAL</h3>
-                                <div class="terminal-box">
-                                    <p class="typewriter">> [INIT] Reconhecendo rede neural...</p>
-                                    <p class="typewriter">> [DATA] Sensores de solo ativos em Reserva/PR.</p>
-                                    <p class="typewriter">> [AI] Previsão de colheita: +18% acima da média.</p>
+            simulateSensors() {
+                const temp = (22 + Math.random() * 5).toFixed(1);
+                const hum = (40 + Math.random() * 15).toFixed(0);
+                const el = document.getElementById('sensor-temp');
+                if(el) el.innerText = `TEMP: ${temp}°C | HUM: ${hum}%`;
+            },
+
+            log(msg) {
+                const term = document.getElementById('term-body');
+                if(term) {
+                    const line = document.createElement('div');
+                    line.className = 'log-entry';
+                    line.innerHTML = `[${new Date().toLocaleTimeString()}] > ${msg}`;
+                    term.prepend(line);
+                }
+            },
+
+            save() {
+                localStorage.setItem('nebula_inv', JSON.stringify(this.state.inventory));
+                localStorage.setItem('nebula_fin', JSON.stringify(this.state.finance));
+            },
+
+            navigate(target) {
+                this.state.current = target;
+                document.getElementById('nebula-bg').style.backgroundImage = `url('${this.state.assets[target]}')`;
+                document.getElementById('sub-path').innerText = `SYSTEM / ROOT / ${target.toUpperCase()}`;
+                
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelector(`[data-link="${target}"]`).classList.add('active');
+
+                this.render();
+                this.log(`Navegando para módulo: ${target}`);
+            },
+
+            render() {
+                const view = document.getElementById('viewport');
+                const page = this.state.current;
+
+                if(page === 'dash') {
+                    const totalIn = this.state.finance.filter(f => f.type === 'in').reduce((a, b) => a + b.val, 0);
+                    const totalOut = this.state.finance.filter(f => f.type === 'out').reduce((a, b) => a + b.val, 0);
+                    
+                    view.innerHTML = `
+                        <div class="grid-layout">
+                            <div class="card">
+                                <h3 class="neon-glow"><i class="fas fa-terminal"></i> CONSOLE DE COMANDO</h3>
+                                <div class="terminal" id="term-body" style="margin-top:20px;"></div>
+                                <input type="text" class="cyber-input" style="margin-top:20px;" placeholder="Executar comando de voz ou texto..." onkeydown="if(event.key === 'Enter') Core.log('Comando desconhecido: ' + this.value)">
+                            </div>
+                            <div class="card" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                                <div class="metric-box">
+                                    <span class="metric-val">R$ ${(totalIn - totalOut).toLocaleString()}</span>
+                                    <span class="metric-label">Liquidez do Ecossistema</span>
+                                </div>
+                                <div style="width:100%; height:2px; background:var(--border); margin:20px 0;"></div>
+                                <div style="display:flex; gap:40px;">
+                                    <div class="metric-box"><span class="metric-val" style="font-size:1.5rem; color:var(--neon-b);">${this.state.inventory.length}</span><span class="metric-label">SKUs</span></div>
+                                    <div class="metric-box"><span class="metric-val" style="font-size:1.5rem; color:var(--danger);">12%</span><span class="metric-label">RISCO</span></div>
                                 </div>
                             </div>
-                            <div class="cyber-card glass center">
-                                <span class="label">LIQUIDEZ TOTAL</span>
-                                <h2 class="neon-greenCounter">R$ 1.250.400</h2>
-                                <div class="mini-chart"></div>
+                        </div>
+                    `;
+                }
+
+                else if(page === 'stock') {
+                    view.innerHTML = `
+                        <div class="grid-layout" style="grid-template-columns: 1fr 2.5fr;">
+                            <div class="card">
+                                <h3 class="neon-glow">NOVO ITEM</h3>
+                                <input type="text" id="in-name" class="cyber-input" placeholder="Nomenclatura">
+                                <input type="number" id="in-qty" class="cyber-input" placeholder="Quantidade">
+                                <select id="in-cat" class="cyber-input">
+                                    <option>Sementes</option><option>Insumos</option><option>Peças</option>
+                                </select>
+                                <button class="action-btn" onclick="Core.addItem()">INJETAR</button>
                             </div>
-                        </div>`,
-                    stock: `<div class="cyber-card glass"><h3>INVENTÁRIO ATIVO</h3><div class="data-table">...carregando dados estelares...</div></div>`,
-                    fin: `<div class="cyber-card glass"><h3>MARKET FLOW</h3><div class="chart-placeholder"></div></div>`,
-                    eng: `<div class="cyber-card glass"><h3>BIO-ENGENHARIA</h3><p>Módulo de cálculo avançado ativo.</p></div>`
-                };
-                target.innerHTML = templates[page];
+                            <div class="card">
+                                <h3 class="neon-glow">BASE DE ASSETS</h3>
+                                <table>
+                                    <thead><tr><th>ID</th><th>NOME</th><th>CATEGORIA</th><th>QTD</th><th>AÇÕES</th></tr></thead>
+                                    <tbody>${this.state.inventory.map((item, i) => `
+                                        <tr>
+                                            <td style="color:var(--neon-p)">#${item.id}</td>
+                                            <td>${item.name}</td>
+                                            <td><span style="background:rgba(0,210,255,0.1); padding:5px 10px; border-radius:10px; color:var(--neon-b)">${item.cat}</span></td>
+                                            <td class="neon-glow">${item.qty}</td>
+                                            <td><i class="fas fa-trash" style="cursor:pointer; color:var(--danger)" onclick="Core.deleteItem(${i})"></i></td>
+                                        </tr>
+                                    `).join('')}</tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                else if(page === 'fin') {
+                    view.innerHTML = `
+                        <div class="grid-layout">
+                            <div class="card">
+                                <h3 class="neon-glow">LANÇAMENTO</h3>
+                                <input id="f-desc" class="cyber-input" placeholder="Descrição">
+                                <input id="f-val" type="number" class="cyber-input" placeholder="Valor R$">
+                                <select id="f-type" class="cyber-input"><option value="in">Receita</option><option value="out">Despesa</option></select>
+                                <button class="action-btn" onclick="Core.addFin()">EFETIVAR</button>
+                            </div>
+                            <div class="card">
+                                <h3 class="neon-glow">LIVRO CAIXA</h3>
+                                <div style="max-height:400px; overflow-y:auto;">
+                                    <table>
+                                        <tbody>${this.state.finance.slice().reverse().map(f => `
+                                            <tr><td>${f.date}</td><td>${f.desc}</td><td style="color:${f.type=='in'?'var(--neon-g)':'var(--danger)'}; font-weight:800;">${f.type=='in'?'+':'-'} R$ ${f.val.toLocaleString()}</td></tr>
+                                        `).join('')}</tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                else if(page === 'eng') {
+                    view.innerHTML = `
+                        <div class="card" style="max-width:600px; margin: auto;">
+                            <h2 class="neon-glow" style="text-align:center;">BIO-ENGINEERING CALC</h2>
+                            <div style="margin-top:30px;">
+                                <label style="font-size:0.7rem; color:var(--neon-p)">VELOCIDADE OPERACIONAL (KM/H)</label>
+                                <input id="e-vel" type="number" class="cyber-input" value="8">
+                                <label style="font-size:0.7rem; color:var(--neon-p)">TAXA DE APLICAÇÃO (L/HA)</label>
+                                <input id="e-tax" type="number" class="cyber-input" value="120">
+                                <label style="font-size:0.7rem; color:var(--neon-p)">ESPAÇAMENTO ENTRE BICOS (M)</label>
+                                <input id="e-esp" type="number" class="cyber-input" value="0.5">
+                                <button class="action-btn" onclick="Core.calc()">PROCESSAR ALGORITMO</button>
+                            </div>
+                            <div id="eng-result" class="metric-box" style="margin-top:40px; display:none; background:rgba(32, 255, 136, 0.05); border-radius:20px;">
+                                <span class="metric-label">Fluxo Requerido</span>
+                                <span id="res-val" class="metric-val">0.00 L/min</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            },
+
+            // Lógica de Operações
+            addItem() {
+                const name = document.getElementById('in-name').value;
+                const qty = document.getElementById('in-qty').value;
+                const cat = document.getElementById('in-cat').value;
+                if(name && qty) {
+                    this.state.inventory.push({id: Math.floor(Math.random()*900)+100, name, qty: parseInt(qty), cat});
+                    this.save(); this.render();
+                    this.log(`Asset adicionado: ${name}`);
+                }
+            },
+
+            deleteItem(index) {
+                this.state.inventory.splice(index, 1);
+                this.save(); this.render();
+            },
+
+            addFin() {
+                const desc = document.getElementById('f-desc').value;
+                const val = parseFloat(document.getElementById('f-val').value);
+                const type = document.getElementById('f-type').value;
+                if(desc && val) {
+                    this.state.finance.push({date: new Date().toISOString().split('T')[0], desc, val, type});
+                    this.save(); this.render();
+                    this.log(`Transação registrada: R$ ${val}`);
+                }
+            },
+
+            calc() {
+                const v = document.getElementById('e-vel').value;
+                const t = document.getElementById('e-tax').value;
+                const e = document.getElementById('e-esp').value;
+                const res = (t * v * e) / 600;
+                const box = document.getElementById('eng-result');
+                box.style.display = 'block';
+                document.getElementById('res-val').innerText = `${res.toFixed(3)} L/min`;
+            },
+
+            resetData() {
+                if(confirm("Deseja apagar todos os registros do Kernel?")) {
+                    localStorage.clear();
+                    location.reload();
+                }
             }
         };
 
-        window.onload = () => App.init();
+        window.onload = () => Core.init();
     </script>
 </body>
 </html>
