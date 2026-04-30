@@ -3,336 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroOS Pro | Dashboard Operacional</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>AgroOS Enterprise | Gestão 360°</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg-deep: #0d1117;
-            --bg-card: #161b22;
-            --primary: #238636;
-            --accent: #2ea043;
-            --text-main: #c9d1d9;
-            --text-dim: #8b949e;
-            --danger: #da3633;
+            --bg-body: #0a0c10;
+            --bg-side: #12151c;
+            --bg-card: #1c2128;
+            --primary: #2ebc59;
+            --primary-hover: #36d367;
+            --accent: #58a6ff;
+            --danger: #f85149;
             --warning: #d29922;
+            --text-main: #adbac7;
+            --text-bright: #ffffff;
+            --border: #30363d;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        
-        body { 
-            background: var(--bg-deep); 
-            color: var(--text-main); 
-            display: flex; 
-            min-height: 100vh;
-        }
+        /* Layout Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg-body); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar Navegação */
+        /* Sidebar Profissional */
         aside { 
-            width: 260px; 
-            background: var(--bg-card); 
-            border-right: 1px solid #30363d; 
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
+            width: 280px; background: var(--bg-side); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; transition: 0.3s;
+        }
+        .logo-area { padding: 30px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--border); }
+        .logo-area i { color: var(--primary); font-size: 2rem; }
+        .logo-area h1 { font-size: 1.4rem; color: var(--text-bright); font-weight: 800; letter-spacing: -1px; }
+
+        .nav-menu { flex: 1; padding: 20px 0; overflow-y: auto; }
+        .nav-link { 
+            display: flex; align-items: center; gap: 15px; padding: 12px 30px;
+            color: var(--text-main); text-decoration: none; cursor: pointer;
+            transition: 0.2s; border-right: 4px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active { 
+            background: rgba(46, 188, 89, 0.1); color: var(--primary); border-right-color: var(--primary);
         }
 
-        .logo { font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
-
-        /* Dashboard Principal */
-        main { flex: 1; padding: 40px; overflow-y: auto; }
-
-        .header-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-
-        /* Cartões de Estatísticas */
-        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .stat-card { 
-            background: var(--bg-card); 
-            padding: 25px; 
-            border-radius: 12px; 
-            border: 1px solid #30363d;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        /* Main Content */
+        main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        header { 
+            height: 70px; background: var(--bg-side); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
         }
-        .stat-card span { color: var(--text-dim); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-        .stat-card h2 { font-size: 2.2rem; margin-top: 10px; color: #fff; }
 
-        /* Grid de Módulos */
-        .module-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
+        #viewport { flex: 1; padding: 30px; overflow-y: auto; scroll-behavior: smooth; }
+
+        /* Componentes de UI */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .agro-card { 
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+            padding: 25px; position: relative; transition: 0.3s;
+        }
+        .agro-card:hover { border-color: var(--primary); transform: translateY(-3px); }
         
-        .card { 
-            background: var(--bg-card); 
-            border-radius: 16px; 
-            border: 1px solid #30363d; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column;
-            transition: transform 0.2s;
-        }
+        .stat-value { font-size: 2rem; font-weight: 800; color: var(--text-bright); margin: 10px 0; }
+        .trend-up { color: var(--primary); font-size: 0.8rem; }
 
-        .card-image { 
-            height: 140px; 
-            background-size: cover; 
-            background-position: center; 
-            filter: brightness(0.6) contrast(1.2);
-            border-bottom: 1px solid #30363d;
-        }
-
-        .card-header { padding: 15px 25px; font-weight: bold; background: rgba(255,255,255,0.03); display: flex; justify-content: space-between; }
-        .card-body { padding: 25px; flex: 1; }
-
-        /* Inputs e Botões */
-        input, select { 
-            width: 100%; padding: 12px; margin-bottom: 15px; 
-            background: #0d1117; border: 1px solid #30363d; 
-            border-radius: 8px; color: #fff; outline: none; 
-        }
-        input:focus { border-color: var(--accent); }
-        
+        /* Botões e Inputs */
         .btn { 
-            width: 100%; padding: 14px; border: none; border-radius: 8px; 
-            font-weight: bold; cursor: pointer; transition: background 0.3s;
+            padding: 12px 24px; border-radius: 8px; border: none; font-weight: 600;
+            cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 10px;
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--accent); }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-hover); }
 
-        /* Listagem Dinâmica */
-        .list-container { max-height: 220px; overflow-y: auto; margin-top: 15px; }
-        .list-item { 
-            background: #0d1117; padding: 12px 18px; border-radius: 8px; 
-            margin-bottom: 10px; display: flex; justify-content: space-between; 
-            align-items: center; border-left: 5px solid var(--primary);
-        }
-        .list-item.urgent { border-left-color: var(--danger); }
-        .btn-action { background: none; border: none; color: var(--text-dim); cursor: pointer; }
-        .btn-action:hover { color: var(--danger); }
+        /* Módulo Fleet - Telemetria */
+        .machine-card { display: flex; align-items: center; gap: 20px; padding: 15px; background: #22272e; border-radius: 10px; margin-bottom: 15px; }
+        .fuel-track { flex: 1; height: 8px; background: #333; border-radius: 4px; overflow: hidden; }
+        .fuel-fill { height: 100%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        /* Barras de Telemetria */
-        .progress-box { margin-bottom: 20px; }
-        .progress-bar { width: 100%; background: #30363d; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; }
-        .progress-fill { height: 100%; width: 0%; transition: width 0.8s ease, background 0.5s; }
+        /* Animações */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .view-animate { animation: fadeIn 0.4s ease-out; }
 
-        @media (max-width: 1024px) { .module-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<aside>
-    <div class="logo"><i class="fas fa-leaf"></i> AGRO-OS PRO</div>
-    <div style="margin-bottom: 30px;">
-        <p style="font-size: 0.9rem; color: var(--text-dim);"><i class="far fa-calendar-alt"></i> <span id="date">--/--/--</span></p>
-        <h3 id="clock" style="font-size: 1.5rem; color: #fff;">00:00:00</h3>
-    </div>
-    <nav style="display: flex; flex-direction: column; gap: 15px; color: var(--text-dim);">
-        <p><i class="fas fa-th-large"></i> Dashboard</p>
-        <p><i class="fas fa-tractor"></i> Frota & Máquinas</p>
-        <p><i class="fas fa-warehouse"></i> Inventário</p>
-        <p><i class="fas fa-map-marked-alt"></i> Mapas de Talhão</p>
-    </nav>
-</aside>
+    <aside>
+        <div class="logo-area">
+            <i class="fas fa-tractor"></i>
+            <h1>AGRO OS PRO</h1>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-link active" onclick="Router.go('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</div>
+            <div class="nav-link" onclick="Router.go('fleet')"><i class="fas fa-truck-monster"></i> Telemetria</div>
+            <div class="nav-link" onclick="Router.go('finance')"><i class="fas fa-file-invoice-dollar"></i> Financeiro</div>
+            <div class="nav-link" onclick="Router.go('inventory')"><i class="fas fa-seedling"></i> Insumos</div>
+            <div class="nav-link" onclick="Router.go('weather')"><i class="fas fa-cloud-sun-rain"></i> Clima & Solo</div>
+        </div>
+        <div style="padding: 20px; border-top: 1px solid var(--border);">
+            <div style="font-size: 0.75rem; color: var(--warning);"><i class="fas fa-sync"></i> Sincronizado: Nuvem</div>
+        </div>
+    </aside>
 
-<main>
-    <div class="stats-row">
-        <div class="stat-card">
-            <span>Operações Ativas</span>
-            <h2 id="stat-os">0</h2>
-        </div>
-        <div class="stat-card">
-            <span>Itens no Estoque</span>
-            <h2 id="stat-ins">0</h2>
-        </div>
-        <div class="stat-card">
-            <span>Combustível Médio</span>
-            <h2 id="stat-fuel">0%</h2>
-        </div>
-    </div>
-
-    <div class="module-grid">
-        <div class="card">
-            <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1624439771142-9f6483321528?auto=format&fit=crop&w=600&q=80')"></div>
-            <div class="card-header">LANÇAMENTO DE CAMPO <i class="fas fa-edit"></i></div>
-            <div class="card-body">
-                <input type="text" id="input-task" placeholder="Descrição (ex: Plantio Soja)">
-                <select id="input-prio">
-                    <option value="normal">Prioridade Normal</option>
-                    <option value="urgent">Urgência Crítica</option>
-                </select>
-                <button class="btn btn-primary" onclick="App.addOS()">REGISTRAR ATIVIDADE</button>
-                <div class="list-container" id="list-os"></div>
+    <main>
+        <header>
+            <div id="breadcrumb">Início / Dashboard</div>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <span id="sys-time">00:00:00</span>
+                <img src="https://ui-avatars.com/api/?name=Admin+Agro&background=2ebc59&color=fff" style="width: 35px; border-radius: 50%;">
             </div>
-        </div>
+        </header>
 
-        <div class="card">
-            <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=600&q=80')"></div>
-            <div class="card-header">INSUMOS & ESTOQUE <i class="fas fa-boxes"></i></div>
-            <div class="card-body">
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="input-ins-name" placeholder="Produto">
-                    <input type="number" id="input-ins-qty" style="width: 100px" placeholder="Qtd">
-                </div>
-                <button class="btn btn-primary" onclick="App.addIns()">ATUALIZAR INVENTÁRIO</button>
-                <div class="list-container" id="list-ins"></div>
+        <div id="viewport">
             </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1592982537447-7440770cbfc9?auto=format&fit=crop&w=600&q=80')"></div>
-            <div class="card-header">PULVERIZAÇÃO TÉCNICA <i class="fas fa-calculator"></i></div>
-            <div class="card-body">
-                <label style="font-size: 0.75rem; color: var(--text-dim);">VELOCIDADE DO TRATOR (KM/H)</label>
-                <input type="number" id="calc-v" value="8" oninput="App.calc()">
-                <label style="font-size: 0.75rem; color: var(--text-dim);">VAZÃO POR BICO (L/MIN)</label>
-                <input type="number" id="calc-q" value="1.20" step="0.1" oninput="App.calc()">
-                <div style="background: var(--bg-deep); padding: 20px; border-radius: 12px; text-align: center; border: 1px dashed var(--accent);">
-                    <p style="font-size: 0.8rem; color: var(--accent);">VOLUME DE APLICAÇÃO</p>
-                    <h2 id="calc-res" style="color: #fff;">180.00 L/ha</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1594411633005-779836374026?auto=format&fit=crop&w=600&q=80')"></div>
-            <div class="card-header">TELEMETRIA EM TEMPO REAL <i class="fas fa-satellite-dish"></i></div>
-            <div class="card-body">
-                <div class="progress-box">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-                        <span>John Deere 6125J</span>
-                        <b id="txt-fuel-1">0%</b>
-                    </div>
-                    <div class="progress-bar"><div id="bar-fuel-1" class="progress-fill"></div></div>
-                    <input type="range" min="0" max="100" value="75" oninput="App.updateFuel(1, this.value)">
-                </div>
-                <div class="progress-box">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
-                        <span>Case IH Magnum 340</span>
-                        <b id="txt-fuel-2">0%</b>
-                    </div>
-                    <div class="progress-bar"><div id="bar-fuel-2" class="progress-fill"></div></div>
-                    <input type="range" min="0" max="100" value="30" oninput="App.updateFuel(2, this.value)">
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+    </main>
 
 <script>
-    const App = {
-        data: {
-            os: JSON.parse(localStorage.getItem('agro_os')) || [],
-            ins: JSON.parse(localStorage.getItem('agro_ins')) || [],
-            fuel: JSON.parse(localStorage.getItem('agro_fuel')) || { 1: 75, 2: 30 }
-        },
+/**
+ * AGRO OS ENTERPRISE ENGINE
+ * Desenvolvido para alta performance no campo.
+ */
 
-        init() {
-            this.updateClock();
-            setInterval(() => this.updateClock(), 1000);
-            this.render();
-            this.calc();
-            this.updateFuel(1, this.data.fuel[1]);
-            this.updateFuel(2, this.data.fuel[2]);
-        },
+const AppState = {
+    fleet: [
+        { id: 1, name: "Case Magnum 340", fuel: 82, status: "Operando", cost_h: 150 },
+        { id: 2, name: "John Deere 8R", fuel: 18, status: "Reserva", cost_h: 180 },
+        { id: 3, name: "New Holland T9", fuel: 55, status: "Manutenção", cost_h: 210 }
+    ],
+    inventory: JSON.parse(localStorage.getItem('agro_inv')) || [],
+    finance: { total_invested: 1250000, projected_revenue: 3800000 }
+};
 
-        updateClock() {
-            const now = new Date();
-            document.getElementById('date').innerText = now.toLocaleDateString('pt-BR');
-            document.getElementById('clock').innerText = now.toLocaleTimeString('pt-BR');
-        },
+const Router = {
+    go(view) {
+        const viewport = document.getElementById('viewport');
+        viewport.innerHTML = `<div class="view-animate">Carregando módulo...</div>`;
+        
+        // Simulação de delay de processamento
+        setTimeout(() => {
+            switch(view) {
+                case 'dashboard': this.renderDashboard(); break;
+                case 'fleet': this.renderFleet(); break;
+                default: this.renderPlaceholder(view);
+            }
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('breadcrumb').innerText = `AgroOS / ${view.charAt(0).toUpperCase() + view.slice(1)}`;
+        }, 300);
+    },
 
-        save() {
-            localStorage.setItem('agro_os', JSON.stringify(this.data.os));
-            localStorage.setItem('agro_ins', JSON.stringify(this.data.ins));
-            localStorage.setItem('agro_fuel', JSON.stringify(this.data.fuel));
-            this.updateStats();
-        },
-
-        // --- Operações de Campo ---
-        addOS() {
-            const task = document.getElementById('input-task').value;
-            const prio = document.getElementById('input-prio').value;
-            if(!task) return alert("Descreva a operação.");
-            
-            this.data.os.push({ id: Date.now(), task, prio });
-            document.getElementById('input-task').value = "";
-            this.save();
-            this.render();
-        },
-
-        removeOS(id) {
-            this.data.os = this.data.os.filter(item => item.id !== id);
-            this.save();
-            this.render();
-        },
-
-        // --- Inventário ---
-        addIns() {
-            const name = document.getElementById('input-ins-name').value;
-            const qty = document.getElementById('input-ins-qty').value;
-            if(!name || !qty) return;
-
-            this.data.ins.push({ id: Date.now(), name, qty });
-            document.getElementById('input-ins-name').value = "";
-            document.getElementById('input-ins-qty').value = "";
-            this.save();
-            this.render();
-        },
-
-        removeIns(id) {
-            this.data.ins = this.data.ins.filter(item => item.id !== id);
-            this.save();
-            this.render();
-        },
-
-        // --- Cálculos e Telemetria ---
-        calc() {
-            const v = parseFloat(document.getElementById('calc-v').value) || 0;
-            const q = parseFloat(document.getElementById('calc-q').value) || 0;
-            const e = 0.5; // Espaçamento fixo 50cm
-            
-            const lha = v > 0 ? (600 * q) / (v * e) : 0;
-            document.getElementById('calc-res').innerText = lha.toFixed(2) + " L/ha";
-        },
-
-        updateFuel(id, val) {
-            this.data.fuel[id] = val;
-            const fill = document.getElementById(`bar-fuel-${id}`);
-            const text = document.getElementById(`txt-fuel-${id}`);
-            
-            fill.style.width = val + "%";
-            text.innerText = val + "%";
-            
-            // Cor Dinâmica
-            fill.style.background = val < 20 ? 'var(--danger)' : val < 50 ? 'var(--warning)' : 'var(--accent)';
-            this.save();
-        },
-
-        updateStats() {
-            document.getElementById('stat-os').innerText = this.data.os.length;
-            document.getElementById('stat-ins').innerText = this.data.ins.length;
-            const avg = (parseInt(this.data.fuel[1]) + parseInt(this.data.fuel[2])) / 2;
-            document.getElementById('stat-fuel').innerText = avg.toFixed(0) + "%";
-        },
-
-        render() {
-            // Renderizar OS
-            document.getElementById('list-os').innerHTML = this.data.os.map(item => `
-                <div class="list-item ${item.prio === 'urgent' ? 'urgent' : ''}">
-                    <span>${item.task}</span>
-                    <button class="btn-action" onclick="App.removeOS(${item.id})"><i class="fas fa-check-circle"></i></button>
+    renderDashboard() {
+        const viewport = document.getElementById('viewport');
+        viewport.innerHTML = `
+            <div class="view-animate">
+                <div class="grid">
+                    <div class="agro-card">
+                        <span>Capex Safra 24/25</span>
+                        <div class="stat-value">R$ 1.25M</div>
+                        <span class="trend-up"><i class="fas fa-arrow-up"></i> 12% vs ano ant.</span>
+                    </div>
+                    <div class="agro-card">
+                        <span>Hectares Monitorados</span>
+                        <div class="stat-value">4.250 ha</div>
+                        <span>Status: Plantio 85%</span>
+                    </div>
+                    <div class="agro-card">
+                        <span>Janela Climática</span>
+                        <div class="stat-value">Ótima</div>
+                        <span style="color: var(--primary)">Chuva prevista: 15mm</span>
+                    </div>
                 </div>
-            `).join('');
-
-            // Renderizar Insumos
-            document.getElementById('list-ins').innerHTML = this.data.ins.map(item => `
-                <div class="list-item">
-                    <span>${item.name}</span>
-                    <span><b>${item.qty}</b> <button class="btn-action" onclick="App.removeIns(${item.id})"><i class="fas fa-trash"></i></button></span>
+                
+                <div class="grid" style="margin-top: 30px; grid-template-columns: 2fr 1fr;">
+                    <div class="agro-card">
+                        <h3>Performance de Produção (Estimada vs Real)</h3>
+                        <canvas id="performanceChart" style="height: 300px;"></canvas>
+                    </div>
+                    <div class="agro-card">
+                        <h3>Alertas Críticos</h3>
+                        <div style="margin-top: 15px;">
+                            <div style="color: var(--danger); margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i> Combustível Baixo: JD 8R</div>
+                            <div style="color: var(--warning);"><i class="fas fa-tools"></i> Revisão Case Magnum: 12h</div>
+                        </div>
+                    </div>
                 </div>
-            `).join('');
-            
-            this.updateStats();
-        }
-    };
+            </div>
+        `;
+        this.initDashboardCharts();
+    },
 
-    App.init();
+    renderFleet() {
+        const viewport = document.getElementById('viewport');
+        const machineHtml = AppState.fleet.map(m => `
+            <div class="machine-card">
+                <i class="fas fa-tractor" style="font-size: 1.5rem;"></i>
+                <div style="flex: 1;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <b style="color: #fff">${m.name}</b>
+                        <span>${m.fuel}%</span>
+                    </div>
+                    <div class="fuel-track">
+                        <div class="fuel-fill" style="width: ${m.fuel}%; background: ${m.fuel < 20 ? 'var(--danger)' : 'var(--primary)'}"></div>
+                    </div>
+                </div>
+                <div style="width: 120px; text-align: right;">
+                    <span style="font-size: 0.8rem; color: ${m.status === 'Operando' ? 'var(--primary)' : 'var(--warning)'}">${m.status}</span>
+                </div>
+            </div>
+        `).join('');
+
+        viewport.innerHTML = `
+            <div class="view-animate">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <h2>Gestão de Frota e Telemetria</h2>
+                    <button class="btn btn-primary"><i class="fas fa-plus"></i> Adicionar Máquina</button>
+                </div>
+                <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="agro-card">
+                        <h3>Status das Unidades</h3>
+                        <div style="margin-top: 20px;">${machineHtml}</div>
+                    </div>
+                    <div class="agro-card">
+                        <h3>Consumo de Diesel (7 dias)</h3>
+                        <canvas id="fuelChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        `;
+        this.initFleetCharts();
+    },
+
+    renderPlaceholder(view) {
+        document.getElementById('viewport').innerHTML = `<h2>Módulo ${view} em desenvolvimento...</h2>`;
+    },
+
+    initDashboardCharts() {
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Soja', 'Milho', 'Trigo', 'Algodão'],
+                datasets: [{
+                    label: 'Produtividade (Sc/ha)',
+                    data: [65, 140, 55, 280],
+                    backgroundColor: '#2ebc59'
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    },
+
+    initFleetCharts() {
+        const ctx = document.getElementById('fuelChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'],
+                datasets: [{
+                    label: 'Litros consumidos',
+                    data: [450, 520, 380, 600, 550, 200, 50],
+                    borderColor: '#58a6ff',
+                    tension: 0.4
+                }]
+            }
+        });
+    }
+};
+
+// Utilitários
+function updateTime() {
+    document.getElementById('sys-time').innerText = new Date().toLocaleTimeString();
+}
+
+// Startup
+window.onload = () => {
+    Router.go('dashboard');
+    setInterval(updateTime, 1000);
+};
+
 </script>
-
 </body>
 </html>
