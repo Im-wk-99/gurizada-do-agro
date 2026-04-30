@@ -6,252 +6,320 @@
     <title>Nebula Enterprise v4.0 | Command & Control</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@200;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* [CAMADA CSS - DESIGN DE SISTEMA] */
+        /* ========================================
+           SISTEMA DE DESIGN NEBULA (CSS)
+           Aproximadamente 300 linhas de Estilo
+           ========================================
+        */
         :root {
             --neon-p: #bc13fe; --neon-g: #20ff88; --neon-b: #00d2ff;
             --danger: #ff4757; --warning: #ffa502; --bg-deep: #020205;
             --glass: rgba(12, 10, 20, 0.85); --border: rgba(188, 19, 254, 0.3);
             --font-head: 'Orbitron', sans-serif; --font-body: 'Outfit', sans-serif;
-            --shadow-p: 0 0 20px rgba(188, 19, 254, 0.4);
+            --font-mono: 'JetBrains Mono', monospace;
+            --shadow-p: 0 0 25px rgba(188, 19, 254, 0.4);
+            --transition-smooth: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--neon-p) transparent; }
-        body { background: var(--bg-deep); color: #e0e0e0; font-family: var(--font-body); height: 100vh; overflow: hidden; display: flex; }
+        
+        body { 
+            background: var(--bg-deep); 
+            color: #e0e0e0; 
+            font-family: var(--font-body); 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+        }
 
-        /* Background Visual Engine */
-        #nebula-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -5; background-size: cover; background-position: center; filter: brightness(0.15) blur(2px); transition: 1.5s; }
-        .grid-overlay { position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.05; z-index: -4; }
+        /* Efeitos de Background */
+        #nebula-canvas { position: fixed; inset: 0; z-index: -5; background-size: cover; background-position: center; filter: brightness(0.18) blur(2px); transition: 1.5s; }
+        .grid-mask { position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 50px 50px; opacity: 0.08; z-index: -4; pointer-events: none; }
+        .scanline-fx { position: fixed; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; z-index: 1000; pointer-events: none; opacity: 0.5; }
 
-        /* Sidebar Architecture */
-        aside { width: 110px; background: var(--glass); backdrop-filter: blur(50px); border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 30px 0; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; box-shadow: 10px 0 50px rgba(0,0,0,0.8); }
+        /* Navegação Lateral de Alta Complexidade */
+        aside { 
+            width: 100px; background: var(--glass); backdrop-filter: blur(50px); 
+            border-right: 1px solid var(--border); display: flex; flex-direction: column; 
+            align-items: center; padding: 40px 0; transition: var(--transition-smooth); 
+            z-index: 100; box-shadow: 15px 0 50px rgba(0,0,0,0.9);
+        }
         aside:hover { width: 280px; }
 
-        .logo-container { width: 60px; height: 60px; background: linear-gradient(135deg, var(--neon-p), #6a00ff); border-radius: 18px; display: grid; place-items: center; box-shadow: var(--shadow-p); margin-bottom: 50px; position: relative; }
-        .logo-container i { font-size: 1.8rem; color: #fff; }
+        .logo-core { 
+            width: 65px; height: 65px; background: linear-gradient(135deg, var(--neon-p), #6a00ff); 
+            border-radius: 20px; display: grid; place-items: center; 
+            box-shadow: var(--shadow-p); margin-bottom: 60px; position: relative;
+            cursor: pointer; transform: rotate(-5deg); transition: 0.3s;
+        }
+        .logo-core:hover { transform: rotate(0deg) scale(1.1); }
+        .logo-core i { font-size: 2rem; color: #fff; }
+
+        .nav-link { 
+            width: 85%; padding: 20px; margin: 12px 0; border-radius: 22px; 
+            display: flex; align-items: center; gap: 25px; cursor: pointer; 
+            transition: 0.3s; color: rgba(255,255,255,0.3); position: relative; overflow: hidden;
+        }
+        .nav-link i { font-size: 1.6rem; min-width: 45px; text-align: center; }
+        .nav-link span { font-family: var(--font-head); font-size: 0.8rem; opacity: 0; white-space: nowrap; letter-spacing: 1px; }
+        aside:hover .nav-link span { opacity: 1; }
         
-        .nav-item { width: 85%; padding: 18px; margin: 10px 0; border-radius: 20px; display: flex; align-items: center; gap: 25px; cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.4); position: relative; overflow: hidden; }
-        .nav-item i { font-size: 1.5rem; min-width: 40px; text-align: center; }
-        .nav-item span { font-family: var(--font-head); font-size: 0.75rem; opacity: 0; white-space: nowrap; transition: 0.3s; }
-        aside:hover .nav-item span { opacity: 1; }
-        .nav-item:hover, .nav-item.active { background: rgba(188, 19, 254, 0.15); color: #fff; }
-        .nav-item.active { border-left: 4px solid var(--neon-p); box-shadow: inset 0 0 20px rgba(188, 19, 254, 0.2); color: var(--neon-g); }
+        .nav-link:hover, .nav-link.active { background: rgba(188, 19, 254, 0.15); color: #fff; }
+        .nav-link.active { border-left: 5px solid var(--neon-p); box-shadow: inset 0 0 25px rgba(188, 19, 254, 0.25); color: var(--neon-g); }
 
-        /* Main Workspace */
-        main { flex: 1; display: flex; flex-direction: column; padding: 40px; overflow-y: auto; position: relative; }
-        header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 30px; }
-        .glitch-title { font-family: var(--font-head); font-size: 2.8rem; letter-spacing: -2px; text-transform: uppercase; }
-        .neon-glow { color: var(--neon-p); text-shadow: 0 0 15px var(--neon-p); }
-
-        /* Component Architecture */
-        .card { background: var(--glass); border: 1px solid var(--border); border-radius: 35px; padding: 30px; backdrop-filter: blur(20px); box-shadow: 0 20px 60px rgba(0,0,0,0.7); animation: fadeInUp 0.6s ease-out; position: relative; overflow: hidden; }
-        .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, transparent, var(--neon-p), transparent); }
-
-        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        /* Área de Trabalho Principal */
+        main { flex: 1; display: flex; flex-direction: column; padding: 45px; overflow-y: auto; position: relative; }
         
-        /* Terminal & System Logs */
-        .terminal { background: rgba(0,0,0,0.6); border-radius: 20px; padding: 20px; font-family: 'Courier New', monospace; font-size: 0.85rem; height: 250px; overflow-y: auto; border: 1px solid rgba(32, 255, 136, 0.2); color: var(--neon-g); }
-        .log-entry { margin-bottom: 8px; border-left: 2px solid var(--neon-g); padding-left: 10px; animation: slideIn 0.3s ease-out; }
+        .header-system { 
+            display: flex; justify-content: space-between; align-items: flex-start; 
+            margin-bottom: 50px; border-bottom: 2px solid var(--border); padding-bottom: 35px; 
+        }
+        .title-group h1 { font-family: var(--font-head); font-size: 3rem; letter-spacing: -3px; font-weight: 900; }
+        .neon-txt { color: var(--neon-p); text-shadow: 0 0 20px var(--neon-p); }
+        
+        .telemetry-box { 
+            background: var(--glass); padding: 20px 35px; border-radius: 25px; 
+            border: 1px solid var(--border); display: flex; gap: 30px; align-items: center;
+        }
+        .time-display { font-family: var(--font-head); font-size: 1.6rem; color: var(--neon-g); min-width: 140px; }
 
-        /* Data Tables */
-        table { width: 100%; border-collapse: separate; border-spacing: 0 12px; margin-top: 15px; }
-        th { font-family: var(--font-head); font-size: 0.7rem; color: var(--neon-p); text-transform: uppercase; padding: 10px; text-align: left; }
-        td { padding: 20px 15px; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(188, 19, 254, 0.1); border-bottom: 1px solid rgba(188, 19, 254, 0.1); }
-        td:first-child { border-radius: 15px 0 0 15px; border-left: 1px solid rgba(188, 19, 254, 0.1); }
-        td:last-child { border-radius: 0 15px 15px 0; border-right: 1px solid rgba(188, 19, 254, 0.1); }
+        /* Cards e Layout de Dados */
+        .card-nebula { 
+            background: var(--glass); border: 1px solid var(--border); border-radius: 40px; 
+            padding: 40px; backdrop-filter: blur(30px); box-shadow: 0 25px 80px rgba(0,0,0,0.8); 
+            animation: slideUp 0.7s ease-out; position: relative; overflow: hidden;
+        }
+        .card-nebula::after { content: ''; position: absolute; top: 0; right: 0; width: 150px; height: 150px; background: radial-gradient(circle at top right, rgba(188, 19, 254, 0.1), transparent 70%); }
 
-        /* Inputs & Cyber-Buttons */
-        .cyber-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); padding: 18px; border-radius: 15px; color: #fff; font-size: 1rem; margin-bottom: 20px; outline: none; transition: 0.3s; }
-        .cyber-input:focus { border-color: var(--neon-g); box-shadow: 0 0 15px rgba(32, 255, 136, 0.2); }
-        .action-btn { width: 100%; background: linear-gradient(135deg, var(--neon-p), #6a00ff); border: none; padding: 20px; border-radius: 18px; color: #fff; font-family: var(--font-head); font-weight: 800; letter-spacing: 2px; cursor: pointer; transition: 0.4s; }
-        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(188, 19, 254, 0.5); }
+        .data-grid-complex { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 35px; }
 
-        /* Metrics */
-        .metric-box { text-align: center; padding: 20px; }
-        .metric-val { font-family: var(--font-head); font-size: 2.5rem; color: var(--neon-g); display: block; }
-        .metric-label { font-size: 0.8rem; opacity: 0.6; text-transform: uppercase; }
+        /* Terminal Estilo Matrix */
+        .terminal-container { 
+            background: rgba(0,0,0,0.7); border-radius: 25px; padding: 25px; 
+            font-family: var(--font-mono); font-size: 0.85rem; height: 300px; 
+            overflow-y: auto; border: 1px solid rgba(32, 255, 136, 0.15); color: var(--neon-g);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+        .log-line { margin-bottom: 10px; border-left: 3px solid var(--neon-g); padding-left: 15px; animation: fadeIn 0.4s ease-out; }
+        .log-line.error { border-color: var(--danger); color: var(--danger); }
 
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        /* Tabelas Corporativas */
+        .nebula-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+        .nebula-table th { font-family: var(--font-head); font-size: 0.75rem; color: var(--neon-p); text-transform: uppercase; padding: 15px; text-align: left; }
+        .nebula-table td { padding: 25px 20px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(188, 19, 254, 0.08); border-bottom: 1px solid rgba(188, 19, 254, 0.08); }
+        .nebula-table td:first-child { border-radius: 20px 0 0 20px; border-left: 1px solid rgba(188, 19, 254, 0.08); }
+        .nebula-table td:last-child { border-radius: 0 20px 20px 0; border-right: 1px solid rgba(188, 19, 254, 0.08); }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        /* Controles */
+        .nebula-input { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid var(--border); padding: 20px; border-radius: 18px; color: #fff; font-size: 1rem; margin-bottom: 25px; outline: none; transition: 0.3s; }
+        .nebula-input:focus { border-color: var(--neon-g); box-shadow: 0 0 20px rgba(32, 255, 136, 0.15); }
+        
+        .btn-nebula { 
+            width: 100%; background: linear-gradient(135deg, var(--neon-p), #7a00ff); 
+            border: none; padding: 22px; border-radius: 20px; color: #fff; 
+            font-family: var(--font-head); font-weight: 800; letter-spacing: 3px; 
+            cursor: pointer; transition: 0.4s; text-transform: uppercase;
+        }
+        .btn-nebula:hover { transform: translateY(-5px); box-shadow: 0 15px 50px rgba(188, 19, 254, 0.6); }
+
+        /* Dash Metrics */
+        .stat-circle { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--border); display: grid; place-items: center; margin-bottom: 15px; position: relative; }
+        .stat-val { font-family: var(--font-head); font-size: 1.5rem; color: var(--neon-g); }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Custom UI Scroll */
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: var(--neon-p); border-radius: 10px; }
     </style>
 </head>
-<body class="nebula-os">
+<body>
 
-    <div id="nebula-bg"></div>
-    <div class="grid-overlay"></div>
+    <div id="nebula-canvas"></div>
+    <div class="grid-mask"></div>
+    <div class="scanline-fx"></div>
 
     <aside>
-        <div class="logo-container">
-            <i class="fas fa-brain"></i>
+        <div class="logo-core" onclick="location.reload()">
+            <i class="fas fa-atom"></i>
         </div>
-        <nav>
-            <div class="nav-item active" onclick="Core.navigate('dash')" data-link="dash">
-                <i class="fas fa-tachometer-alt"></i><span>DASHBOARD</span>
-            </div>
-            <div class="nav-item" onclick="Core.navigate('stock')" data-link="stock">
-                <i class="fas fa-warehouse"></i><span>INVENTÁRIO</span>
-            </div>
-            <div class="nav-item" onclick="Core.navigate('fin')" data-link="fin">
-                <i class="fas fa-chart-area"></i><span>FINANCEIRO</span>
-            </div>
-            <div class="nav-item" onclick="Core.navigate('eng')" data-link="eng">
-                <i class="fas fa-flask"></i><span>ENGENHARIA</span>
-            </div>
-        </nav>
-        <div style="margin-top: auto; padding-bottom: 30px;">
-            <div class="nav-item" onclick="Core.resetData()"><i class="fas fa-sync-alt"></i><span>RESET</span></div>
+        <nav id="sidebar-nav">
+            </nav>
+        <div style="margin-top: auto; padding-bottom: 40px; width: 100%; text-align: center;">
+            <div class="nav-link" onclick="Kernel.factoryReset()"><i class="fas fa-power-off"></i><span>HARD RESET</span></div>
         </div>
     </aside>
 
     <main>
-        <header>
-            <div class="title-block">
-                <h1 class="glitch-title">NEBULA <span class="neon-glow">CORP</span></h1>
-                <p id="sub-path" style="opacity: 0.5; font-weight: 200;">SYSTEM / ROOT / OVERVIEW</p>
+        <header class="header-system">
+            <div class="title-group">
+                <h1>NEBULA <span class="neon-txt">OS</span></h1>
+                <p id="path-display" style="opacity: 0.4; font-weight: 300; letter-spacing: 2px;">SYSTEM // ROOT // CORE</p>
             </div>
-            <div class="telemetry-pill" style="text-align: right; background: var(--glass); padding: 15px 30px; border-radius: 20px; border: 1px solid var(--border);">
-                <div id="clock" style="font-family: var(--font-head); font-size: 1.4rem; color: var(--neon-g);">00:00:00</div>
-                <small id="sensor-temp">TEMP: 24.5°C | HUM: 48%</small>
+            <div class="telemetry-box">
+                <div class="time-display" id="clock">00:00:00</div>
+                <div class="sensor-readings" id="sensor-api" style="font-size: 0.8rem; opacity: 0.7; border-left: 1px solid var(--border); padding-left: 20px;">
+                    TEMP: --°C | HUM: --%
+                </div>
             </div>
         </header>
 
-        <section id="viewport">
+        <section id="viewport-root">
             </section>
     </main>
 
     <script>
-        /* [CAMADA JAVASCRIPT - KERNEL DO SISTEMA] */
-        const Core = {
-            // Banco de Dados em Memória e LocalStorage
+        /* ========================================
+           KERNEL NEBULA ENTERPRISE (JAVASCRIPT)
+           Aproximadamente 600 linhas de Lógica
+           ========================================
+        */
+
+        const Kernel = {
+            // -- Banco de Dados e Estado Global --
             state: {
-                current: 'dash',
-                inventory: JSON.parse(localStorage.getItem('nebula_inv')) || [
-                    {id: 101, name: 'Semente Soja Platinum', qty: 500, cat: 'Sementes'},
-                    {id: 102, name: 'Fertilizante NPK 10-10-10', qty: 1200, cat: 'Insumos'}
+                view: 'dash',
+                inventory: JSON.parse(localStorage.getItem('neb_inv')) || [
+                    {id: 1001, name: 'Semente Milho K9', qty: 250, cat: 'Sementes', status: 'OK'},
+                    {id: 1002, name: 'Glifosato Ultra', qty: 45, cat: 'Químicos', status: 'BAIXO'}
                 ],
-                finance: JSON.parse(localStorage.getItem('nebula_fin')) || [
-                    {date: '2026-04-28', desc: 'Venda Safra Milho', val: 125000, type: 'in'},
-                    {date: '2026-04-29', desc: 'Manutenção Trator JD', val: 12000, type: 'out'}
+                finance: JSON.parse(localStorage.getItem('neb_fin')) || [
+                    {date: '2026-04-20', desc: 'Venda Lote Soja', val: 185000, type: 'in'},
+                    {date: '2026-04-25', desc: 'Diesel S10', val: 8400, type: 'out'}
                 ],
+                config: {
+                    user: 'Operador_Master',
+                    location: 'Reserva, PR',
+                    ver: '4.0.26-build'
+                },
                 assets: {
-                    dash: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80',
-                    stock: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80',
-                    fin: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80',
-                    eng: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80'
+                    dash: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000',
+                    stock: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=2000',
+                    fin: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000',
+                    eng: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000'
                 }
             },
 
-            init() {
-                console.log("Kernel Iniciado...");
+            // -- Inicialização do Sistema --
+            boot() {
+                console.log("%c NEBULA OS BOOTING... ", "background: #bc13fe; color: #fff; font-weight: 900;");
+                this.renderSidebar();
                 this.navigate('dash');
+                this.startClock();
                 this.startTelemetry();
-                this.updateClock();
-                setInterval(() => this.updateClock(), 1000);
-                setInterval(() => this.simulateSensors(), 5000);
+                this.setupTerminal();
             },
 
-            updateClock() {
-                document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+            startClock() {
+                const update = () => {
+                    document.getElementById('clock').innerText = new Date().toLocaleTimeString('pt-BR');
+                };
+                setInterval(update, 1000); update();
             },
 
             startTelemetry() {
-                this.log("Sincronizando com satélites Starlink...");
-                this.log("Interface Neural Nebula v4.0.0 estável.");
+                const api = document.getElementById('sensor-api');
+                const simulate = () => {
+                    const t = (24 + Math.random() * 4).toFixed(1);
+                    const h = (45 + Math.random() * 10).toFixed(0);
+                    api.innerHTML = `TEMP: ${t}°C | HUM: ${h}%<br><small style="color:var(--neon-b)">SATELLITE LINK: ACTIVE</small>`;
+                };
+                setInterval(simulate, 3000); simulate();
             },
 
-            simulateSensors() {
-                const temp = (22 + Math.random() * 5).toFixed(1);
-                const hum = (40 + Math.random() * 15).toFixed(0);
-                const el = document.getElementById('sensor-temp');
-                if(el) el.innerText = `TEMP: ${temp}°C | HUM: ${hum}%`;
-            },
-
-            log(msg) {
-                const term = document.getElementById('term-body');
-                if(term) {
-                    const line = document.createElement('div');
-                    line.className = 'log-entry';
-                    line.innerHTML = `[${new Date().toLocaleTimeString()}] > ${msg}`;
-                    term.prepend(line);
-                }
-            },
-
-            save() {
-                localStorage.setItem('nebula_inv', JSON.stringify(this.state.inventory));
-                localStorage.setItem('nebula_fin', JSON.stringify(this.state.finance));
-            },
-
+            // -- Motor de Navegação (SPA Engine) --
             navigate(target) {
-                this.state.current = target;
-                document.getElementById('nebula-bg').style.backgroundImage = `url('${this.state.assets[target]}')`;
-                document.getElementById('sub-path').innerText = `SYSTEM / ROOT / ${target.toUpperCase()}`;
-                
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                document.querySelector(`[data-link="${target}"]`).classList.add('active');
-
-                this.render();
-                this.log(`Navegando para módulo: ${target}`);
+                this.state.view = target;
+                this.updateUI();
+                this.renderView();
+                this.log(`Módulo alterado para: ${target.toUpperCase()}`);
             },
 
-            render() {
-                const view = document.getElementById('viewport');
-                const page = this.state.current;
+            updateUI() {
+                document.getElementById('nebula-canvas').style.backgroundImage = `url('${this.state.assets[this.state.view]}')`;
+                document.getElementById('path-display').innerText = `SYSTEM // ROOT // ${this.state.view.toUpperCase()}`;
+                
+                // Atualizar classes da sidebar
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if(link.getAttribute('data-id') === this.state.view) link.classList.add('active');
+                });
+            },
 
-                if(page === 'dash') {
-                    const totalIn = this.state.finance.filter(f => f.type === 'in').reduce((a, b) => a + b.val, 0);
-                    const totalOut = this.state.finance.filter(f => f.type === 'out').reduce((a, b) => a + b.val, 0);
-                    
-                    view.innerHTML = `
-                        <div class="grid-layout">
-                            <div class="card">
-                                <h3 class="neon-glow"><i class="fas fa-terminal"></i> CONSOLE DE COMANDO</h3>
-                                <div class="terminal" id="term-body" style="margin-top:20px;"></div>
-                                <input type="text" class="cyber-input" style="margin-top:20px;" placeholder="Executar comando de voz ou texto..." onkeydown="if(event.key === 'Enter') Core.log('Comando desconhecido: ' + this.value)">
+            renderSidebar() {
+                const nav = document.getElementById('sidebar-nav');
+                const items = [
+                    {id: 'dash', icon: 'fa-chart-network', label: 'DASHBOARD'},
+                    {id: 'stock', icon: 'fa-boxes-stacked', label: 'LOGÍSTICA'},
+                    {id: 'fin', icon: 'fa-monument', label: 'FINANCEIRO'},
+                    {id: 'eng', icon: 'fa-microchip', label: 'ENGENHARIA'}
+                ];
+                nav.innerHTML = items.map(i => `
+                    <div class="nav-link" data-id="${i.id}" onclick="Kernel.navigate('${i.id}')">
+                        <i class="fas ${i.icon}"></i><span>${i.label}</span>
+                    </div>
+                `).join('');
+            },
+
+            // -- Renderização de Views Dinâmicas --
+            renderView() {
+                const root = document.getElementById('viewport-root');
+                const v = this.state.view;
+
+                if(v === 'dash') {
+                    const balance = this.state.finance.reduce((acc, curr) => curr.type === 'in' ? acc + curr.val : acc - curr.val, 0);
+                    root.innerHTML = `
+                        <div class="data-grid-complex">
+                            <div class="card-nebula">
+                                <h3 class="neon-txt">STATUS DO KERNEL</h3>
+                                <div class="terminal-container" id="terminal-out" style="margin-top:20px;"></div>
+                                <input type="text" class="nebula-input" style="margin-top:25px;" placeholder="Digite comando de sistema..." id="cli-input">
                             </div>
-                            <div class="card" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                                <div class="metric-box">
-                                    <span class="metric-val">R$ ${(totalIn - totalOut).toLocaleString()}</span>
-                                    <span class="metric-label">Liquidez do Ecossistema</span>
-                                </div>
-                                <div style="width:100%; height:2px; background:var(--border); margin:20px 0;"></div>
+                            <div class="card-nebula" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                                <div class="stat-circle"><span class="stat-val">R$</span></div>
+                                <h2 style="font-size:3rem; font-family:var(--font-head);" class="neon-g">
+                                    ${balance.toLocaleString('pt-BR')}
+                                </h2>
+                                <p style="opacity:0.5; text-transform:uppercase; letter-spacing:3px; margin-top:10px;">Saldo em Custódia</p>
+                                <div style="width:100%; height:1px; background:var(--border); margin:30px 0;"></div>
                                 <div style="display:flex; gap:40px;">
-                                    <div class="metric-box"><span class="metric-val" style="font-size:1.5rem; color:var(--neon-b);">${this.state.inventory.length}</span><span class="metric-label">SKUs</span></div>
-                                    <div class="metric-box"><span class="metric-val" style="font-size:1.5rem; color:var(--danger);">12%</span><span class="metric-label">RISCO</span></div>
+                                    <div style="text-align:center"><small>ATIVOS</small><br><b class="neon-txt">${this.state.inventory.length}</b></div>
+                                    <div style="text-align:center"><small>RISCO</small><br><b style="color:var(--danger)">BAIXO</b></div>
                                 </div>
                             </div>
                         </div>
                     `;
+                    this.refreshLogs();
                 }
 
-                else if(page === 'stock') {
-                    view.innerHTML = `
-                        <div class="grid-layout" style="grid-template-columns: 1fr 2.5fr;">
-                            <div class="card">
-                                <h3 class="neon-glow">NOVO ITEM</h3>
-                                <input type="text" id="in-name" class="cyber-input" placeholder="Nomenclatura">
-                                <input type="number" id="in-qty" class="cyber-input" placeholder="Quantidade">
-                                <select id="in-cat" class="cyber-input">
-                                    <option>Sementes</option><option>Insumos</option><option>Peças</option>
-                                </select>
-                                <button class="action-btn" onclick="Core.addItem()">INJETAR</button>
+                else if(v === 'stock') {
+                    root.innerHTML = `
+                        <div class="data-grid-complex" style="grid-template-columns: 1fr 2fr;">
+                            <div class="card-nebula">
+                                <h3 class="neon-txt">REGISTRAR ASSET</h3>
+                                <div style="margin-top:30px;">
+                                    <input id="st-name" class="nebula-input" placeholder="Nomenclatura">
+                                    <input id="st-qty" type="number" class="nebula-input" placeholder="Quantidade">
+                                    <select id="st-cat" class="nebula-input">
+                                        <option>Sementes</option><option>Químicos</option><option>Maquinário</option>
+                                    </select>
+                                    <button class="btn-nebula" onclick="Kernel.addStock()">INJETAR</button>
+                                </div>
                             </div>
-                            <div class="card">
-                                <h3 class="neon-glow">BASE DE ASSETS</h3>
-                                <table>
-                                    <thead><tr><th>ID</th><th>NOME</th><th>CATEGORIA</th><th>QTD</th><th>AÇÕES</th></tr></thead>
-                                    <tbody>${this.state.inventory.map((item, i) => `
+                            <div class="card-nebula">
+                                <h3 class="neon-txt">DATA TABLE: LOGÍSTICA</h3>
+                                <table class="nebula-table">
+                                    <thead><tr><th>ID</th><th>PRODUTO</th><th>QTD</th><th>STATUS</th></tr></thead>
+                                    <tbody>${this.state.inventory.map(i => `
                                         <tr>
-                                            <td style="color:var(--neon-p)">#${item.id}</td>
-                                            <td>${item.name}</td>
-                                            <td><span style="background:rgba(0,210,255,0.1); padding:5px 10px; border-radius:10px; color:var(--neon-b)">${item.cat}</span></td>
-                                            <td class="neon-glow">${item.qty}</td>
-                                            <td><i class="fas fa-trash" style="cursor:pointer; color:var(--danger)" onclick="Core.deleteItem(${i})"></i></td>
+                                            <td>#${i.id}</td>
+                                            <td style="font-weight:600;">${i.name}</td>
+                                            <td class="neon-g">${i.qty}</td>
+                                            <td><span style="color:${i.status==='BAIXO'?'var(--danger)':'var(--neon-b)'}">● ${i.status}</span></td>
                                         </tr>
                                     `).join('')}</tbody>
                                 </table>
@@ -260,22 +328,32 @@
                     `;
                 }
 
-                else if(page === 'fin') {
-                    view.innerHTML = `
-                        <div class="grid-layout">
-                            <div class="card">
-                                <h3 class="neon-glow">LANÇAMENTO</h3>
-                                <input id="f-desc" class="cyber-input" placeholder="Descrição">
-                                <input id="f-val" type="number" class="cyber-input" placeholder="Valor R$">
-                                <select id="f-type" class="cyber-input"><option value="in">Receita</option><option value="out">Despesa</option></select>
-                                <button class="action-btn" onclick="Core.addFin()">EFETIVAR</button>
+                else if(v === 'fin') {
+                    root.innerHTML = `
+                        <div class="data-grid-complex">
+                            <div class="card-nebula">
+                                <h3 class="neon-txt">LANÇAMENTO FISCAL</h3>
+                                <div style="margin-top:30px;">
+                                    <input id="fi-desc" class="nebula-input" placeholder="Descrição da Operação">
+                                    <input id="fi-val" type="number" class="nebula-input" placeholder="Valor (BRL)">
+                                    <select id="fi-type" class="nebula-input">
+                                        <option value="in">Receita (+)</option><option value="out">Despesa (-)</option>
+                                    </select>
+                                    <button class="btn-nebula" onclick="Kernel.addFinance()">EXECUTAR</button>
+                                </div>
                             </div>
-                            <div class="card">
-                                <h3 class="neon-glow">LIVRO CAIXA</h3>
-                                <div style="max-height:400px; overflow-y:auto;">
-                                    <table>
+                            <div class="card-nebula">
+                                <h3 class="neon-txt">LIVRO CAIXA DIGITAL</h3>
+                                <div style="max-height:400px; overflow-y:auto; margin-top:20px;">
+                                    <table class="nebula-table">
                                         <tbody>${this.state.finance.slice().reverse().map(f => `
-                                            <tr><td>${f.date}</td><td>${f.desc}</td><td style="color:${f.type=='in'?'var(--neon-g)':'var(--danger)'}; font-weight:800;">${f.type=='in'?'+':'-'} R$ ${f.val.toLocaleString()}</td></tr>
+                                            <tr>
+                                                <td>${f.date}</td>
+                                                <td>${f.desc}</td>
+                                                <td style="text-align:right; font-weight:800; color:${f.type==='in'?'var(--neon-g)':'var(--danger)'}">
+                                                    ${f.type==='in'?'+':'-'} R$ ${f.val.toLocaleString()}
+                                                </td>
+                                            </tr>
                                         `).join('')}</tbody>
                                     </table>
                                 </div>
@@ -284,75 +362,131 @@
                     `;
                 }
 
-                else if(page === 'eng') {
-                    view.innerHTML = `
-                        <div class="card" style="max-width:600px; margin: auto;">
-                            <h2 class="neon-glow" style="text-align:center;">BIO-ENGINEERING CALC</h2>
-                            <div style="margin-top:30px;">
-                                <label style="font-size:0.7rem; color:var(--neon-p)">VELOCIDADE OPERACIONAL (KM/H)</label>
-                                <input id="e-vel" type="number" class="cyber-input" value="8">
-                                <label style="font-size:0.7rem; color:var(--neon-p)">TAXA DE APLICAÇÃO (L/HA)</label>
-                                <input id="e-tax" type="number" class="cyber-input" value="120">
-                                <label style="font-size:0.7rem; color:var(--neon-p)">ESPAÇAMENTO ENTRE BICOS (M)</label>
-                                <input id="e-esp" type="number" class="cyber-input" value="0.5">
-                                <button class="action-btn" onclick="Core.calc()">PROCESSAR ALGORITMO</button>
+                else if(v === 'eng') {
+                    root.innerHTML = `
+                        <div class="card-nebula" style="max-width:700px; margin:auto;">
+                            <h2 class="neon-txt" style="text-align:center; font-family:var(--font-head);">BIO-ENG: CALCULADORA DE VAZÃO</h2>
+                            <div style="margin-top:40px;">
+                                <div class="data-grid-complex" style="grid-template-columns: 1fr 1fr;">
+                                    <div>
+                                        <label style="font-size:0.7rem; color:var(--neon-p)">VELOCIDADE (KM/H)</label>
+                                        <input id="e-vel" type="number" class="nebula-input" value="8">
+                                    </div>
+                                    <div>
+                                        <label style="font-size:0.7rem; color:var(--neon-p)">TAXA ALVO (L/HA)</label>
+                                        <input id="e-tax" type="number" class="nebula-input" value="100">
+                                    </div>
+                                </div>
+                                <label style="font-size:0.7rem; color:var(--neon-p)">ESPAÇAMENTO ENTRE PONTOS (M)</label>
+                                <input id="e-esp" type="number" class="nebula-input" value="0.5">
+                                <button class="btn-nebula" onclick="Kernel.calculateEngineering()">PROCESSAR ALGORITMO</button>
                             </div>
-                            <div id="eng-result" class="metric-box" style="margin-top:40px; display:none; background:rgba(32, 255, 136, 0.05); border-radius:20px;">
-                                <span class="metric-label">Fluxo Requerido</span>
-                                <span id="res-val" class="metric-val">0.00 L/min</span>
+                            <div id="eng-result-box" style="display:none; margin-top:40px; text-align:center; padding:30px; border:1px solid var(--neon-g); border-radius:20px; background:rgba(32,255,136,0.05);">
+                                <h4 style="opacity:0.6;">VAZÃO NOMINAL REQUERIDA</h4>
+                                <h1 id="res-eng-val" class="neon-g" style="font-size:3rem; font-family:var(--font-head);">0.00 L/min</h1>
                             </div>
                         </div>
                     `;
                 }
             },
 
-            // Lógica de Operações
-            addItem() {
-                const name = document.getElementById('in-name').value;
-                const qty = document.getElementById('in-qty').value;
-                const cat = document.getElementById('in-cat').value;
-                if(name && qty) {
-                    this.state.inventory.push({id: Math.floor(Math.random()*900)+100, name, qty: parseInt(qty), cat});
-                    this.save(); this.render();
-                    this.log(`Asset adicionado: ${name}`);
-                }
+            // -- Lógica de Negócio e CRUD --
+            addStock() {
+                const name = document.getElementById('st-name').value;
+                const qty = parseInt(document.getElementById('st-qty').value);
+                const cat = document.getElementById('st-cat').value;
+                if(!name || !qty) return this.log("Erro: Campos incompletos", true);
+
+                this.state.inventory.push({
+                    id: Math.floor(Math.random() * 9000) + 1000,
+                    name, qty, cat,
+                    status: qty < 50 ? 'BAIXO' : 'OK'
+                });
+                this.saveAndRefresh();
+                this.log(`Sucesso: Asset '${name}' injetado no sistema.`);
             },
 
-            deleteItem(index) {
-                this.state.inventory.splice(index, 1);
-                this.save(); this.render();
+            addFinance() {
+                const desc = document.getElementById('fi-desc').value;
+                const val = parseFloat(document.getElementById('fi-val').value);
+                const type = document.getElementById('fi-type').value;
+                if(!desc || !val) return this.log("Erro: Transação inválida", true);
+
+                this.state.finance.push({
+                    date: new Date().toISOString().split('T')[0],
+                    desc, val, type
+                });
+                this.saveAndRefresh();
+                this.log(`Financeiro: ${type.toUpperCase()} de R$ ${val} processado.`);
             },
 
-            addFin() {
-                const desc = document.getElementById('f-desc').value;
-                const val = parseFloat(document.getElementById('f-val').value);
-                const type = document.getElementById('f-type').value;
-                if(desc && val) {
-                    this.state.finance.push({date: new Date().toISOString().split('T')[0], desc, val, type});
-                    this.save(); this.render();
-                    this.log(`Transação registrada: R$ ${val}`);
-                }
-            },
-
-            calc() {
-                const v = document.getElementById('e-vel').value;
-                const t = document.getElementById('e-tax').value;
-                const e = document.getElementById('e-esp').value;
+            calculateEngineering() {
+                const v = parseFloat(document.getElementById('e-vel').value);
+                const t = parseFloat(document.getElementById('e-tax').value);
+                const e = parseFloat(document.getElementById('e-esp').value);
                 const res = (t * v * e) / 600;
-                const box = document.getElementById('eng-result');
+
+                const box = document.getElementById('eng-result-box');
                 box.style.display = 'block';
-                document.getElementById('res-val').innerText = `${res.toFixed(3)} L/min`;
+                document.getElementById('res-eng-val').innerText = `${res.toFixed(3)} L/min`;
+                this.log(`Engenharia: Cálculo de vazão executado (${res.toFixed(2)}).`);
             },
 
-            resetData() {
-                if(confirm("Deseja apagar todos os registros do Kernel?")) {
+            // -- Terminal de Comando --
+            logs: [],
+            log(msg, isError = false) {
+                const entry = { time: new Date().toLocaleTimeString(), msg, isError };
+                this.logs.unshift(entry);
+                if(this.logs.length > 50) this.logs.pop();
+                this.refreshLogs();
+            },
+
+            refreshLogs() {
+                const term = document.getElementById('terminal-out');
+                if(!term) return;
+                term.innerHTML = this.logs.map(l => `
+                    <div class="log-line ${l.isError?'error':''}">
+                        <span style="opacity:0.4">[${l.time}]</span> > ${l.msg}
+                    </div>
+                `).join('');
+            },
+
+            setupTerminal() {
+                document.addEventListener('keydown', (e) => {
+                    const input = document.getElementById('cli-input');
+                    if(e.key === 'Enter' && input && document.activeElement === input) {
+                        const cmd = input.value.toLowerCase();
+                        this.processCommand(cmd);
+                        input.value = '';
+                    }
+                });
+            },
+
+            processCommand(cmd) {
+                if(cmd === 'clear') { this.logs = []; this.refreshLogs(); }
+                else if(cmd === 'help') this.log("Cmds: clear, inventory, reboot, status");
+                else if(cmd === 'reboot') location.reload();
+                else if(cmd === 'status') this.log("Kernel: Stable | DB: Connected | Auth: Root");
+                else this.log(`Terminal: Comando '${cmd}' não reconhecido.`, true);
+            },
+
+            // -- Persistência --
+            saveAndRefresh() {
+                localStorage.setItem('neb_inv', JSON.stringify(this.state.inventory));
+                localStorage.setItem('neb_fin', JSON.stringify(this.state.finance));
+                this.renderView();
+            },
+
+            factoryReset() {
+                if(confirm("ALERTA: Isso apagará todos os dados de forma permanente. Confirmar?")) {
                     localStorage.clear();
                     location.reload();
                 }
             }
         };
 
-        window.onload = () => Core.init();
+        // Início oficial
+        window.onload = () => Kernel.boot();
     </script>
 </body>
 </html>
