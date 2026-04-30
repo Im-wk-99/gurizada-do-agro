@@ -3,290 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroOS Horizon | Weather Intelligence</title>
+    <title>AgroOS | Night Precision</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --accent: #20ff88;
-            --bg-overlay: rgba(5, 6, 8, 0.88);
-            --card-bg: rgba(20, 25, 32, 0.65);
-            --border: rgba(255, 255, 255, 0.1);
-            --text: #e0e0f0;
-            --warning: #ffcc00;
+            --neon: #00ff88;
+            --deep-black: #020304;
+            --card-night: rgba(10, 12, 16, 0.85);
+            --border: rgba(0, 255, 136, 0.15);
+            --text-gray: #7e8c9a;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         
         body { 
-            background: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
-                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: var(--text);
-            height: 100vh;
-            display: flex;
-            overflow: hidden;
+            background: linear-gradient(rgba(0,0,0,0.9), rgba(0,0,0,0.9)), 
+                        url('https://images.unsplash.com/photo-1511735111819-9a3f7709049c?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover; background-attachment: fixed;
+            color: #fff; height: 100vh; display: flex; overflow: hidden;
         }
 
-        /* Sidebar Glass */
+        /* --- NAVEGAÇÃO VERTICAL --- */
         aside { 
-            width: 100px; 
-            background: rgba(0, 0, 0, 0.5);
-            border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; align-items: center;
-            padding: 30px 0; backdrop-filter: blur(20px);
-            transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 10;
+            width: 90px; background: rgba(0, 0, 0, 0.95);
+            border-right: 1px solid var(--border); display: flex;
+            flex-direction: column; align-items: center; padding: 25px 0;
+            transition: width 0.4s cubic-bezier(0.075, 0.82, 0.165, 1); z-index: 100;
         }
-        aside:hover { width: 260px; background: rgba(0, 0, 0, 0.9); }
+        aside:hover { width: 240px; }
 
-        .logo-circle {
-            width: 50px; height: 50px; background: var(--accent); border-radius: 15px;
+        .logo { 
+            width: 50px; height: 50px; background: var(--neon); border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            color: #000; font-weight: bold; font-size: 1.5rem; margin-bottom: 50px;
-            box-shadow: 0 0 20px rgba(32, 255, 136, 0.4);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5); margin-bottom: 40px;
         }
 
-        .nav-item {
-            width: 220px; padding: 15px 25px; margin: 5px 0;
-            display: flex; align-items: center; gap: 20px;
-            cursor: pointer; border-radius: 12px; transition: 0.3s; color: #fff;
+        .nav-link {
+            width: 100%; padding: 18px 30px; display: flex; align-items: center;
+            gap: 20px; color: var(--text-gray); cursor: pointer; transition: 0.3s;
+            white-space: nowrap; text-decoration: none;
         }
-        .nav-item:hover, .nav-item.active { background: rgba(32, 255, 136, 0.15); color: var(--accent); }
+        .nav-link i { font-size: 1.3rem; min-width: 30px; }
+        .nav-link:hover, .nav-link.active { color: var(--neon); background: rgba(0, 255, 136, 0.05); }
 
-        /* Main Content */
-        main { flex: 1; padding: 30px; overflow-y: auto; position: relative; }
-        
-        header { 
+        /* --- CONTEÚDO PRINCIPAL --- */
+        main { flex: 1; padding: 35px; overflow-y: auto; background: radial-gradient(circle at top right, rgba(0, 255, 136, 0.03), transparent); }
+
+        .header-glass {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 30px; padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px; backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
+            padding: 25px; background: var(--card-night); border-radius: 20px;
+            border: 1px solid var(--border); margin-bottom: 35px;
+            backdrop-filter: blur(20px);
         }
 
-        .status-pill {
-            background: rgba(32, 255, 136, 0.1); padding: 8px 15px; border-radius: 20px;
-            border: 1px solid var(--accent); display: flex; align-items: center; gap: 10px;
-            font-size: 0.8rem; color: var(--accent);
+        /* --- CALCULADORA STYLE --- */
+        .calc-container {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
         }
 
-        .pulse {
-            width: 8px; height: 8px; background: var(--accent);
-            border-radius: 50%; animation: softPulse 2s infinite;
+        .calc-card {
+            background: var(--card-night); border: 1px solid var(--border);
+            border-radius: 24px; padding: 30px; position: relative; overflow: hidden;
         }
 
-        @keyframes softPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(32, 255, 136, 0.7); } 70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(32, 255, 136, 0); } 100% { transform: scale(1); } }
+        .calc-card::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon);
+        }
 
-        /* Dashboard Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .calc-input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; color: var(--text-gray); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
         
-        .card {
-            background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 24px; padding: 25px;
-            transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            backdrop-filter: blur(15px);
-        }
-        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
-
-        /* Weather UI */
-        .weather-info { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .temp-main { font-size: 3.5rem; font-weight: 700; color: #fff; line-height: 1; }
-        .weather-badge { background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 10px; font-size: 0.8rem; }
-
-        .prediction-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-
-        #ai-display {
-            height: 120px; overflow-y: auto; background: rgba(0,0,0,0.4);
-            border-radius: 15px; padding: 15px; font-size: 0.85rem;
-            border: 1px solid var(--border); margin: 15px 0; color: var(--accent);
-        }
-
-        .btn {
-            background: var(--accent); color: #000; border: none; padding: 15px;
-            border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; transition: 0.3s;
-        }
-        .btn:hover { box-shadow: 0 0 20px var(--accent); transform: scale(1.02); }
-
         input {
-            width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border);
-            padding: 15px; border-radius: 12px; color: #fff; margin-bottom: 10px;
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+            padding: 15px; border-radius: 12px; color: #fff; font-size: 1rem;
+            transition: 0.3s;
         }
+        input:focus { border-color: var(--neon); outline: none; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
 
+        .result-box {
+            background: rgba(0, 255, 136, 0.1); border: 1px dashed var(--neon);
+            padding: 25px; border-radius: 16px; text-align: center; margin-top: 20px;
+        }
+        .result-box h2 { font-size: 2rem; color: var(--neon); }
+
+        /* --- IMAGENS ILUSTRATIVAS --- */
+        .illustration {
+            width: 100%; height: 160px; border-radius: 16px; object-fit: cover;
+            margin-bottom: 20px; border: 1px solid var(--border);
+            filter: saturate(1.2) brightness(0.8); transition: 0.5s;
+        }
+        .calc-card:hover .illustration { filter: saturate(1.5) brightness(1); }
+
+        .btn-calc {
+            background: var(--neon); color: #000; border: none; padding: 18px;
+            border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%;
+            transition: 0.3s; text-transform: uppercase;
+        }
+        .btn-calc:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4); }
+
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <aside>
-    <div class="logo-circle">A</div>
-    <div class="nav-menu">
-        <div class="nav-item active" onclick="Core.route('dash')"><i class="fas fa-chart-line"></i> <span>Dashboard</span></div>
-        <div class="nav-item" onclick="Core.route('weather')"><i class="fas fa-cloud-sun-rain"></i> <span>Clima IA</span></div>
-        <div class="nav-item" onclick="Core.route('fields')"><i class="fas fa-seedling"></i> <span>Talhões</span></div>
-        <div class="nav-item" onclick="Core.route('fleet')"><i class="fas fa-truck-monster"></i> <span>Frota</span></div>
-        <div class="nav-item" onclick="Core.route('finance')"><i class="fas fa-coins"></i> <span>Financeiro</span></div>
-    </div>
+    <div class="logo"><i class="fas fa-satellite-dish"></i></div>
+    <div class="nav-link active" onclick="Core.route('dash')"><i class="fas fa-chart-line"></i> <span>Dashboard</span></div>
+    <div class="nav-link" onclick="Core.route('calc')"><i class="fas fa-calculator"></i> <span>Calculadora</span></div>
+    <div class="nav-link" onclick="Core.route('fleet')"><i class="fas fa-tractor"></i> <span>Frota Ativa</span></div>
+    <div class="nav-link" onclick="Core.route('weather')"><i class="fas fa-bolt"></i> <span>Clima IA</span></div>
 </aside>
 
 <main>
-    <header>
+    <div class="header-glass">
         <div>
-            <h1 id="page-title" style="color: #fff; font-size: 1.5rem;">Resumo Operacional</h1>
-            <p style="font-size: 0.85rem; color: var(--accent);">Reserva, PR | <span id="clock" style="color:#fff">00:00:00</span></p>
+            <h1 id="view-title">AgroOS Night Horizon</h1>
+            <p style="color: var(--neon); font-size: 0.8rem; font-weight: 600;">OPERANDO EM MODO NOTURNO ALTO CONTRASTE</p>
         </div>
-        <div class="status-pill">
-            <div class="pulse"></div>
-            AGRO-GPT 4.0: MONITORANDO PRECIPITAÇÃO
+        <div style="text-align: right">
+            <div id="sys-clock" style="font-size: 1.2rem; font-weight: 800;">00:00:00</div>
+            <p style="font-size: 0.7rem; opacity: 0.5;">RESERVA - PR</p>
         </div>
-    </header>
+    </div>
 
-    <div id="app-viewport"></div>
+    <div id="app-content"></div>
 </main>
 
 <script>
 const Core = {
-    data: {
-        fleet: JSON.parse(localStorage.getItem('h_fleet')) || [{id: 1, name: "Case IH 340", fuel: 88}],
-        fields: JSON.parse(localStorage.getItem('h_fields')) || [{id: 1, name: "Talhão Leste", area: 85}],
-        finance: JSON.parse(localStorage.getItem('h_finance')) || { income: 620000, expense: 210000 },
-        weather: { temp: 28, hum: 42, wind: 14, cond: "Ensolarado", forecast: [
-            { day: "Amanhã", t: 29, cond: "Parcial. Nublado", rain: "10%" },
-            { day: "Sábado", t: 24, cond: "Chuva Forte", rain: "95%" },
-            { day: "Domingo", t: 22, cond: "Nublado", rain: "20%" }
-        ]},
-        logs: ["Sistema Meteorológico Sincronizado.", "Dados de satélite atualizados."]
-    },
-
     init() {
         this.route('dash');
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+        setInterval(() => {
+            document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
     },
 
     route(page) {
-        const vp = document.getElementById('app-viewport');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('page-title').innerText = page.toUpperCase();
+        const container = document.getElementById('app-content');
+        document.getElementById('view-title').innerText = page.toUpperCase();
+        
+        // Ativar link na sidebar
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
 
         switch(page) {
-            case 'dash': this.renderDash(vp); break;
-            case 'weather': this.renderWeather(vp); break;
-            case 'fields': this.renderFields(vp); break;
-            case 'fleet': this.renderFleet(vp); break;
-            case 'finance': this.renderFinance(vp); break;
+            case 'dash': this.renderDash(container); break;
+            case 'calc': this.renderCalc(container); break;
+            case 'fleet': container.innerHTML = `<div class="calc-card"><h2>Frota Sincronizada</h2><p>Todos os tratores JD 8R em operação noturna.</p></div>`; break;
+            case 'weather': container.innerHTML = `<div class="calc-card"><h2>Previsão IA</h2><p>Céu limpo. Visibilidade: 15km.</p></div>`; break;
         }
     },
 
-    renderDash(vp) {
-        vp.innerHTML = `
-            <div class="grid">
-                <div class="card" style="grid-column: span 2;">
-                    <div class="weather-info">
-                        <div>
-                            <p style="text-transform:uppercase; font-size:0.7rem; letter-spacing:1px;">Tempo Atual</p>
-                            <div class="temp-main">${this.data.weather.temp}°C</div>
-                            <p>${this.data.weather.cond} | Vento ${this.data.weather.wind}km/h</p>
-                        </div>
-                        <i class="fas fa-sun fa-4x" style="color:var(--accent)"></i>
-                    </div>
-                    <div id="ai-display"></div>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="ai-cmd" placeholder="Pergunte sobre a janela de colheita...">
-                        <button class="btn" onclick="Core.askAI()" style="width:120px;">IA ANALYZE</button>
+    renderDash(el) {
+        el.innerHTML = `
+            <div class="calc-container">
+                <div class="calc-card">
+                    <img src="https://images.unsplash.com/photo-1595113316349-9fa4eb24f884?q=80&w=1000&auto=format&fit=crop" class="illustration">
+                    <h3>Status da Safra</h3>
+                    <p style="margin: 15px 0; font-size: 0.9rem; opacity: 0.7;">Monitoramento térmico detectou solo em 22°C. Condição ideal para absorção de nitrogênio.</p>
+                    <div class="result-box">
+                        <small>PRODUTIVIDADE ESTIMADA</small>
+                        <h2>74 sc/ha</h2>
                     </div>
                 </div>
-                <div class="card">
-                    <h3 style="color:#fff; margin-bottom:15px;">Alerta de Chuva</h3>
-                    <canvas id="weatherChart" height="200"></canvas>
+                <div class="calc-card">
+                    <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=1000&auto=format&fit=crop" class="illustration">
+                    <h3>Fluxo Financeiro</h3>
+                    <canvas id="nightChart" height="180"></canvas>
                 </div>
             </div>
         `;
-        this.updateAILog();
-        this.initWeatherChart();
+        this.initChart();
     },
 
-    renderWeather(vp) {
-        const rows = this.data.weather.forecast.map(f => `
-            <div class="prediction-row">
-                <span><b>${f.day}</b></span>
-                <span>${f.cond}</span>
-                <span style="color:var(--accent)">${f.t}°C</span>
-                <span style="color:#38bdf8"><i class="fas fa-droplet"></i> ${f.rain}</span>
-            </div>
-        `).join('');
-
-        vp.innerHTML = `
-            <div class="grid">
-                <div class="card">
-                    <h3>Previsão Estendida</h3>
-                    <div style="margin-top:20px;">${rows}</div>
+    renderCalc(el) {
+        el.innerHTML = `
+            <div class="calc-container">
+                <div class="calc-card">
+                    <img src="https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=1000&auto=format&fit=crop" class="illustration">
+                    <h3>Dosagem de Defensivos</h3>
+                    <div class="calc-input-group">
+                        <label>Área do Talhão (Hectares)</label>
+                        <input type="number" id="calc-area" value="100" oninput="Core.runCalc()">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>Dose Recomendada (L/ha)</label>
+                        <input type="number" id="calc-dose" value="1.5" oninput="Core.runCalc()">
+                    </div>
+                    <div class="result-box">
+                        <small>VOLUME TOTAL NECESSÁRIO</small>
+                        <h2 id="res-total">150 Litros</h2>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3 style="color:var(--warning)"><i class="fas fa-exclamation-triangle"></i> Recomendação IA</h3>
-                    <p style="margin-top:15px; line-height:1.6;">
-                        Identificamos uma frente fria chegando no <b>Sábado</b>. 
-                        Recomendamos finalizar a aplicação de defensivos até amanhã às 16:00 para evitar lavagem do produto pela chuva de 95% de probabilidade.
-                    </p>
+
+                <div class="calc-card">
+                    <img src="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=1000&auto=format&fit=crop" class="illustration">
+                    <h3>Calibragem de Bicos (Vazão)</h3>
+                    <div class="calc-input-group">
+                        <label>Velocidade do Trator (km/h)</label>
+                        <input type="number" id="calc-vel" value="8" oninput="Core.runCalc()">
+                    </div>
+                    <div class="calc-input-group">
+                        <label>Espaçamento entre Bicos (m)</label>
+                        <input type="number" id="calc-esp" value="0.5" oninput="Core.runCalc()">
+                    </div>
+                    <div class="result-box" style="border-color: #38bdf8; background: rgba(56, 189, 248, 0.1);">
+                        <small style="color: #38bdf8;">VAZÃO DO BICO (L/min)</small>
+                        <h2 id="res-vazao" style="color: #38bdf8;">1.25</h2>
+                    </div>
                 </div>
             </div>
         `;
     },
 
-    // Funções de apoio (Mesma lógica das anteriores, mantendo funcionalidade)
-    renderFields(vp) {
-        vp.innerHTML = `<div class="card"><h3>Gestão de Talhões</h3><p>Módulo de mapeamento ativo. Adicione áreas para monitoramento.</p></div>`;
-    },
-    renderFleet(vp) {
-        vp.innerHTML = `<div class="card"><h3>Frota Ativa</h3><p>Monitorando ${this.data.fleet.length} unidades via GPS.</p></div>`;
-    },
-    renderFinance(vp) {
-        vp.innerHTML = `<div class="card"><h3>Fluxo de Caixa</h3><h1>R$ ${(this.data.finance.income - this.data.finance.expense).toLocaleString()}</h1></div>`;
+    runCalc() {
+        const area = parseFloat(document.getElementById('calc-area')?.value) || 0;
+        const dose = parseFloat(document.getElementById('calc-dose')?.value) || 0;
+        const vel = parseFloat(document.getElementById('calc-vel')?.value) || 1;
+        const esp = parseFloat(document.getElementById('calc-esp')?.value) || 0.5;
+
+        // Total Calcs
+        if(document.getElementById('res-total')) {
+            document.getElementById('res-total').innerText = (area * dose).toFixed(1) + " Litros";
+        }
+        
+        // Vazão Calc: (L/ha * km/h * esp) / 600
+        if(document.getElementById('res-vazao')) {
+            const vazao = (150 * vel * esp) / 600; // Exemplo baseado em 150L/ha padrão
+            document.getElementById('res-vazao').innerText = vazao.toFixed(2);
+        }
     },
 
-    askAI() {
-        const cmd = document.getElementById('ai-cmd').value;
-        if(!cmd) return;
-        this.aiLog(`> ${cmd}`);
-        setTimeout(() => {
-            if(cmd.toLowerCase().includes("chuva")) {
-                this.aiLog("AgroGPT: Chuva confirmada para Sábado (45mm). Janela de plantio fecha em 24h.");
-            } else {
-                this.aiLog("AgroGPT: Analisando microclima... Condições estáveis para as próximas 12 horas.");
-            }
-        }, 800);
-        document.getElementById('ai-cmd').value = '';
-    },
-
-    aiLog(m) {
-        this.data.logs.unshift(`[${new Date().toLocaleTimeString()}] ${m}`);
-        this.updateAILog();
-    },
-
-    updateAILog() {
-        const log = document.getElementById('ai-display');
-        if(log) log.innerHTML = this.data.logs.map(l => `<div style="margin-bottom:5px;">${l}</div>`).join('');
-    },
-
-    initWeatherChart() {
-        const ctx = document.getElementById('weatherChart').getContext('2d');
+    initChart() {
+        const ctx = document.getElementById('nightChart').getContext('2d');
         new Chart(ctx, {
-            type: 'bar',
+            type: 'line',
             data: {
-                labels: ['Sex', 'Sáb', 'Dom'],
+                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
                 datasets: [{
-                    label: 'Probabilidade de Chuva %',
-                    data: [10, 95, 20],
-                    backgroundColor: ['rgba(32, 255, 136, 0.5)', '#38bdf8', 'rgba(32, 255, 136, 0.5)'],
-                    borderRadius: 10
+                    data: [400, 450, 420, 500, 480],
+                    borderColor: '#00ff88',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(0, 255, 136, 0.05)'
                 }]
             },
-            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#fff' } } } }
+            options: { plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
         });
     }
 };
