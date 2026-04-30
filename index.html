@@ -2,97 +2,91 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>AgroOS Pro | Gestão Funcional 360°</title>
+    <title>AgroOS Enterprise | Safra 2026</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --neon: #00ff66; --dark: #05070a; --surface: #0f1218;
-            --border: #1e2631; --text: #94a3b8; --white: #f8fafc;
+            --border: #1e2631; --text: #94a3b8; --white: #f8fafc; --danger: #ff4d4d;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--dark); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Sidebar */
-        aside { width: 280px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
-        .nav-item { padding: 18px 25px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; }
-        .nav-item:hover, .nav-item.active { background: #161b22; color: var(--neon); border-right: 3px solid var(--neon); }
+        /* Sidebar Expandida */
+        aside { width: 260px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .nav-item { padding: 15px 25px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
+        .nav-item:hover, .nav-item.active { background: #161b22; color: var(--neon); border-left: 4px solid var(--neon); }
 
-        /* Content */
+        /* Layout */
         main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        header { height: 70px; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
-        #viewport { flex: 1; padding: 30px; overflow-y: auto; }
+        header { height: 60px; padding: 0 25px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: var(--surface); }
+        #viewport { flex: 1; padding: 25px; overflow-y: auto; background: radial-gradient(circle at top right, #0a0d12, #05070a); }
 
-        /* UI Components */
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        /* Componentes de UI */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
         
-        input, select { width: 100%; background: #0a0d12; border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: white; margin-bottom: 10px; }
-        .btn { background: var(--neon); color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
-        .btn:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(0,255,102,0.3); }
+        input, select, textarea { width: 100%; background: #0a0d12; border: 1px solid var(--border); padding: 10px; border-radius: 6px; color: white; margin-bottom: 10px; font-size: 0.85rem; }
+        .btn { background: var(--neon); color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,255,102,0.2); }
 
-        /* Chat IA */
-        #ai-log { height: 200px; overflow-y: auto; background: #05070a; border-radius: 8px; padding: 15px; font-size: 0.85rem; border: 1px solid var(--border); }
-        .ai-line { margin-bottom: 8px; border-left: 2px solid var(--neon); padding-left: 8px; }
-
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; color: var(--white); font-size: 0.8rem; padding: 10px; border-bottom: 1px solid var(--border); }
-        td { padding: 10px; border-bottom: 1px solid #161b22; font-size: 0.85rem; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        /* Tabelas Estilizadas */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: var(--white); font-size: 0.75rem; padding: 12px; border-bottom: 2px solid var(--border); }
+        td { padding: 12px; border-bottom: 1px solid #161b22; font-size: 0.8rem; }
+        
+        .ai-terminal { height: 150px; overflow-y: auto; background: #000; border-radius: 8px; padding: 12px; font-family: 'Courier New', monospace; font-size: 0.8rem; color: var(--neon); border: 1px solid var(--border); }
+        .tag { padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <aside>
-    <div style="padding: 30px; border-bottom: 1px solid var(--border);">
-        <h2 style="color: var(--neon);"><i class="fas fa-microchip"></i> AGRO OS</h2>
+    <div style="padding: 25px; border-bottom: 1px solid var(--border);">
+        <h2 style="color: var(--neon); letter-spacing: -1px;"><i class="fas fa-leaf"></i> AGRO OS <small style="font-size: 0.5rem; color: var(--text);">v2.0</small></h2>
     </div>
     <div class="nav-list">
-        <div class="nav-item active" onclick="Core.route('dash')"><i class="fas fa-home"></i> Painel Geral</div>
-        <div class="nav-item" onclick="Core.route('fleet')"><i class="fas fa-tractor"></i> Frota Ativa</div>
-        <div class="nav-item" onclick="Core.route('stock')"><i class="fas fa-boxes-stacked"></i> Almoxarifado</div>
-        <div class="nav-item" onclick="Core.route('calc')"><i class="fas fa-calculator"></i> Calculadora Técnica</div>
+        <div class="nav-item active" onclick="Core.route('dash')"><i class="fas fa-tachometer-alt"></i> Dashboard Central</div>
+        <div class="nav-item" onclick="Core.route('talhoes')"><i class="fas fa-map-marked-alt"></i> Talhões e Culturas</div>
+        <div class="nav-item" onclick="Core.route('fleet')"><i class="fas fa-tractor"></i> Frota & Telemetria</div>
+        <div class="nav-item" onclick="Core.route('stock')"><i class="fas fa-warehouse"></i> Estoque de Insumos</div>
+        <div class="nav-item" onclick="Core.route('finance')"><i class="fas fa-hand-holding-usd"></i> Financeiro</div>
+        <div class="nav-item" onclick="Core.route('calc')"><i class="fas fa-calculator"></i> Eng. Agronômica</div>
     </div>
 </aside>
 
 <main>
     <header>
-        <div id="path">Dashboard / Home</div>
-        <div style="display:flex; gap:20px;">
-            <div id="sys-clock">00:00:00</div>
-            <div style="color: var(--neon); cursor:pointer;" onclick="Core.exportData()"><i class="fas fa-download"></i> Backup</div>
+        <div id="path">AgroOS / Dashboard</div>
+        <div style="display:flex; gap:25px; align-items: center;">
+            <div id="weather-widget" style="font-size: 0.85rem; color: var(--neon);">☀️ 29°C | UR: 44%</div>
+            <div id="sys-clock" style="font-weight: bold; letter-spacing: 1px;">00:00:00</div>
         </div>
     </header>
     <div id="viewport"></div>
 </main>
 
 <script>
-/**
- * AGROOS ENGINE 2026 - TOTALMENTE FUNCIONAL
- */
 const Core = {
     db: {
-        fleet: JSON.parse(localStorage.getItem('agro_fleet')) || [
-            { id: 1, name: "JD 8R 370", fuel: 85, status: "Operacional" }
-        ],
-        stock: JSON.parse(localStorage.getItem('agro_stock')) || [
-            { id: 1, item: "Diesel S10", qty: 5000, unit: "L" },
-            { id: 2, item: "Semente Soja", qty: 120, unit: "sc" }
-        ],
-        logs: ["Sistema online. Monitorando telemetria..."]
+        fleet: JSON.parse(localStorage.getItem('agro_fleet')) || [{ id: 1, name: "John Deere 8R", fuel: 85, status: "Operacional" }],
+        stock: JSON.parse(localStorage.getItem('agro_stock')) || [{ id: 1, item: "Diesel S10", qty: 2500, unit: "L" }],
+        fields: JSON.parse(localStorage.getItem('agro_fields')) || [{ id: 1, name: "Talhão Norte", area: 150, crop: "Soja" }],
+        finance: JSON.parse(localStorage.getItem('agro_finance')) || { income: 500000, expense: 120000 },
+        logs: ["🚀 Sistema Inteligente Ativo."]
     },
 
     save() {
         localStorage.setItem('agro_fleet', JSON.stringify(this.db.fleet));
         localStorage.setItem('agro_stock', JSON.stringify(this.db.stock));
+        localStorage.setItem('agro_fields', JSON.stringify(this.db.fields));
+        localStorage.setItem('agro_finance', JSON.stringify(this.db.finance));
     },
 
     init() {
-        setInterval(() => {
-            document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString();
-        }, 1000);
+        setInterval(() => { document.getElementById('sys-clock').innerText = new Date().toLocaleTimeString(); }, 1000);
         this.route('dash');
     },
 
@@ -100,192 +94,195 @@ const Core = {
         const vp = document.getElementById('viewport');
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById('path').innerText = `AgroOS / ${page.toUpperCase()}`;
+        
+        // Ativar classe CSS na sidebar
+        const items = document.querySelectorAll('.nav-item');
+        items.forEach(i => { if(i.innerText.toLowerCase().includes(page.substring(0,3))) i.classList.add('active'); });
 
         switch(page) {
             case 'dash': this.renderDash(vp); break;
+            case 'talhoes': this.renderTalhoes(vp); break;
             case 'fleet': this.renderFleet(vp); break;
             case 'stock': this.renderStock(vp); break;
+            case 'finance': this.renderFinance(vp); break;
             case 'calc': this.renderCalc(vp); break;
         }
     },
 
-    // --- DASHBOARD FUNCIONAL ---
+    // --- DASHBOARD (ESTATÍSTICAS) ---
     renderDash(vp) {
         vp.innerHTML = `
             <div class="grid">
                 <div class="card" style="grid-column: span 2;">
-                    <h3><i class="fas fa-brain"></i> AgroGPT - Diagnóstico de IA</h3>
-                    <div id="ai-log" style="margin: 15px 0;"></div>
+                    <h3><i class="fas fa-brain"></i> AgroGPT AI - Monitoramento</h3>
+                    <div id="ai-log" class="ai-terminal" style="margin: 15px 0;"></div>
                     <div style="display:flex; gap:10px;">
-                        <input type="text" id="ai-input" placeholder="Pergunte algo (ex: status da frota)">
-                        <button class="btn" onclick="Core.askAI()" style="width:120px;">ANALISAR</button>
+                        <input type="text" id="ai-input" placeholder="Comando de voz ou texto...">
+                        <button class="btn" onclick="Core.askAI()" style="width:100px;">PROCESSAR</button>
                     </div>
                 </div>
                 <div class="card">
-                    <h3>Resumo de Ativos</h3>
-                    <div style="margin-top:15px;">
-                        <p>Máquinas: ${this.db.fleet.length}</p>
-                        <p>Itens em Estoque: ${this.db.stock.length}</p>
-                        <p>Status: <span class="badge" style="background:var(--neon); color:#000;">ESTÁVEL</span></p>
+                    <h3>Performance Financeira</h3>
+                    <canvas id="chartFinance" height="200"></canvas>
+                </div>
+                <div class="card">
+                    <h3>Clima em Reserva-PR</h3>
+                    <div style="text-align:center; padding:10px;">
+                        <i class="fas fa-cloud-sun fa-3x" style="color:var(--neon)"></i>
+                        <h2 style="margin:10px 0;">29.5°C</h2>
+                        <p>Vento: 12km/h SE</p>
+                        <p style="color:var(--neon); font-size:0.7rem; margin-top:5px;">CONDIÇÃO IDEAL PARA PULVERIZAÇÃO</p>
                     </div>
                 </div>
             </div>
         `;
         this.updateAILog();
+        this.initFinanceChart();
     },
 
-    // --- GESTÃO DE FROTA (FUNCIONAL) ---
-    renderFleet(vp) {
-        const rows = this.db.fleet.map(f => `
-            <tr>
-                <td>${f.name}</td>
-                <td>
-                    <div style="width:100px; height:8px; background:#333; border-radius:4px; overflow:hidden;">
-                        <div style="width:${f.fuel}%; height:100%; background:${f.fuel < 20 ? 'red' : 'var(--neon)'}"></div>
-                    </div>
-                </td>
-                <td>${f.fuel}%</td>
-                <td><button onclick="Core.removeFleet(${f.id})" style="background:none; border:none; color:red; cursor:pointer;"><i class="fas fa-trash"></i></button></td>
-            </tr>
-        `).join('');
-
+    // --- FINANCEIRO ---
+    renderFinance(vp) {
         vp.innerHTML = `
             <div class="grid">
                 <div class="card">
-                    <h3>Cadastrar Máquina</h3>
-                    <input type="text" id="f-name" placeholder="Modelo (ex: Case IH 340)">
-                    <input type="number" id="f-fuel" placeholder="Nível de Diesel (%)">
-                    <button class="btn" onclick="Core.addFleet()">ADICIONAR À FROTA</button>
+                    <h3>Lançamento Financeiro</h3>
+                    <label>Tipo</label>
+                    <select id="f-type"><option value="income">Receita (Venda)</option><option value="expense">Despesa (Custo)</option></select>
+                    <label>Valor (R$)</label>
+                    <input type="number" id="f-val" placeholder="0.00">
+                    <button class="btn" onclick="Core.addFinance()">EFETIVAR LANÇAMENTO</button>
                 </div>
-                <div class="card" style="grid-column: span 2;">
-                    <h3>Telemetria Ativa</h3>
-                    <table>
-                        <thead><tr><th>Máquina</th><th>Tanque</th><th>Nível</th><th>Ações</th></tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>
+                <div class="card">
+                    <h3>Fluxo de Caixa Acumulado</h3>
+                    <h1 style="color:var(--neon)">R$ ${(this.db.finance.income - this.db.finance.expense).toLocaleString()}</h1>
+                    <p>Total Receitas: R$ ${this.db.finance.income.toLocaleString()}</p>
+                    <p>Total Despesas: R$ ${this.db.finance.expense.toLocaleString()}</p>
                 </div>
             </div>
         `;
+    },
+
+    addFinance() {
+        const type = document.getElementById('f-type').value;
+        const val = parseFloat(document.getElementById('f-val').value) || 0;
+        this.db.finance[type] += val;
+        this.save();
+        this.route('finance');
+        this.aiLog(`Financeiro: Lançamento de R$ ${val} processado.`);
+    },
+
+    // --- TALHÕES ---
+    renderTalhoes(vp) {
+        const rows = this.db.fields.map(t => `
+            <tr><td>${t.name}</td><td>${t.area} ha</td><td>${t.crop}</td><td><button onclick="Core.removeField(${t.id})" style="background:none; border:none; color:red; cursor:pointer;"><i class="fas fa-times"></i></button></td></tr>
+        `).join('');
+        vp.innerHTML = `
+            <div class="grid">
+                <div class="card">
+                    <h3>Novo Talhão</h3>
+                    <input type="text" id="t-name" placeholder="Nome do Talhão">
+                    <input type="number" id="t-area" placeholder="Área em Hectares">
+                    <select id="t-crop"><option>Soja</option><option>Milho</option><option>Trigo</option><option>Pasto</option></select>
+                    <button class="btn" onclick="Core.addField()">MAPEAR ÁREA</button>
+                </div>
+                <div class="card" style="grid-column: span 2;">
+                    <h3>Mapa de Culturas</h3>
+                    <table><thead><tr><th>Nome</th><th>Área</th><th>Cultura</th><th>Ação</th></tr></thead><tbody>${rows}</tbody></table>
+                </div>
+            </div>
+        `;
+    },
+
+    addField() {
+        const name = document.getElementById('t-name').value;
+        const area = document.getElementById('t-area').value;
+        const crop = document.getElementById('t-crop').value;
+        this.db.fields.push({ id: Date.now(), name, area, crop });
+        this.save();
+        this.route('talhoes');
+    },
+
+    removeField(id) {
+        this.db.fields = this.db.fields.filter(f => f.id !== id);
+        this.save();
+        this.route('talhoes');
+    },
+
+    // --- REUTILIZAÇÃO DAS FUNÇÕES ANTERIORES MELHORADAS ---
+    renderFleet(vp) {
+        const rows = this.db.fleet.map(f => `
+            <tr><td>${f.name}</td><td><div style="width:100px; height:6px; background:#333; border-radius:3px; overflow:hidden;"><div style="width:${f.fuel}%; height:100%; background:${f.fuel < 20 ? 'red' : 'var(--neon)'}"></div></div></td><td>${f.fuel}%</td><td><button onclick="Core.removeFleet(${f.id})" style="color:red; background:none; border:none;"><i class="fas fa-trash-alt"></i></button></td></tr>
+        `).join('');
+        vp.innerHTML = `<div class="grid"><div class="card"><h3>Add Máquina</h3><input type="text" id="f-name" placeholder="Modelo"><input type="number" id="f-fuel" placeholder="Diesel %"><button class="btn" onclick="Core.addFleet()">REGISTRAR</button></div><div class="card" style="grid-column: span 2;"><h3>Frota Conectada</h3><table><thead><tr><th>Máquina</th><th>Tanque</th><th>Nível</th><th>Ações</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
     },
 
     addFleet() {
         const name = document.getElementById('f-name').value;
         const fuel = document.getElementById('f-fuel').value;
-        if(!name || !fuel) return alert("Preencha os dados");
-        this.db.fleet.push({ id: Date.now(), name, fuel: parseInt(fuel) });
-        this.save();
-        this.route('fleet');
-        this.aiLog(`Nova máquina detectada: ${name}. Sincronizando sensores...`);
+        this.db.fleet.push({ id: Date.now(), name, fuel });
+        this.save(); this.route('fleet');
     },
 
-    removeFleet(id) {
-        this.db.fleet = this.db.fleet.filter(f => f.id !== id);
-        this.save();
-        this.route('fleet');
-    },
+    removeFleet(id) { this.db.fleet = this.db.fleet.filter(f => f.id !== id); this.save(); this.route('fleet'); },
 
-    // --- GESTÃO DE ESTOQUE (FUNCIONAL) ---
     renderStock(vp) {
-        const rows = this.db.stock.map(s => `
-            <tr>
-                <td>${s.item}</td>
-                <td>${s.qty} ${s.unit}</td>
-                <td><button onclick="Core.removeStock(${s.id})" style="color:red; background:none; border:none; cursor:pointer;"><i class="fas fa-minus-circle"></i></button></td>
-            </tr>
-        `).join('');
-
-        vp.innerHTML = `
-            <div class="grid">
-                <div class="card">
-                    <h3>Entrada de Insumo</h3>
-                    <input type="text" id="s-item" placeholder="Produto">
-                    <input type="number" id="s-qty" placeholder="Qtd">
-                    <select id="s-unit"><option>L</option><option>sc</option><option>kg</option></select>
-                    <button class="btn" onclick="Core.addStock()">SALVAR NO ALMOXARIFADO</button>
-                </div>
-                <div class="card">
-                    <h3>Inventário Real</h3>
-                    <table><thead><tr><th>Item</th><th>Qtd</th><th>Remover</th></tr></thead><tbody>${rows}</tbody></table>
-                </div>
-            </div>
-        `;
+        const rows = this.db.stock.map(s => `<tr><td>${s.item}</td><td>${s.qty} ${s.unit}</td><td><button onclick="Core.removeStock(${s.id})" style="color:red; background:none; border:none;"><i class="fas fa-minus-circle"></i></button></td></tr>`).join('');
+        vp.innerHTML = `<div class="grid"><div class="card"><h3>Novo Insumo</h3><input type="text" id="s-item" placeholder="Produto"><input type="number" id="s-qty" placeholder="Qtd"><select id="s-unit"><option>L</option><option>kg</option><option>sc</option></select><button class="btn" onclick="Core.addStock()">ENTRADA</button></div><div class="card"><h3>Saldo</h3><table><thead><tr><th>Item</th><th>Qtd</th><th>Excluir</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
     },
 
-    addStock() {
-        const item = document.getElementById('s-item').value;
-        const qty = document.getElementById('s-qty').value;
-        const unit = document.getElementById('s-unit').value;
-        this.db.stock.push({ id: Date.now(), item, qty, unit });
-        this.save();
-        this.route('stock');
-    },
+    addStock() { const item = document.getElementById('s-item').value; const qty = document.getElementById('s-qty').value; const unit = document.getElementById('s-unit').value; this.db.stock.push({ id: Date.now(), item, qty, unit }); this.save(); this.route('stock'); },
+    
+    removeStock(id) { this.db.stock = this.db.stock.filter(s => s.id !== id); this.save(); this.route('stock'); },
 
-    removeStock(id) {
-        this.db.stock = this.db.stock.filter(s => s.id !== id);
-        this.save();
-        this.route('stock');
-    },
-
-    // --- CALCULADORA (FUNCIONAL) ---
     renderCalc(vp) {
-        vp.innerHTML = `
-            <div class="card" style="max-width:500px; margin:auto;">
-                <h3>Cálculo de Pulverização (L/ha)</h3>
-                <label style="font-size:0.7rem;">VAZÃO (L/min)</label>
-                <input type="number" id="c-q" value="1.2" oninput="Core.calcV()">
-                <label style="font-size:0.7rem;">VELOCIDADE (km/h)</label>
-                <input type="number" id="c-v" value="8" oninput="Core.calcV()">
-                <div id="c-res" style="background:#0a0d12; padding:20px; text-align:center; border-radius:8px; border:1px dashed var(--neon);">
-                    <h2 style="color:var(--neon)">180.00 L/ha</h2>
-                </div>
-            </div>
-        `;
+        vp.innerHTML = `<div class="card" style="max-width:450px; margin:auto;"><h3>Vazão de Pulverização (L/ha)</h3><label>VAZÃO DO BICO (L/min)</label><input type="number" id="c-q" value="1.2" oninput="Core.calcV()"><label>VELOCIDADE (km/h)</label><input type="number" id="c-v" value="8" oninput="Core.calcV()"><div id="c-res" style="background:#0a0d12; padding:30px; text-align:center; border-radius:10px; border:1px dashed var(--neon);"><h1 style="color:var(--neon)">180.00 L/ha</h1></div></div>`;
     },
 
     calcV() {
         const q = parseFloat(document.getElementById('c-q').value) || 0;
         const v = parseFloat(document.getElementById('c-v').value) || 1;
         const res = (600 * q) / (v * 0.5);
-        document.getElementById('c-res').innerHTML = `<h2 style="color:var(--neon)">${res.toFixed(2)} L/ha</h2>`;
+        document.getElementById('c-res').innerHTML = `<h1 style="color:var(--neon)">${res.toFixed(2)} L/ha</h1>`;
     },
 
-    // --- INTELIGÊNCIA ARTIFICIAL ---
+    // --- IA LOGIC ---
     askAI() {
         const input = document.getElementById('ai-input').value.toLowerCase();
         if(!input) return;
-        this.aiLog(`Usuário: ${input}`);
-        
+        this.aiLog(`> ${input}`);
         setTimeout(() => {
-            if(input.includes('frota') || input.includes('máquina')) {
-                const lowFuel = this.db.fleet.filter(f => f.fuel < 20);
-                this.aiLog(`AgroGPT: Você tem ${this.db.fleet.length} máquinas. ${lowFuel.length > 0 ? 'Alerta: '+lowFuel[0].name+' está com diesel crítico!' : 'Toda a frota está operacional.'}`);
-            } else if(input.includes('estoque') || input.includes('diesel')) {
-                const diesel = this.db.stock.find(s => s.item.toLowerCase().includes('diesel'));
-                this.aiLog(`AgroGPT: Estoque de Diesel atual: ${diesel ? diesel.qty + 'L' : 'Não encontrado'}.`);
+            if(input.includes('status') || input.includes('fazenda')) {
+                this.aiLog(`AgroGPT: Fazenda com ${this.db.fields.length} talhões ativos. Frota 100% monitorada.`);
+            } else if(input.includes('dinheiro') || input.includes('lucro')) {
+                this.aiLog(`AgroGPT: Margem atual de R$ ${(this.db.finance.income - this.db.finance.expense).toLocaleString()}.`);
             } else {
-                this.aiLog("AgroGPT: Análise climática sugere estabilidade. Dados de solo ok para plantio.");
+                this.aiLog("AgroGPT: Dados analisados. Sem anomalias detectadas no radar.");
             }
-        }, 800);
+        }, 600);
         document.getElementById('ai-input').value = "";
     },
 
-    aiLog(msg) {
-        this.db.logs.unshift(msg);
-        this.updateAILog();
-    },
-
+    aiLog(msg) { this.db.logs.unshift(`[${new Date().toLocaleTimeString()}] ${msg}`); this.updateAILog(); },
+    
     updateAILog() {
         const log = document.getElementById('ai-log');
-        if(log) log.innerHTML = this.db.logs.map(l => `<div class="ai-line">${l}</div>`).join('');
+        if(log) log.innerHTML = this.db.logs.map(l => `<div>${l}</div>`).join('');
     },
 
-    exportData() {
-        const blob = new Blob([JSON.stringify(this.db)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'backup_agroos_2026.json';
-        a.click();
+    initFinanceChart() {
+        const ctx = document.getElementById('chartFinance').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Receita', 'Despesa'],
+                datasets: [{
+                    data: [this.db.finance.income, this.db.finance.expense],
+                    backgroundColor: ['#00ff66', '#ff4d4d'],
+                    borderWidth: 0
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } } }
+        });
     }
 };
 
