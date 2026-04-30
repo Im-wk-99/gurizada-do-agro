@@ -3,166 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroOS | Nebula Immersive v4.0</title>
+    <title>AgroOS | Nebula Command Center</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --purple: #bc13fe;
-            --green: #20ff88;
-            --bg: #030005;
-            --surface: rgba(10, 5, 20, 0.7);
-            --border: rgba(188, 19, 254, 0.4);
-            --text: #e0d0ff;
-            --shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-        
-        body { 
-            background: var(--bg);
-            color: var(--text); 
-            height: 100vh; 
-            display: flex; 
-            overflow: hidden;
-        }
-
-        /* Plano de Fundo Dinâmico em Camadas */
-        #bg-layer {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2; background-size: cover; background-position: center;
-            transition: background-image 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: brightness(0.25) saturate(1.2) contrast(1.1);
-        }
-        #bg-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; background: radial-gradient(circle at center, transparent, var(--bg) 90%);
-        }
-
-        /* Sidebar Futurista */
-        aside { 
-            width: 100px; background: var(--surface); backdrop-filter: blur(40px);
-            border: 1px solid var(--border); margin: 25px; border-radius: 30px;
-            display: flex; flex-direction: column; align-items: center; padding: 35px 0;
-            transition: width 0.5s cubic-bezier(0.075, 0.82, 0.165, 1); z-index: 100;
-            box-shadow: var(--shadow);
-        }
-        aside:hover { width: 280px; border-color: var(--purple); }
-
-        .logo-box {
-            width: 55px; height: 55px; background: linear-gradient(135deg, var(--purple), #6a00ff);
-            border-radius: 18px; display: grid; place-items: center;
-            box-shadow: 0 0 30px rgba(188, 19, 254, 0.7); margin-bottom: 50px;
-        }
-
-        .nav-item {
-            width: calc(100% - 30px); padding: 18px; margin: 8px 0; border-radius: 20px;
-            display: flex; align-items: center; gap: 25px; cursor: pointer; transition: 0.4s;
-            color: var(--text); overflow: hidden; position: relative;
-        }
-        .nav-item i { font-size: 1.5rem; min-width: 35px; text-align: center; }
-        .nav-item span { opacity: 0; font-weight: 600; white-space: nowrap; letter-spacing: 1px; }
-        aside:hover .nav-item span { opacity: 1; }
-        .nav-item:hover { background: rgba(188, 19, 254, 0.25); color: var(--green); }
-        .nav-item.active { background: var(--purple); color: #fff; box-shadow: 0 0 35px rgba(188, 19, 254, 0.6); }
-
-        /* Área de Conteúdo */
-        main { flex: 1; padding: 30px 50px 30px 10px; display: flex; flex-direction: column; overflow-y: auto; }
-
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-
-        .card {
-            background: var(--surface); border: 1px solid var(--border); border-radius: 35px;
-            padding: 35px; backdrop-filter: blur(25px); box-shadow: var(--shadow);
-            transition: 0.5s; animation: slideUp 0.8s ease-out;
-            position: relative; overflow: hidden;
-        }
-        .card::before { content: ""; position: absolute; top:0; left:0; width: 100%; height: 5px; background: linear-gradient(90deg, transparent, var(--purple), transparent); opacity: 0.5; }
-        .card:hover { border-color: var(--green); transform: translateY(-8px); }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-
-        .neon-text { color: var(--green); text-shadow: 0 0 20px rgba(32, 255, 136, 0.7); font-weight: 900; }
-        
-        /* Inputs e Botões */
-        input, select {
-            width: 100%; background: rgba(0,0,0,0.7); border: 1px solid var(--border);
-            padding: 18px; border-radius: 18px; color: #fff; margin-top: 12px; font-weight: 600; outline: none;
-        }
-        input:focus { border-color: var(--green); box-shadow: 0 0 15px rgba(32, 255, 136, 0.2); }
-
-        .btn-action {
-            background: linear-gradient(90deg, var(--purple), #8a2be2);
-            color: #fff; border: none; padding: 20px; border-radius: 20px;
-            font-weight: 900; cursor: pointer; margin-top: 25px; width: 100%;
-            text-transform: uppercase; letter-spacing: 2px; transition: 0.4s;
-        }
-        .btn-action:hover { box-shadow: 0 0 50px var(--purple); transform: scale(1.03); }
-
-        .terminal {
-            background: rgba(0,0,0,0.8); border-radius: 25px; padding: 25px;
-            font-family: 'Courier New', monospace; font-size: 0.9rem; color: var(--green);
-            height: 220px; overflow-y: auto; border: 1px solid var(--border);
-        }
-
-        /* Tabelas */
-        table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
-        th { text-align: left; padding: 15px; color: var(--purple); font-weight: 900; font-size: 0.85rem; }
-        td { padding: 20px 15px; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(188, 19, 254, 0.1); border-bottom: 1px solid rgba(188, 19, 254, 0.1); }
-        td:first-child { border-radius: 15px 0 0 15px; border-left: 1px solid rgba(188, 19, 254, 0.1); }
-        td:last-child { border-radius: 0 15px 15px 0; border-right: 1px solid rgba(188, 19, 254, 0.1); }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
-    </style>
+    
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="bg-layer"></div>
 <div id="bg-overlay"></div>
 
-<aside>
-    <div class="logo-box"><i class="fas fa-brain" style="color: #fff; font-size: 1.8rem;"></i></div>
-    <div class="nav-item active" data-page="dash" onclick="Core.route('dash')"><i class="fas fa-home-alt"></i> <span>DASHBOARD</span></div>
-    <div class="nav-item" data-page="stock" onclick="Core.route('stock')"><i class="fas fa-vial"></i> <span>STOCK I.A.</span></div>
-    <div class="nav-item" data-page="fin" onclick="Core.route('fin')"><i class="fas fa-coins"></i> <span>TESOURARIA</span></div>
-    <div class="nav-item" data-page="eng" onclick="Core.route('eng')"><i class="fas fa-atom"></i> <span>ENGENHARIA</span></div>
+<aside id="sidebar">
+    <div class="logo-box">
+        <i class="fas fa-microchip"></i>
+    </div>
+    <nav>
+        <div class="nav-item active" data-page="dash" onclick="Core.route('dash')">
+            <i class="fas fa-project-diagram"></i> <span>DASHBOARD</span>
+        </div>
+        <div class="nav-item" data-page="stock" onclick="Core.route('stock')">
+            <i class="fas fa-boxes-stacked"></i> <span>ESTOQUE IA</span>
+        </div>
+        <div class="nav-item" data-page="fin" onclick="Core.route('fin')">
+            <i class="fas fa-receipt"></i> <span>FINANCEIRO</span>
+        </div>
+        <div class="nav-item" data-page="eng" onclick="Core.route('eng')">
+            <i class="fas fa-compass-drafting"></i> <span>ENGENHARIA</span>
+        </div>
+    </nav>
 </aside>
 
 <main>
     <header>
-        <div>
-            <h1 style="font-size: 3rem; font-weight: 900; letter-spacing: -3px; color: #fff;">NEBULA <span class="neon-text">OS</span></h1>
-            <p id="sub-header" style="opacity: 0.9; font-size: 1.1rem; font-weight: 400; color: var(--purple);">Agro-Intelligence Command</p>
+        <div class="brand-title">
+            <h1>NEBULA <span class="neon-text">OS</span></h1>
+            <p id="status-text">SISTEMA DE PRECISÃO OPERACIONAL</p>
         </div>
-        <div style="background: var(--surface); padding: 15px 30px; border-radius: 25px; border: 1px solid var(--border); text-align: right;">
-            <p id="clock" style="font-size: 1.4rem; font-weight: 900; color: #fff;">00:00:00</p>
-            <p style="font-size: 0.75rem; font-weight: 800; color: var(--green);">OPERACIONAL • RESERVA-PR</p>
+        <div class="info-pill">
+            <div class="clock-box">
+                <span id="clock">00:00:00</span>
+                <small>RESERVA, PR</small>
+            </div>
+            <div class="user-avatar"></div>
         </div>
     </header>
 
-    <div id="viewport"></div>
+    <div id="viewport">
+        </div>
 </main>
 
 <script>
+/**
+ * CORE ENGINE - Lógica Funcional e Persistência
+ */
 const Core = {
     db: {
-        stock: JSON.parse(localStorage.getItem('nebula_stock')) || [{name: 'NPK 04-14-08', qty: 1200, unit: 'Kg'}],
-        finance: JSON.parse(localStorage.getItem('nebula_fin')) || [{tipo: 'in', val: 125000, desc: 'Venda Safra Soja'}],
+        stock: JSON.parse(localStorage.getItem('nebula_stock')) || [{name: 'Adubo Especial', qty: 250, unit: 'Kg'}],
+        finance: JSON.parse(localStorage.getItem('nebula_fin')) || [{tipo: 'in', val: 15000, desc: 'Venda de Milho'}],
         assets: {
-            dash: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2500&auto=format&fit=crop', // Paisagem campo futurista
-            stock: 'https://images.unsplash.com/photo-1624350839172-2683839a706d?q=80&w=2500&auto=format&fit=crop', // Armazém moderno
-            fin: 'https://images.unsplash.com/photo-1639762681057-408e52192e55?q=80&w=2500&auto=format&fit=crop', // Abstrato tecnológico/cripto
-            eng: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2500&auto=format&fit=crop' // Engenharia/Maquinaria
+            dash: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2000',
+            stock: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=2000',
+            fin: 'https://images.unsplash.com/photo-1639762681057-408e52192e55?auto=format&fit=crop&w=2000',
+            eng: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=2000'
         }
     },
 
     init() {
         this.route('dash');
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+        setInterval(() => { 
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString(); 
+        }, 1000);
     },
 
     save() {
@@ -190,43 +102,39 @@ const Core = {
     renderDash(el) {
         const saldo = this.db.finance.reduce((acc, cur) => cur.tipo === 'in' ? acc + cur.val : acc - cur.val, 0);
         el.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 40px;">
+            <div class="grid-2-1">
                 <div class="card">
-                    <h2 style="margin-bottom: 25px;"><i class="fas fa-brain-circuit"></i> Central AgroGPT</h2>
-                    <div class="terminal" id="term"></div>
-                    <div style="margin-top: 30px; display: flex; gap: 20px;">
-                        <input type="text" id="ai-in" placeholder="Diga: 'Analisar humidade do talhão 07'...">
-                        <button class="btn-action" style="width: 200px; margin: 0;" onclick="Core.askAI()">EXECUTAR</button>
+                    <h3><i class="fas fa-robot"></i> AGRO-GPT TERMINAL</h3>
+                    <div id="term" class="terminal"></div>
+                    <div class="input-row">
+                        <input type="text" id="ai-in" placeholder="Comando de voz ou texto...">
+                        <button class="btn-action" style="width:150px; margin:0;" onclick="Core.askAI()">RODAR</button>
                     </div>
                 </div>
-                <div class="card" style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
-                    <p style="font-weight: 800; opacity: 0.7; letter-spacing: 2px;">BALANÇO GERAL</p>
-                    <h1 class="neon-text" style="font-size: 3.5rem; margin: 25px 0;">R$ ${saldo.toLocaleString('pt-PT')}</h1>
-                    <div style="padding: 20px; border-radius: 20px; background: rgba(32, 255, 136, 0.1); border: 1px solid var(--green);">
-                        <p style="color: var(--green); font-weight: 900;">+ 12.4% ESTE MÊS</p>
-                    </div>
+                <div class="card center-content">
+                    <p class="label">SALDO TOTAL</p>
+                    <h1 class="neon-text" style="font-size: 3rem;">R$ ${saldo.toLocaleString('pt-BR')}</h1>
+                    <div class="status-indicator">FLUXO POSITIVO (+15%)</div>
                 </div>
             </div>
         `;
-        this.logTerminal("Sincronizando com drones DJI Agras T40...");
-        this.logTerminal("Mapas de calor de Reserva carregados com sucesso.");
+        this.logTerminal("Kernel v4.0 Ativo. Aguardando input operacional...");
     },
 
     renderStock(el) {
         el.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px;">
+            <div class="grid-1-2">
                 <div class="card">
-                    <h3><i class="fas fa-plus-circle"></i> Entrada de Insumo</h3>
-                    <input type="text" id="s-nome" placeholder="Produto (Ex: Potássio)">
+                    <h3>NOVO INSUMO</h3>
+                    <input type="text" id="s-nome" placeholder="Produto">
                     <input type="number" id="s-qtd" placeholder="Quantidade">
-                    <input type="text" id="s-un" placeholder="Unidade (Sacos/L)">
-                    <button class="btn-action" onclick="Core.addStock()">REGISTAR</button>
+                    <button class="btn-action" onclick="Core.addStock()">SALVAR</button>
                 </div>
                 <div class="card">
-                    <h3><i class="fas fa-list-ul"></i> Stock em Tempo Real</h3>
+                    <h3>INVENTÁRIO ATUAL</h3>
                     <table>
-                        <thead><tr><th>NOME</th><th>QTD</th><th>UNIDADE</th></tr></thead>
-                        <tbody>${this.db.stock.map(s => `<tr><td style="font-weight:600;">${s.name}</td><td class="neon-text">${s.qty}</td><td>${s.unit}</td></tr>`).join('')}</tbody>
+                        <thead><tr><th>PRODUTO</th><th>STATUS</th><th>QTD</th></tr></thead>
+                        <tbody>${this.db.stock.map(s => `<tr><td>${s.name}</td><td>🟢 OK</td><td class="neon-text">${s.qty}</td></tr>`).join('')}</tbody>
                     </table>
                 </div>
             </div>
@@ -235,21 +143,17 @@ const Core = {
 
     renderFin(el) {
         el.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+            <div class="grid-1-1">
                 <div class="card">
-                    <h3><i class="fas fa-exchange-alt"></i> Novo Fluxo</h3>
-                    <select id="f-tipo"><option value="in">Receita (+)</option><option value="out">Despesa (-)</option></select>
-                    <input type="text" id="f-desc" placeholder="Descrição da Transação">
-                    <input type="number" id="f-val" placeholder="Valor em R$">
-                    <button class="btn-action" onclick="Core.addFin()">EFECTIVAR</button>
+                    <h3>LANÇAR FLUXO</h3>
+                    <select id="f-tipo"><option value="in">Entrada</option><option value="out">Saída</option></select>
+                    <input type="number" id="f-val" placeholder="Valor R$">
+                    <input type="text" id="f-desc" placeholder="Motivo">
+                    <button class="btn-action" onclick="Core.addFin()">EFETIVAR</button>
                 </div>
                 <div class="card">
-                    <h3><i class="fas fa-history"></i> Log Financeiro</h3>
-                    <div style="max-height: 400px; overflow-y: auto;">
-                        <table>
-                            <tbody>${this.db.finance.slice().reverse().map(f => `<tr><td>${f.desc}</td><td style="color:${f.tipo == 'in' ? 'var(--green)' : '#ff4757'}; font-weight:900;">R$ ${f.val}</td></tr>`).join('')}</tbody>
-                        </table>
-                    </div>
+                    <h3>HISTÓRICO</h3>
+                    <table><tbody>${this.db.finance.slice().reverse().map(f => `<tr><td>${f.desc}</td><td style="color:${f.tipo=='in'?'var(--green)':'#ff4d4d'}">R$ ${f.val}</td></tr>`).join('')}</tbody></table>
                 </div>
             </div>
         `;
@@ -257,18 +161,17 @@ const Core = {
 
     renderEng(el) {
         el.innerHTML = `
-            <div class="card" style="max-width: 700px; margin: auto;">
-                <h2 class="neon-text" style="text-align:center;"><i class="fas fa-flask-vial"></i> Engenharia de Precisão</h2>
-                <p style="text-align:center; opacity:0.7; margin-bottom: 30px;">Cálculo Dinâmico de Vazão de Bicos</p>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div><label>Velocidade Máquina (km/h)</label><input type="number" id="e-vel" value="7.5"></div>
-                    <div><label>Taxa Aplicação (L/ha)</label><input type="number" id="e-tax" value="120"></div>
+            <div class="card max-600">
+                <h2 class="neon-text">CALIBRAGEM DE BICOS</h2>
+                <div class="input-group">
+                    <label>Velocidade (km/h)</label><input type="number" id="e-vel" value="8">
+                    <label>Taxa (L/ha)</label><input type="number" id="e-tax" value="100">
+                    <label>Espaçamento (m)</label><input type="number" id="e-esp" value="0.5">
                 </div>
-                <div style="margin-top: 20px;"><label>Espaçamento entre Bicos (m)</label><input type="number" id="e-esp" value="0.5"></div>
-                <button class="btn-action" onclick="Core.calcEng()">PROCESSAR ALGORITMO</button>
-                <div id="res-eng" class="card" style="margin-top: 40px; display:none; border-color: var(--green); background: rgba(32, 255, 136, 0.05);">
-                    <p style="text-align:center; font-size: 0.9rem; letter-spacing: 2px;">DÉBITO POR BICO REQUERIDO:</p>
-                    <h1 id="res-val" class="neon-text" style="text-align: center; font-size: 3rem;">0.00 L/min</h1>
+                <button class="btn-action" onclick="Core.calcEng()">CALCULAR VAZÃO</button>
+                <div id="res-eng" class="result-card" style="display:none;">
+                    <p>VAZÃO REQUERIDA:</p>
+                    <h1 id="res-val" class="neon-text">0.00 L/min</h1>
                 </div>
             </div>
         `;
@@ -277,14 +180,13 @@ const Core = {
     addStock() {
         const name = document.getElementById('s-nome').value;
         const qty = document.getElementById('s-qtd').value;
-        const unit = document.getElementById('s-un').value;
-        if(name && qty) { this.db.stock.push({name, qty, unit}); this.save(); this.route('stock'); }
+        if(name && qty) { this.db.stock.push({name, qty}); this.save(); this.route('stock'); }
     },
 
     addFin() {
         const tipo = document.getElementById('f-tipo').value;
-        const desc = document.getElementById('f-desc').value;
         const val = parseFloat(document.getElementById('f-val').value);
+        const desc = document.getElementById('f-desc').value;
         if(val && desc) { this.db.finance.push({tipo, val, desc}); this.save(); this.route('fin'); }
     },
 
@@ -298,17 +200,17 @@ const Core = {
     },
 
     askAI() {
-        const txt = document.getElementById('ai-in').value;
-        if(!txt) return;
-        this.logTerminal(`> Processando: ${txt}`);
-        setTimeout(() => this.logTerminal(`> AgroGPT: Com base no sensor infravermelho, o Talhão 07 apresenta 65% de humidade. Janela de colheita ideal: Lote A.`), 1000);
+        const val = document.getElementById('ai-in').value;
+        if(!val) return;
+        this.logTerminal(`> Comando: ${val}`);
+        setTimeout(() => this.logTerminal(`> AgroGPT: Analisando sensores... solo detectado com 45% umidade. Irrigação desnecessária no momento.`), 800);
         document.getElementById('ai-in').value = '';
     },
 
     logTerminal(m) {
         const t = document.getElementById('term');
         if(t) {
-            t.innerHTML += `<p style="margin-bottom:10px; border-left: 2px solid var(--purple); padding-left: 10px;">[${new Date().toLocaleTimeString()}] ${m}</p>`;
+            t.innerHTML += `<p>[SYS] ${m}</p>`;
             t.scrollTop = t.scrollHeight;
         }
     }
