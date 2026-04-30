@@ -1,222 +1,133 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroOS | Nebula Command Center</title>
+    <title>Nebula OS | Elite Command</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="bg-layer"></div>
-<div id="bg-overlay"></div>
+    <div id="nebula-canvas"></div>
+    <div class="scanline"></div>
 
-<aside id="sidebar">
-    <div class="logo-box">
-        <i class="fas fa-microchip"></i>
-    </div>
-    <nav>
-        <div class="nav-item active" data-page="dash" onclick="Core.route('dash')">
-            <i class="fas fa-project-diagram"></i> <span>DASHBOARD</span>
+    <aside id="main-nav">
+        <div class="cyber-logo">
+            <div class="logo-core"></div>
+            <i class="fas fa-biohazard"></i>
         </div>
-        <div class="nav-item" data-page="stock" onclick="Core.route('stock')">
-            <i class="fas fa-boxes-stacked"></i> <span>ESTOQUE IA</span>
-        </div>
-        <div class="nav-item" data-page="fin" onclick="Core.route('fin')">
-            <i class="fas fa-receipt"></i> <span>FINANCEIRO</span>
-        </div>
-        <div class="nav-item" data-page="eng" onclick="Core.route('eng')">
-            <i class="fas fa-compass-drafting"></i> <span>ENGENHARIA</span>
-        </div>
-    </nav>
-</aside>
-
-<main>
-    <header>
-        <div class="brand-title">
-            <h1>NEBULA <span class="neon-text">OS</span></h1>
-            <p id="status-text">SISTEMA DE PRECISÃO OPERACIONAL</p>
-        </div>
-        <div class="info-pill">
-            <div class="clock-box">
-                <span id="clock">00:00:00</span>
-                <small>RESERVA, PR</small>
-            </div>
-            <div class="user-avatar"></div>
-        </div>
-    </header>
-
-    <div id="viewport">
-        </div>
-</main>
-
-<script>
-/**
- * CORE ENGINE - Lógica Funcional e Persistência
- */
-const Core = {
-    db: {
-        stock: JSON.parse(localStorage.getItem('nebula_stock')) || [{name: 'Adubo Especial', qty: 250, unit: 'Kg'}],
-        finance: JSON.parse(localStorage.getItem('nebula_fin')) || [{tipo: 'in', val: 15000, desc: 'Venda de Milho'}],
-        assets: {
-            dash: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2000',
-            stock: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=2000',
-            fin: 'https://images.unsplash.com/photo-1639762681057-408e52192e55?auto=format&fit=crop&w=2000',
-            eng: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=2000'
-        }
-    },
-
-    init() {
-        this.route('dash');
-        setInterval(() => { 
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString(); 
-        }, 1000);
-    },
-
-    save() {
-        localStorage.setItem('nebula_stock', JSON.stringify(this.db.stock));
-        localStorage.setItem('nebula_fin', JSON.stringify(this.db.finance));
-    },
-
-    route(page) {
-        const vp = document.getElementById('viewport');
-        document.getElementById('bg-layer').style.backgroundImage = `url('${this.db.assets[page]}')`;
         
-        document.querySelectorAll('.nav-item').forEach(i => {
-            i.classList.remove('active');
-            if(i.dataset.page === page) i.classList.add('active');
-        });
-        
-        switch(page) {
-            case 'dash': this.renderDash(vp); break;
-            case 'stock': this.renderStock(vp); break;
-            case 'fin': this.renderFin(vp); break;
-            case 'eng': this.renderEng(vp); break;
-        }
-    },
-
-    renderDash(el) {
-        const saldo = this.db.finance.reduce((acc, cur) => cur.tipo === 'in' ? acc + cur.val : acc - cur.val, 0);
-        el.innerHTML = `
-            <div class="grid-2-1">
-                <div class="card">
-                    <h3><i class="fas fa-robot"></i> AGRO-GPT TERMINAL</h3>
-                    <div id="term" class="terminal"></div>
-                    <div class="input-row">
-                        <input type="text" id="ai-in" placeholder="Comando de voz ou texto...">
-                        <button class="btn-action" style="width:150px; margin:0;" onclick="Core.askAI()">RODAR</button>
-                    </div>
-                </div>
-                <div class="card center-content">
-                    <p class="label">SALDO TOTAL</p>
-                    <h1 class="neon-text" style="font-size: 3rem;">R$ ${saldo.toLocaleString('pt-BR')}</h1>
-                    <div class="status-indicator">FLUXO POSITIVO (+15%)</div>
-                </div>
+        <nav>
+            <div class="nav-btn active" data-page="dash" onclick="App.route('dash')">
+                <i class="fas fa-th-large"></i>
+                <span>OVERVIEW</span>
             </div>
-        `;
-        this.logTerminal("Kernel v4.0 Ativo. Aguardando input operacional...");
-    },
-
-    renderStock(el) {
-        el.innerHTML = `
-            <div class="grid-1-2">
-                <div class="card">
-                    <h3>NOVO INSUMO</h3>
-                    <input type="text" id="s-nome" placeholder="Produto">
-                    <input type="number" id="s-qtd" placeholder="Quantidade">
-                    <button class="btn-action" onclick="Core.addStock()">SALVAR</button>
-                </div>
-                <div class="card">
-                    <h3>INVENTÁRIO ATUAL</h3>
-                    <table>
-                        <thead><tr><th>PRODUTO</th><th>STATUS</th><th>QTD</th></tr></thead>
-                        <tbody>${this.db.stock.map(s => `<tr><td>${s.name}</td><td>🟢 OK</td><td class="neon-text">${s.qty}</td></tr>`).join('')}</tbody>
-                    </table>
-                </div>
+            <div class="nav-btn" data-page="stock" onclick="App.route('stock')">
+                <i class="fas fa-microchip"></i>
+                <span>ASSETS</span>
             </div>
-        `;
-    },
-
-    renderFin(el) {
-        el.innerHTML = `
-            <div class="grid-1-1">
-                <div class="card">
-                    <h3>LANÇAR FLUXO</h3>
-                    <select id="f-tipo"><option value="in">Entrada</option><option value="out">Saída</option></select>
-                    <input type="number" id="f-val" placeholder="Valor R$">
-                    <input type="text" id="f-desc" placeholder="Motivo">
-                    <button class="btn-action" onclick="Core.addFin()">EFETIVAR</button>
-                </div>
-                <div class="card">
-                    <h3>HISTÓRICO</h3>
-                    <table><tbody>${this.db.finance.slice().reverse().map(f => `<tr><td>${f.desc}</td><td style="color:${f.tipo=='in'?'var(--green)':'#ff4d4d'}">R$ ${f.val}</td></tr>`).join('')}</tbody></table>
-                </div>
+            <div class="nav-btn" data-page="fin" onclick="App.route('fin')">
+                <i class="fas fa-satellite-dish"></i>
+                <span>MARKET</span>
             </div>
-        `;
-    },
-
-    renderEng(el) {
-        el.innerHTML = `
-            <div class="card max-600">
-                <h2 class="neon-text">CALIBRAGEM DE BICOS</h2>
-                <div class="input-group">
-                    <label>Velocidade (km/h)</label><input type="number" id="e-vel" value="8">
-                    <label>Taxa (L/ha)</label><input type="number" id="e-tax" value="100">
-                    <label>Espaçamento (m)</label><input type="number" id="e-esp" value="0.5">
-                </div>
-                <button class="btn-action" onclick="Core.calcEng()">CALCULAR VAZÃO</button>
-                <div id="res-eng" class="result-card" style="display:none;">
-                    <p>VAZÃO REQUERIDA:</p>
-                    <h1 id="res-val" class="neon-text">0.00 L/min</h1>
-                </div>
+            <div class="nav-btn" data-page="eng" onclick="App.route('eng')">
+                <i class="fas fa-atom"></i>
+                <span>BIO-ENG</span>
             </div>
-        `;
-    },
+        </nav>
 
-    addStock() {
-        const name = document.getElementById('s-nome').value;
-        const qty = document.getElementById('s-qtd').value;
-        if(name && qty) { this.db.stock.push({name, qty}); this.save(); this.route('stock'); }
-    },
+        <div class="system-health">
+            <div class="bar"><div class="fill" style="width: 85%"></div></div>
+            <small>CORE TEMP: 32°C</small>
+        </div>
+    </aside>
 
-    addFin() {
-        const tipo = document.getElementById('f-tipo').value;
-        const val = parseFloat(document.getElementById('f-val').value);
-        const desc = document.getElementById('f-desc').value;
-        if(val && desc) { this.db.finance.push({tipo, val, desc}); this.save(); this.route('fin'); }
-    },
+    <main id="app-core">
+        <header class="glass-header">
+            <div class="title-group">
+                <h1 class="glitch" data-text="NEBULA">NEBULA <span class="neon-purple">v4.0</span></h1>
+                <p class="subtitle">SISTEMA DE GESTÃO ESTRATÉGICA</p>
+            </div>
+            
+            <div class="clock-module">
+                <div id="digital-clock">00:00:00</div>
+                <div class="date-stmp">30.APR.2026</div>
+            </div>
+        </header>
 
-    calcEng() {
-        const vel = document.getElementById('e-vel').value;
-        const tax = document.getElementById('e-tax').value;
-        const esp = document.getElementById('e-esp').value;
-        const res = (tax * vel * esp) / 600;
-        document.getElementById('res-eng').style.display = 'block';
-        document.getElementById('res-val').innerText = res.toFixed(3) + " L/min";
-    },
+        <section id="viewport" class="content-scroll">
+            </section>
+    </main>
 
-    askAI() {
-        const val = document.getElementById('ai-in').value;
-        if(!val) return;
-        this.logTerminal(`> Comando: ${val}`);
-        setTimeout(() => this.logTerminal(`> AgroGPT: Analisando sensores... solo detectado com 45% umidade. Irrigação desnecessária no momento.`), 800);
-        document.getElementById('ai-in').value = '';
-    },
+    <script>
+        // Lógica de Transição e Renderização
+        const App = {
+            state: {
+                current: 'dash',
+                bgs: {
+                    dash: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000',
+                    stock: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2000',
+                    fin: 'https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2000',
+                    eng: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000'
+                }
+            },
 
-    logTerminal(m) {
-        const t = document.getElementById('term');
-        if(t) {
-            t.innerHTML += `<p>[SYS] ${m}</p>`;
-            t.scrollTop = t.scrollHeight;
-        }
-    }
-};
+            init() {
+                this.route('dash');
+                this.updateClock();
+                setInterval(() => this.updateClock(), 1000);
+            },
 
-window.onload = () => Core.init();
-</script>
+            updateClock() {
+                document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString();
+            },
+
+            route(page) {
+                const vp = document.getElementById('viewport');
+                const canvas = document.getElementById('nebula-canvas');
+                
+                // Transição de Fundo
+                canvas.style.backgroundImage = `url('${this.state.bgs[page]}')`;
+                
+                // Estilo Ativo
+                document.querySelectorAll('.nav-btn').forEach(b => {
+                    b.classList.remove('active');
+                    if(b.dataset.page === page) b.classList.add('active');
+                });
+
+                this.render(page, vp);
+            },
+
+            render(page, target) {
+                const templates = {
+                    dash: `
+                        <div class="dashboard-grid">
+                            <div class="cyber-card glass tall">
+                                <h3 class="neon-purple">SITREP TERMINAL</h3>
+                                <div class="terminal-box">
+                                    <p class="typewriter">> [INIT] Reconhecendo rede neural...</p>
+                                    <p class="typewriter">> [DATA] Sensores de solo ativos em Reserva/PR.</p>
+                                    <p class="typewriter">> [AI] Previsão de colheita: +18% acima da média.</p>
+                                </div>
+                            </div>
+                            <div class="cyber-card glass center">
+                                <span class="label">LIQUIDEZ TOTAL</span>
+                                <h2 class="neon-greenCounter">R$ 1.250.400</h2>
+                                <div class="mini-chart"></div>
+                            </div>
+                        </div>`,
+                    stock: `<div class="cyber-card glass"><h3>INVENTÁRIO ATIVO</h3><div class="data-table">...carregando dados estelares...</div></div>`,
+                    fin: `<div class="cyber-card glass"><h3>MARKET FLOW</h3><div class="chart-placeholder"></div></div>`,
+                    eng: `<div class="cyber-card glass"><h3>BIO-ENGENHARIA</h3><p>Módulo de cálculo avançado ativo.</p></div>`
+                };
+                target.innerHTML = templates[page];
+            }
+        };
+
+        window.onload = () => App.init();
+    </script>
 </body>
 </html>
