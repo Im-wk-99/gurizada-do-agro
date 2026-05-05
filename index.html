@@ -9,84 +9,94 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@200;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
+        /* DESIGN SYSTEM NEBULA */
         :root {
             --neon-p: #bc13fe; --neon-g: #20ff88; --neon-b: #00d2ff;
             --danger: #ff4757; --warning: #ffa502; --bg-deep: #020205;
             --glass: rgba(12, 10, 20, 0.85); --border: rgba(188, 19, 254, 0.3);
             --font-head: 'Orbitron', sans-serif; --font-body: 'Outfit', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
             --transition-smooth: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--neon-p) transparent; }
         body, html { background: var(--bg-deep); color: #e0e0e0; font-family: var(--font-body); height: 100vh; width: 100vw; overflow: hidden; }
 
-        /* TELA INICIAL */
+        /* TELA DE SPLASH (SIMULAÇÃO) */
         #splash-screen {
             position: fixed; inset: 0; z-index: 9999;
             background: radial-gradient(circle at center, #0a0a1a 0%, #020205 100%);
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: 1.2s cubic-bezier(0.7, 0, 0.3, 1);
         }
-        #splash-screen.hidden { opacity: 0; pointer-events: none; transform: scale(1.2); }
+        #splash-screen.hidden { opacity: 0; pointer-events: none; transform: scale(1.5); }
+
+        .orb-portal {
+            width: 350px; height: 350px; border-radius: 50%; background: var(--neon-p);
+            filter: blur(120px); opacity: 0.2; position: absolute; animation: pulse 4s infinite alternate;
+        }
+        @keyframes pulse { from { transform: scale(1); opacity: 0.1; } to { transform: scale(1.3); opacity: 0.3; } }
 
         .btn-simulate {
-            margin-top: 40px; padding: 25px 60px; font-family: var(--font-head);
-            font-size: 1.1rem; letter-spacing: 4px; color: var(--neon-g);
-            background: transparent; border: 2px solid var(--neon-g);
-            border-radius: 50px; cursor: pointer; transition: 0.4s;
+            padding: 25px 60px; font-family: var(--font-head); font-size: 1.2rem; letter-spacing: 5px;
+            color: var(--neon-g); background: transparent; border: 2px solid var(--neon-g);
+            border-radius: 50px; cursor: pointer; transition: 0.4s; z-index: 10;
         }
-        .btn-simulate:hover { background: var(--neon-g); color: #000; box-shadow: 0 0 50px var(--neon-g); }
+        .btn-simulate:hover { background: var(--neon-g); color: #000; box-shadow: 0 0 50px var(--neon-g); transform: translateY(-5px); }
 
-        /* INTERFACE PRINCIPAL */
-        #app-interface { display: flex; height: 100vh; width: 100vw; opacity: 0; transition: 2s ease-out; }
-        #app-interface.visible { opacity: 1; }
+        /* INTERFACE DO APLICATIVO */
+        #app-interface { display: flex; height: 100vh; width: 100vw; opacity: 0; transition: 2s ease; transform: scale(0.9); }
+        #app-interface.visible { opacity: 1; transform: scale(1); }
 
-        #nebula-canvas { position: fixed; inset: 0; z-index: -5; background-size: cover; background-position: center; filter: brightness(0.15) blur(2px); }
-        .grid-mask { position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 50px 50px; opacity: 0.08; z-index: -4; pointer-events: none; }
+        #nebula-canvas { position: fixed; inset: 0; z-index: -5; background-size: cover; background-position: center; filter: brightness(0.15) blur(3px); transition: 1s; }
+        .grid-mask { position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 50px 50px; opacity: 0.1; z-index: -4; pointer-events: none; }
 
+        /* SIDEBAR */
         aside { 
-            width: 100px; background: var(--glass); backdrop-filter: blur(50px); 
-            border-right: 1px solid var(--border); display: flex; flex-direction: column; 
-            align-items: center; padding: 40px 0; transition: var(--transition-smooth); z-index: 100;
+            width: 100px; background: var(--glass); backdrop-filter: blur(40px); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; align-items: center; padding: 40px 0; transition: var(--transition-smooth); z-index: 100;
         }
         aside:hover { width: 280px; }
 
-        .nav-link { 
-            width: 85%; padding: 18px; margin: 8px 0; border-radius: 20px; 
-            display: flex; align-items: center; gap: 20px; cursor: pointer; 
-            transition: 0.3s; color: rgba(255,255,255,0.3); white-space: nowrap; overflow: hidden;
+        .logo-core { 
+            width: 60px; height: 60px; background: var(--neon-p); border-radius: 18px; 
+            display: grid; place-items: center; margin-bottom: 50px; box-shadow: 0 0 20px var(--neon-p); cursor: pointer;
         }
-        .nav-link i { font-size: 1.4rem; min-width: 45px; text-align: center; }
-        .nav-link span { font-family: var(--font-head); font-size: 0.75rem; opacity: 0; }
+
+        .nav-link { 
+            width: 85%; padding: 18px; margin: 10px 0; border-radius: 20px; display: flex; align-items: center;
+            gap: 20px; cursor: pointer; transition: 0.3s; color: rgba(255,255,255,0.3); overflow: hidden; white-space: nowrap;
+        }
+        .nav-link i { font-size: 1.5rem; min-width: 45px; text-align: center; }
+        .nav-link span { font-family: var(--font-head); font-size: 0.8rem; opacity: 0; transition: 0.3s; }
         aside:hover .nav-link span { opacity: 1; }
         .nav-link.active { border-left: 4px solid var(--neon-p); color: var(--neon-g); background: rgba(188, 19, 254, 0.1); }
 
-        main { flex: 1; padding: 45px; overflow-y: auto; position: relative; }
-        .card-nebula { background: var(--glass); border: 1px solid var(--border); border-radius: 30px; padding: 35px; backdrop-filter: blur(30px); margin-bottom: 25px; animation: slideUp 0.6s ease-out; }
-        .neon-txt { color: var(--neon-p); text-shadow: 0 0 15px var(--neon-p); }
-
-        /* FORMULÁRIOS */
-        .nebula-input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); padding: 15px; border-radius: 12px; color: #fff; margin-bottom: 15px; outline: none; }
-        .btn-nebula { width: 100%; background: linear-gradient(135deg, var(--neon-p), #7a00ff); border: none; padding: 18px; border-radius: 15px; color: #fff; font-family: var(--font-head); font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .btn-nebula:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(188, 19, 254, 0.4); }
-
-        /* HELP CENTER CARDS */
-        .help-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .help-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; transition: 0.3s; cursor: pointer; }
-        .help-card:hover { border-color: var(--neon-b); background: rgba(0, 210, 255, 0.05); }
-
+        /* CONTEÚDO PRINCIPAL */
+        main { flex: 1; padding: 40px; overflow-y: auto; position: relative; }
+        .card-nebula { background: var(--glass); border: 1px solid var(--border); border-radius: 35px; padding: 35px; backdrop-filter: blur(30px); margin-bottom: 30px; animation: slideUp 0.8s; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .neon-txt { color: var(--neon-p); text-shadow: 0 0 15px var(--neon-p); }
+        .nebula-input { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid var(--border); padding: 18px; border-radius: 15px; color: #fff; margin-bottom: 15px; outline: none; }
+        .btn-nebula { width: 100%; background: linear-gradient(135deg, var(--neon-p), #7a00ff); border: none; padding: 20px; border-radius: 15px; color: #fff; font-family: var(--font-head); font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .btn-nebula:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(188, 19, 254, 0.5); }
+
+        /* GRID HELP & CALC */
+        .help-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .help-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 25px; border-radius: 20px; cursor: pointer; transition: 0.3s; }
+        .help-card:hover { border-color: var(--neon-b); background: rgba(0, 210, 255, 0.05); }
+        .report-item { background: rgba(255, 71, 87, 0.05); border: 1px solid rgba(255, 71, 87, 0.2); border-radius: 15px; padding: 15px; margin-bottom: 10px; border-left: 5px solid var(--danger); }
     </style>
 </head>
 <body>
 
     <div id="splash-screen">
-        <div class="welcome-box" style="text-align: center;">
+        <div class="orb-portal"></div>
+        <div style="text-align: center; z-index: 10;">
             <i class="fas fa-atom" style="font-size: 4rem; color: var(--neon-p); margin-bottom: 20px;"></i>
-            <h2 style="font-family: 'Orbitron'; letter-spacing: 10px;">NEBULA OS</h2>
-            <p style="opacity: 0.5;">SISTEMA AGRÍCOLA DE ALTA PRECISÃO</p>
-            <button class="btn-simulate" onclick="Kernel.teleport()">INICIAR SISTEMA</button>
+            <h1 style="font-family: 'Orbitron'; letter-spacing: 15px; margin-bottom: 10px;">NEBULA OS</h1>
+            <p style="opacity: 0.5; letter-spacing: 3px; margin-bottom: 40px;">UNIDADE DE COMANDO AGRÍCOLA</p>
+            <button class="btn-simulate" onclick="Kernel.teleport()">INICIAR SIMULAÇÃO</button>
         </div>
     </div>
 
@@ -95,19 +105,19 @@
         <div class="grid-mask"></div>
 
         <aside>
-            <div class="logo-core" onclick="location.reload()" style="margin-bottom: 40px; cursor: pointer; width: 60px; height: 60px; background: var(--neon-p); border-radius: 15px; display: grid; place-items: center;"><i class="fas fa-atom"></i></div>
+            <div class="logo-core" onclick="location.reload()"><i class="fas fa-atom"></i></div>
             <nav id="sidebar-nav"></nav>
         </aside>
 
         <main>
-            <header style="display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
+            <header style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 40px;">
                 <div>
-                    <h1 style="font-family: 'Orbitron'; margin: 0;">CORE <span class="neon-txt">v4.0</span></h1>
-                    <p id="path-display" style="font-size: 0.7rem; opacity: 0.5;">ROOT // DASHBOARD</p>
+                    <h2 style="font-family: 'Orbitron'; margin: 0;">SISTEMA <span class="neon-txt">ROOT</span></h2>
+                    <p id="path-display" style="font-size: 0.7rem; opacity: 0.5; text-transform: uppercase;">ROOT // DASHBOARD</p>
                 </div>
                 <div style="text-align: right; font-family: 'Orbitron';">
-                    <div id="clock" style="color: var(--neon-g); font-size: 1.2rem;">00:00:00</div>
-                    <small id="sensor-api" style="opacity: 0.5;">SATELLITE SYNC ACTIVE</small>
+                    <div id="clock" style="color: var(--neon-g); font-size: 1.3rem;">00:00:00</div>
+                    <small style="opacity: 0.4;">SATELLITE SYNC: ACTIVE</small>
                 </div>
             </header>
 
@@ -122,12 +132,13 @@
                 reports: JSON.parse(localStorage.getItem('neb_reports')) || [],
                 assets: {
                     dash: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000',
-                    help: 'https://images.unsplash.com/photo-1454165833767-027ffec95c1c?q=80&w=2000',
                     calc: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000',
-                    diff: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=2000'
+                    diff: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=2000',
+                    help: 'https://images.unsplash.com/photo-1454165833767-027ffec95c1c?q=80&w=2000'
                 }
             },
 
+            // LÓGICA DE TRANSIÇÃO
             teleport() {
                 document.getElementById('splash-screen').classList.add('hidden');
                 document.getElementById('app-interface').classList.add('visible');
@@ -151,13 +162,13 @@
             },
 
             renderSidebar() {
-                const items = [
+                const navItems = [
                     {id: 'dash', icon: 'fa-chart-network', label: 'DASHBOARD'},
                     {id: 'calc', icon: 'fa-calculator', label: 'CALC. SAFRA'},
                     {id: 'diff', icon: 'fa-exclamation-triangle', label: 'DIFICULDADES'},
                     {id: 'help', icon: 'fa-question-circle', label: 'AJUDA'}
                 ];
-                document.getElementById('sidebar-nav').innerHTML = items.map(i => `
+                document.getElementById('sidebar-nav').innerHTML = navItems.map(i => `
                     <div class="nav-link ${this.state.view === i.id ? 'active' : ''}" onclick="Kernel.navigate('${i.id}')">
                         <i class="fas ${i.icon}"></i><span>${i.label}</span>
                     </div>
@@ -169,44 +180,40 @@
                 
                 if(this.state.view === 'dash') {
                     root.innerHTML = `
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:25px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:30px;">
                             <div class="card-nebula">
-                                <h3 class="neon-txt">RESUMO OPERACIONAL</h3>
-                                <p style="margin-top:15px; opacity:0.8;">Sistema operando em Reserva, PR. Link estável com satélite Starlink-Agro.</p>
-                                <div style="margin-top:20px; display:flex; gap:15px;">
-                                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; flex:1;">
-                                        <small>ALERTA CLIMA</small><br><b style="color:var(--warning)">GEADA LEVE</b>
-                                    </div>
-                                    <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:12px; flex:1;">
-                                        <small>SOLO</small><br><b style="color:var(--neon-g)">UMIDADE OK</b>
-                                    </div>
+                                <h3 class="neon-txt">UNIDADE OPERACIONAL</h3>
+                                <p style="margin-top:15px; opacity:0.7;">Localização: Reserva, PR. Condições de solo ideais para o plantio de soja e milho.</p>
+                                <div style="margin-top:25px; border-left: 2px solid var(--neon-b); padding-left: 20px;">
+                                    <small>TEMPERATURA</small><br><b>24.5°C</b><br><br>
+                                    <small>UMIDADE DO AR</small><br><b>62%</b>
                                 </div>
                             </div>
-                            <div class="card-nebula" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                                <small>TOTAL DE INCIDENTES</small>
-                                <h1 style="font-size:4rem;" class="neon-txt">${this.state.reports.length}</h1>
+                            <div class="card-nebula" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                                <small>TOTAL DE OCORRÊNCIAS</small>
+                                <h1 style="font-size:5rem;" class="neon-txt">${this.state.reports.length}</h1>
+                                <button class="btn-nebula" style="width: auto; padding: 10px 30px;" onclick="Kernel.navigate('diff')">VER LOGS</button>
                             </div>
                         </div>
                     `;
-                } 
+                }
 
                 else if(this.state.view === 'calc') {
                     root.innerHTML = `
-                        <div class="card-nebula" style="max-width:600px; margin:auto;">
-                            <h3 class="neon-txt">CALCULADORA DE PRODUTIVIDADE</h3>
+                        <div class="card-nebula" style="max-width:550px; margin:auto;">
+                            <h3 class="neon-txt">CALCULADORA DE SAFRA</h3>
                             <div style="margin-top:25px;">
-                                <label><small>ÁREA TOTAL (HECTARES)</small></label>
-                                <input type="number" id="c-area" class="nebula-input" value="100">
-                                <label><small>ESTIMATIVA (SACAS POR HA)</small></label>
-                                <input type="number" id="c-yield" class="nebula-input" value="60">
-                                <label><small>PREÇO MERCADO (POR SACA R$)</small></label>
-                                <input type="number" id="c-price" class="nebula-input" value="130">
-                                <button class="btn-nebula" onclick="Kernel.calculateSafra()">PROCESSAR ESTIMATIVA</button>
+                                <label><small>TAMANHO DA ÁREA (HA)</small></label>
+                                <input type="number" id="area" class="nebula-input" value="50">
+                                <label><small>RENDIMENTO (SACAS/HA)</small></label>
+                                <input type="number" id="yield" class="nebula-input" value="65">
+                                <label><small>PREÇO ATUAL (R$/SACA)</small></label>
+                                <input type="number" id="price" class="nebula-input" value="140">
+                                <button class="btn-nebula" onclick="Kernel.runCalc()">EXECUTAR ALGORITMO</button>
                             </div>
-                            <div id="calc-result" style="margin-top:30px; display:none; text-align:center; padding:20px; border:1px solid var(--neon-g); border-radius:15px;">
-                                <small>TOTAL ESTIMADO</small>
-                                <h2 id="res-sacas" class="neon-g">0 SACAS</h2>
-                                <h3 id="res-valor" style="opacity:0.7;">R$ 0,00</h3>
+                            <div id="res-box" style="display:none; margin-top:30px; border-top: 1px solid var(--border); padding-top:20px; text-align:center;">
+                                <h2 id="res-total" class="neon-g">0 SACAS</h2>
+                                <h3 id="res-money" style="opacity:0.6;">R$ 0,00</h3>
                             </div>
                         </div>
                     `;
@@ -214,24 +221,26 @@
 
                 else if(this.state.view === 'diff') {
                     root.innerHTML = `
-                        <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:25px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1.5fr; gap:30px;">
                             <div class="card-nebula">
-                                <h3 class="neon-txt">RELATAR PROBLEMA</h3>
-                                <select id="h-type" class="nebula-input" style="margin-top:20px;">
-                                    <option>Clima</option><option>Pragas</option><option>Maquinário</option>
+                                <h3 class="neon-txt">RELATAR INCIDENTE</h3>
+                                <select id="r-type" class="nebula-input" style="margin-top:20px;">
+                                    <option>Clima/Tempo</option><option>Pragas/Doença</option><option>Maquinário</option>
                                 </select>
-                                <textarea id="h-msg" class="nebula-input" style="height:120px;" placeholder="Descreva o incidente..."></textarea>
-                                <button class="btn-nebula" onclick="Kernel.addReport()">ENVIAR RELATÓRIO</button>
+                                <textarea id="r-msg" class="nebula-input" style="height:150px;" placeholder="Descreva a dificuldade encontrada..."></textarea>
+                                <button class="btn-nebula" onclick="Kernel.saveReport()">ENVIAR RELATÓRIO</button>
                             </div>
                             <div class="card-nebula">
-                                <h3 class="neon-txt">LOG DE OCORRÊNCIAS</h3>
-                                <div style="margin-top:20px; max-height:400px; overflow-y:auto;">
+                                <h3 class="neon-txt">HISTÓRICO DE CAMPO</h3>
+                                <div style="margin-top:20px; max-height:450px; overflow-y:auto;">
                                     ${this.state.reports.slice().reverse().map(r => `
-                                        <div style="background:rgba(255,71,87,0.1); border:1px solid rgba(255,71,87,0.2); padding:15px; border-radius:15px; margin-bottom:10px;">
-                                            <small style="color:var(--danger)">${r.date} | ${r.type}</small>
-                                            <p style="font-size:0.9rem; margin-top:5px;">${r.msg}</p>
+                                        <div class="report-item">
+                                            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:0.75rem; color:var(--danger);">
+                                                <span>${r.type}</span><span>${r.date}</span>
+                                            </div>
+                                            <p style="margin-top:8px; font-size:0.9rem;">${r.msg}</p>
                                         </div>
-                                    `).join('') || '<p>Nenhum registro.</p>'}
+                                    `).join('') || '<p style="opacity:0.4;">Nenhum registro encontrado.</p>'}
                                 </div>
                             </div>
                         </div>
@@ -242,41 +251,38 @@
                     root.innerHTML = `
                         <div class="card-nebula">
                             <h3 class="neon-txt">CENTRAL DE AJUDA</h3>
-                            <p style="opacity:0.6; margin-bottom:30px;">Selecione um tópico para suporte técnico.</p>
-                            <div class="help-grid">
-                                <div class="help-card"><i class="fas fa-seedling neon-g"></i><h4>Manejo de Solo</h4><p><small>Guia de correção de pH e NPK.</small></p></div>
-                                <div class="help-card"><i class="fas fa-cloud-sun-rain neon-b"></i><h4>Previsão Avançada</h4><p><small>Como interpretar modelos NOAA.</small></p></div>
-                                <div class="help-card"><i class="fas fa-tractor neon-p"></i><h4>Telemetria</h4><p><small>Configuração de GPS e Automação.</small></p></div>
-                                <div class="help-card"><i class="fas fa-shield-alt var(--warning)"></i><h4>Seguro Safra</h4><p><small>Documentação e sinistros.</small></p></div>
+                            <div class="help-grid" style="margin-top:30px;">
+                                <div class="help-card"><i class="fas fa-microchip neon-b"></i><h4>Sensores</h4><p><small>Como calibrar a umidade.</small></p></div>
+                                <div class="help-card"><i class="fas fa-leaf neon-g"></i><h4>Sementes</h4><p><small>Densidade ideal por m².</small></p></div>
+                                <div class="help-card"><i class="fas fa-shield-alt var(--warning)"></i><h4>Segurança</h4><p><small>Proteção contra geadas.</small></p></div>
                             </div>
                         </div>
                     `;
                 }
             },
 
-            calculateSafra() {
-                const area = document.getElementById('c-area').value;
-                const yieldVal = document.getElementById('c-yield').value;
-                const price = document.getElementById('c-price').value;
-                
-                const totalSacas = area * yieldVal;
-                const totalBruto = totalSacas * price;
+            // FUNÇÕES OPERACIONAIS
+            runCalc() {
+                const area = document.getElementById('area').value;
+                const yieldVal = document.getElementById('yield').value;
+                const price = document.getElementById('price').value;
+                const total = area * yieldVal;
+                const cash = total * price;
 
-                const resDiv = document.getElementById('calc-result');
-                resDiv.style.display = 'block';
-                document.getElementById('res-sacas').innerText = `${totalSacas.toLocaleString()} SACAS`;
-                document.getElementById('res-valor').innerText = `R$ ${totalBruto.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                document.getElementById('res-box').style.display = 'block';
+                document.getElementById('res-total').innerText = `${total.toLocaleString()} SACAS`;
+                document.getElementById('res-money').innerText = `VALOR: R$ ${cash.toLocaleString('pt-BR')}`;
             },
 
-            addReport() {
-                const msg = document.getElementById('h-msg').value;
+            saveReport() {
+                const msg = document.getElementById('r-msg').value;
                 if(!msg) return;
-                const r = {
+                const data = {
                     date: new Date().toLocaleDateString('pt-BR'),
-                    type: document.getElementById('h-type').value,
+                    type: document.getElementById('r-type').value,
                     msg: msg
                 };
-                this.state.reports.push(r);
+                this.state.reports.push(data);
                 localStorage.setItem('neb_reports', JSON.stringify(this.state.reports));
                 this.renderView();
             }
