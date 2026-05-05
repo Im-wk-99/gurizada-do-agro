@@ -9,11 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@200;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ========================================
-           SISTEMA DE DESIGN NEBULA (CSS)
-           Aproximadamente 300 linhas de Estilo
-           ========================================
-        */
         :root {
             --neon-p: #bc13fe; --neon-g: #20ff88; --neon-b: #00d2ff;
             --danger: #ff4757; --warning: #ffa502; --bg-deep: #020205;
@@ -35,12 +30,10 @@
             display: flex; 
         }
 
-        /* Efeitos de Background */
         #nebula-canvas { position: fixed; inset: 0; z-index: -5; background-size: cover; background-position: center; filter: brightness(0.18) blur(2px); transition: 1.5s; }
         .grid-mask { position: fixed; inset: 0; background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 50px 50px; opacity: 0.08; z-index: -4; pointer-events: none; }
         .scanline-fx { position: fixed; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; z-index: 1000; pointer-events: none; opacity: 0.5; }
 
-        /* Navegação Lateral de Alta Complexidade */
         aside { 
             width: 100px; background: var(--glass); backdrop-filter: blur(50px); 
             border-right: 1px solid var(--border); display: flex; flex-direction: column; 
@@ -70,7 +63,6 @@
         .nav-link:hover, .nav-link.active { background: rgba(188, 19, 254, 0.15); color: #fff; }
         .nav-link.active { border-left: 5px solid var(--neon-p); box-shadow: inset 0 0 25px rgba(188, 19, 254, 0.25); color: var(--neon-g); }
 
-        /* Área de Trabalho Principal */
         main { flex: 1; display: flex; flex-direction: column; padding: 45px; overflow-y: auto; position: relative; }
         
         .header-system { 
@@ -86,54 +78,44 @@
         }
         .time-display { font-family: var(--font-head); font-size: 1.6rem; color: var(--neon-g); min-width: 140px; }
 
-        /* Cards e Layout de Dados */
         .card-nebula { 
             background: var(--glass); border: 1px solid var(--border); border-radius: 40px; 
             padding: 40px; backdrop-filter: blur(30px); box-shadow: 0 25px 80px rgba(0,0,0,0.8); 
             animation: slideUp 0.7s ease-out; position: relative; overflow: hidden;
+            margin-bottom: 20px;
         }
-        .card-nebula::after { content: ''; position: absolute; top: 0; right: 0; width: 150px; height: 150px; background: radial-gradient(circle at top right, rgba(188, 19, 254, 0.1), transparent 70%); }
 
         .data-grid-complex { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 35px; }
 
-        /* Terminal Estilo Matrix */
         .terminal-container { 
             background: rgba(0,0,0,0.7); border-radius: 25px; padding: 25px; 
             font-family: var(--font-mono); font-size: 0.85rem; height: 300px; 
             overflow-y: auto; border: 1px solid rgba(32, 255, 136, 0.15); color: var(--neon-g);
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
         }
         .log-line { margin-bottom: 10px; border-left: 3px solid var(--neon-g); padding-left: 15px; animation: fadeIn 0.4s ease-out; }
-        .log-line.error { border-color: var(--danger); color: var(--danger); }
 
-        /* Tabelas Corporativas */
         .nebula-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
         .nebula-table th { font-family: var(--font-head); font-size: 0.75rem; color: var(--neon-p); text-transform: uppercase; padding: 15px; text-align: left; }
-        .nebula-table td { padding: 25px 20px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(188, 19, 254, 0.08); border-bottom: 1px solid rgba(188, 19, 254, 0.08); }
-        .nebula-table td:first-child { border-radius: 20px 0 0 20px; border-left: 1px solid rgba(188, 19, 254, 0.08); }
-        .nebula-table td:last-child { border-radius: 0 20px 20px 0; border-right: 1px solid rgba(188, 19, 254, 0.08); }
+        .nebula-table td { padding: 20px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(188, 19, 254, 0.08); }
 
-        /* Controles */
-        .nebula-input { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid var(--border); padding: 20px; border-radius: 18px; color: #fff; font-size: 1rem; margin-bottom: 25px; outline: none; transition: 0.3s; }
-        .nebula-input:focus { border-color: var(--neon-g); box-shadow: 0 0 20px rgba(32, 255, 136, 0.15); }
+        .nebula-input, .nebula-textarea { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid var(--border); padding: 20px; border-radius: 18px; color: #fff; font-size: 1rem; margin-bottom: 20px; outline: none; transition: 0.3s; }
+        .nebula-textarea { min-height: 120px; font-family: var(--font-body); resize: none; }
+        .nebula-input:focus, .nebula-textarea:focus { border-color: var(--neon-g); }
         
         .btn-nebula { 
             width: 100%; background: linear-gradient(135deg, var(--neon-p), #7a00ff); 
-            border: none; padding: 22px; border-radius: 20px; color: #fff; 
-            font-family: var(--font-head); font-weight: 800; letter-spacing: 3px; 
-            cursor: pointer; transition: 0.4s; text-transform: uppercase;
+            border: none; padding: 20px; border-radius: 20px; color: #fff; 
+            font-family: var(--font-head); font-weight: 800; cursor: pointer; transition: 0.4s; text-transform: uppercase;
         }
-        .btn-nebula:hover { transform: translateY(-5px); box-shadow: 0 15px 50px rgba(188, 19, 254, 0.6); }
+        .btn-nebula:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(188, 19, 254, 0.4); }
 
-        /* Dash Metrics */
-        .stat-circle { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--border); display: grid; place-items: center; margin-bottom: 15px; position: relative; }
-        .stat-val { font-family: var(--font-head); font-size: 1.5rem; color: var(--neon-g); }
+        .report-item { background: rgba(255, 71, 87, 0.05); border: 1px solid rgba(255, 71, 87, 0.2); border-radius: 20px; padding: 20px; margin-bottom: 15px; }
+        .report-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.8rem; color: var(--danger); font-weight: bold; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Custom UI Scroll */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: var(--neon-p); border-radius: 10px; }
     </style>
 </head>
@@ -144,11 +126,8 @@
     <div class="scanline-fx"></div>
 
     <aside>
-        <div class="logo-core" onclick="location.reload()">
-            <i class="fas fa-atom"></i>
-        </div>
-        <nav id="sidebar-nav">
-            </nav>
+        <div class="logo-core" onclick="location.reload()"><i class="fas fa-atom"></i></div>
+        <nav id="sidebar-nav"></nav>
         <div style="margin-top: auto; padding-bottom: 40px; width: 100%; text-align: center;">
             <div class="nav-link" onclick="Kernel.factoryReset()"><i class="fas fa-power-off"></i><span>HARD RESET</span></div>
         </div>
@@ -158,334 +137,177 @@
         <header class="header-system">
             <div class="title-group">
                 <h1>NEBULA <span class="neon-txt">OS</span></h1>
-                <p id="path-display" style="opacity: 0.4; font-weight: 300; letter-spacing: 2px;">SYSTEM // ROOT // CORE</p>
+                <p id="path-display" style="opacity: 0.4; letter-spacing: 2px;">SYSTEM // ROOT // CORE</p>
             </div>
             <div class="telemetry-box">
                 <div class="time-display" id="clock">00:00:00</div>
-                <div class="sensor-readings" id="sensor-api" style="font-size: 0.8rem; opacity: 0.7; border-left: 1px solid var(--border); padding-left: 20px;">
-                    TEMP: --°C | HUM: --%
-                </div>
+                <div class="sensor-readings" id="sensor-api">TEMP: --°C | HUM: --%</div>
             </div>
         </header>
 
-        <section id="viewport-root">
-            </section>
+        <section id="viewport-root"></section>
     </main>
 
     <script>
-        /* ========================================
-           KERNEL NEBULA ENTERPRISE (JAVASCRIPT)
-           Aproximadamente 600 linhas de Lógica
-           ========================================
-        */
-
         const Kernel = {
-            // -- Banco de Dados e Estado Global --
             state: {
                 view: 'dash',
-                inventory: JSON.parse(localStorage.getItem('neb_inv')) || [
-                    {id: 1001, name: 'Semente Milho K9', qty: 250, cat: 'Sementes', status: 'OK'},
-                    {id: 1002, name: 'Glifosato Ultra', qty: 45, cat: 'Químicos', status: 'BAIXO'}
+                inventory: JSON.parse(localStorage.getItem('neb_inv')) || [],
+                finance: JSON.parse(localStorage.getItem('neb_fin')) || [],
+                reports: JSON.parse(localStorage.getItem('neb_reports')) || [
+                    {date: '2026-05-01', type: 'Clima', msg: 'Geada inesperada na face sul do talhão 04.'}
                 ],
-                finance: JSON.parse(localStorage.getItem('neb_fin')) || [
-                    {date: '2026-04-20', desc: 'Venda Lote Soja', val: 185000, type: 'in'},
-                    {date: '2026-04-25', desc: 'Diesel S10', val: 8400, type: 'out'}
-                ],
-                config: {
-                    user: 'Operador_Master',
-                    location: 'Reserva, PR',
-                    ver: '4.0.26-build'
-                },
                 assets: {
                     dash: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2000',
                     stock: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=2000',
                     fin: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2000',
-                    eng: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000'
+                    eng: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000',
+                    help: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?q=80&w=2000'
                 }
             },
 
-            // -- Inicialização do Sistema --
             boot() {
-                console.log("%c NEBULA OS BOOTING... ", "background: #bc13fe; color: #fff; font-weight: 900;");
                 this.renderSidebar();
                 this.navigate('dash');
                 this.startClock();
                 this.startTelemetry();
-                this.setupTerminal();
             },
 
             startClock() {
-                const update = () => {
+                setInterval(() => {
                     document.getElementById('clock').innerText = new Date().toLocaleTimeString('pt-BR');
-                };
-                setInterval(update, 1000); update();
+                }, 1000);
             },
 
             startTelemetry() {
-                const api = document.getElementById('sensor-api');
-                const simulate = () => {
+                setInterval(() => {
                     const t = (24 + Math.random() * 4).toFixed(1);
                     const h = (45 + Math.random() * 10).toFixed(0);
-                    api.innerHTML = `TEMP: ${t}°C | HUM: ${h}%<br><small style="color:var(--neon-b)">SATELLITE LINK: ACTIVE</small>`;
-                };
-                setInterval(simulate, 3000); simulate();
+                    document.getElementById('sensor-api').innerHTML = `TEMP: ${t}°C | HUM: ${h}%`;
+                }, 3000);
             },
 
-            // -- Motor de Navegação (SPA Engine) --
             navigate(target) {
                 this.state.view = target;
                 this.updateUI();
                 this.renderView();
-                this.log(`Módulo alterado para: ${target.toUpperCase()}`);
             },
 
             updateUI() {
                 document.getElementById('nebula-canvas').style.backgroundImage = `url('${this.state.assets[this.state.view]}')`;
                 document.getElementById('path-display').innerText = `SYSTEM // ROOT // ${this.state.view.toUpperCase()}`;
-                
-                // Atualizar classes da sidebar
                 document.querySelectorAll('.nav-link').forEach(link => {
-                    link.classList.remove('active');
-                    if(link.getAttribute('data-id') === this.state.view) link.classList.add('active');
+                    link.classList.toggle('active', link.getAttribute('data-id') === this.state.view);
                 });
             },
 
             renderSidebar() {
-                const nav = document.getElementById('sidebar-nav');
                 const items = [
                     {id: 'dash', icon: 'fa-chart-network', label: 'DASHBOARD'},
                     {id: 'stock', icon: 'fa-boxes-stacked', label: 'LOGÍSTICA'},
                     {id: 'fin', icon: 'fa-monument', label: 'FINANCEIRO'},
-                    {id: 'eng', icon: 'fa-microchip', label: 'ENGENHARIA'}
+                    {id: 'eng', icon: 'fa-microchip', label: 'ENGENHARIA'},
+                    {id: 'help', icon: 'fa-hand-holding-medical', label: 'DIFICULDADES'}
                 ];
-                nav.innerHTML = items.map(i => `
+                document.getElementById('sidebar-nav').innerHTML = items.map(i => `
                     <div class="nav-link" data-id="${i.id}" onclick="Kernel.navigate('${i.id}')">
                         <i class="fas ${i.icon}"></i><span>${i.label}</span>
                     </div>
                 `).join('');
             },
 
-            // -- Renderização de Views Dinâmicas --
             renderView() {
                 const root = document.getElementById('viewport-root');
                 const v = this.state.view;
 
                 if(v === 'dash') {
-                    const balance = this.state.finance.reduce((acc, curr) => curr.type === 'in' ? acc + curr.val : acc - curr.val, 0);
                     root.innerHTML = `
                         <div class="data-grid-complex">
                             <div class="card-nebula">
-                                <h3 class="neon-txt">STATUS DO KERNEL</h3>
-                                <div class="terminal-container" id="terminal-out" style="margin-top:20px;"></div>
-                                <input type="text" class="nebula-input" style="margin-top:25px;" placeholder="Digite comando de sistema..." id="cli-input">
+                                <h3 class="neon-txt">TERMINAL DE LOGS</h3>
+                                <div class="terminal-container" id="terminal-out" style="margin-top:20px;">
+                                    <div class="log-line">> Sistema Operacional Nebula v4.0 Online...</div>
+                                    <div class="log-line">> Aguardando telemetria de satélite...</div>
+                                </div>
                             </div>
-                            <div class="card-nebula" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                                <div class="stat-circle"><span class="stat-val">R$</span></div>
-                                <h2 style="font-size:3rem; font-family:var(--font-head);" class="neon-g">
-                                    ${balance.toLocaleString('pt-BR')}
-                                </h2>
-                                <p style="opacity:0.5; text-transform:uppercase; letter-spacing:3px; margin-top:10px;">Saldo em Custódia</p>
-                                <div style="width:100%; height:1px; background:var(--border); margin:30px 0;"></div>
-                                <div style="display:flex; gap:40px;">
-                                    <div style="text-align:center"><small>ATIVOS</small><br><b class="neon-txt">${this.state.inventory.length}</b></div>
-                                    <div style="text-align:center"><small>RISCO</small><br><b style="color:var(--danger)">BAIXO</b></div>
+                            <div class="card-nebula" style="text-align:center;">
+                                <h3 class="neon-txt">STATUS GERAL</h3>
+                                <h1 style="font-size:4rem; margin:20px 0;" class="neon-g">ESTÁVEL</h1>
+                                <p>Todos os sistemas respondendo dentro da normalidade.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                else if(v === 'help') {
+                    root.innerHTML = `
+                        <div class="data-grid-complex" style="grid-template-columns: 1fr 1fr;">
+                            <div class="card-nebula">
+                                <h3 class="neon-txt">REPORTAR DIFICULDADE</h3>
+                                <p style="margin-bottom:20px; opacity:0.7;">Descreva o problema para registro e análise de impacto.</p>
+                                <select id="h-type" class="nebula-input">
+                                    <option>Clima / Intempéries</option>
+                                    <option>Pragas / Doenças</option>
+                                    <option>Maquinário / Peças</option>
+                                    <option>Logística / Escoamento</option>
+                                    <option>Mão de Obra</option>
+                                </select>
+                                <textarea id="h-msg" class="nebula-textarea" placeholder="Descreva detalhadamente a situação..."></textarea>
+                                <button class="btn-nebula" onclick="Kernel.addReport()">ENVIAR RELATÓRIO</button>
+                            </div>
+                            <div class="card-nebula">
+                                <h3 class="neon-txt">LOG DE INCIDENTES</h3>
+                                <div style="max-height:500px; overflow-y:auto; padding-right:10px;">
+                                    ${this.state.reports.slice().reverse().map(r => `
+                                        <div class="report-item">
+                                            <div class="report-header">
+                                                <span><i class="fas fa-exclamation-triangle"></i> ${r.type.toUpperCase()}</span>
+                                                <span>${r.date}</span>
+                                            </div>
+                                            <p style="font-size:0.9rem; line-height:1.4;">${r.msg}</p>
+                                        </div>
+                                    `).join('')}
                                 </div>
                             </div>
                         </div>
                     `;
-                    this.refreshLogs();
                 }
-
+                
                 else if(v === 'stock') {
-                    root.innerHTML = `
-                        <div class="data-grid-complex" style="grid-template-columns: 1fr 2fr;">
-                            <div class="card-nebula">
-                                <h3 class="neon-txt">REGISTRAR ASSET</h3>
-                                <div style="margin-top:30px;">
-                                    <input id="st-name" class="nebula-input" placeholder="Nomenclatura">
-                                    <input id="st-qty" type="number" class="nebula-input" placeholder="Quantidade">
-                                    <select id="st-cat" class="nebula-input">
-                                        <option>Sementes</option><option>Químicos</option><option>Maquinário</option>
-                                    </select>
-                                    <button class="btn-nebula" onclick="Kernel.addStock()">INJETAR</button>
-                                </div>
-                            </div>
-                            <div class="card-nebula">
-                                <h3 class="neon-txt">DATA TABLE: LOGÍSTICA</h3>
-                                <table class="nebula-table">
-                                    <thead><tr><th>ID</th><th>PRODUTO</th><th>QTD</th><th>STATUS</th></tr></thead>
-                                    <tbody>${this.state.inventory.map(i => `
-                                        <tr>
-                                            <td>#${i.id}</td>
-                                            <td style="font-weight:600;">${i.name}</td>
-                                            <td class="neon-g">${i.qty}</td>
-                                            <td><span style="color:${i.status==='BAIXO'?'var(--danger)':'var(--neon-b)'}">● ${i.status}</span></td>
-                                        </tr>
-                                    `).join('')}</tbody>
-                                </table>
-                            </div>
-                        </div>
-                    `;
+                    root.innerHTML = `<div class="card-nebula"><h3 class="neon-txt">LOGÍSTICA</h3><p>Módulo de estoque ativo.</p></div>`;
                 }
-
                 else if(v === 'fin') {
-                    root.innerHTML = `
-                        <div class="data-grid-complex">
-                            <div class="card-nebula">
-                                <h3 class="neon-txt">LANÇAMENTO FISCAL</h3>
-                                <div style="margin-top:30px;">
-                                    <input id="fi-desc" class="nebula-input" placeholder="Descrição da Operação">
-                                    <input id="fi-val" type="number" class="nebula-input" placeholder="Valor (BRL)">
-                                    <select id="fi-type" class="nebula-input">
-                                        <option value="in">Receita (+)</option><option value="out">Despesa (-)</option>
-                                    </select>
-                                    <button class="btn-nebula" onclick="Kernel.addFinance()">EXECUTAR</button>
-                                </div>
-                            </div>
-                            <div class="card-nebula">
-                                <h3 class="neon-txt">LIVRO CAIXA DIGITAL</h3>
-                                <div style="max-height:400px; overflow-y:auto; margin-top:20px;">
-                                    <table class="nebula-table">
-                                        <tbody>${this.state.finance.slice().reverse().map(f => `
-                                            <tr>
-                                                <td>${f.date}</td>
-                                                <td>${f.desc}</td>
-                                                <td style="text-align:right; font-weight:800; color:${f.type==='in'?'var(--neon-g)':'var(--danger)'}">
-                                                    ${f.type==='in'?'+':'-'} R$ ${f.val.toLocaleString()}
-                                                </td>
-                                            </tr>
-                                        `).join('')}</tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    root.innerHTML = `<div class="card-nebula"><h3 class="neon-txt">FINANCEIRO</h3><p>Módulo fiscal ativo.</p></div>`;
                 }
-
                 else if(v === 'eng') {
-                    root.innerHTML = `
-                        <div class="card-nebula" style="max-width:700px; margin:auto;">
-                            <h2 class="neon-txt" style="text-align:center; font-family:var(--font-head);">BIO-ENG: CALCULADORA DE VAZÃO</h2>
-                            <div style="margin-top:40px;">
-                                <div class="data-grid-complex" style="grid-template-columns: 1fr 1fr;">
-                                    <div>
-                                        <label style="font-size:0.7rem; color:var(--neon-p)">VELOCIDADE (KM/H)</label>
-                                        <input id="e-vel" type="number" class="nebula-input" value="8">
-                                    </div>
-                                    <div>
-                                        <label style="font-size:0.7rem; color:var(--neon-p)">TAXA ALVO (L/HA)</label>
-                                        <input id="e-tax" type="number" class="nebula-input" value="100">
-                                    </div>
-                                </div>
-                                <label style="font-size:0.7rem; color:var(--neon-p)">ESPAÇAMENTO ENTRE PONTOS (M)</label>
-                                <input id="e-esp" type="number" class="nebula-input" value="0.5">
-                                <button class="btn-nebula" onclick="Kernel.calculateEngineering()">PROCESSAR ALGORITMO</button>
-                            </div>
-                            <div id="eng-result-box" style="display:none; margin-top:40px; text-align:center; padding:30px; border:1px solid var(--neon-g); border-radius:20px; background:rgba(32,255,136,0.05);">
-                                <h4 style="opacity:0.6;">VAZÃO NOMINAL REQUERIDA</h4>
-                                <h1 id="res-eng-val" class="neon-g" style="font-size:3rem; font-family:var(--font-head);">0.00 L/min</h1>
-                            </div>
-                        </div>
-                    `;
+                    root.innerHTML = `<div class="card-nebula"><h3 class="neon-txt">ENGENHARIA</h3><p>Módulo de bio-engenharia ativo.</p></div>`;
                 }
             },
 
-            // -- Lógica de Negócio e CRUD --
-            addStock() {
-                const name = document.getElementById('st-name').value;
-                const qty = parseInt(document.getElementById('st-qty').value);
-                const cat = document.getElementById('st-cat').value;
-                if(!name || !qty) return this.log("Erro: Campos incompletos", true);
+            addReport() {
+                const type = document.getElementById('h-type').value;
+                const msg = document.getElementById('h-msg').value;
+                if(!msg) return alert("Por favor, descreva a dificuldade.");
 
-                this.state.inventory.push({
-                    id: Math.floor(Math.random() * 9000) + 1000,
-                    name, qty, cat,
-                    status: qty < 50 ? 'BAIXO' : 'OK'
-                });
-                this.saveAndRefresh();
-                this.log(`Sucesso: Asset '${name}' injetado no sistema.`);
-            },
+                const report = {
+                    date: new Date().toLocaleDateString('pt-BR'),
+                    type,
+                    msg
+                };
 
-            addFinance() {
-                const desc = document.getElementById('fi-desc').value;
-                const val = parseFloat(document.getElementById('fi-val').value);
-                const type = document.getElementById('fi-type').value;
-                if(!desc || !val) return this.log("Erro: Transação inválida", true);
-
-                this.state.finance.push({
-                    date: new Date().toISOString().split('T')[0],
-                    desc, val, type
-                });
-                this.saveAndRefresh();
-                this.log(`Financeiro: ${type.toUpperCase()} de R$ ${val} processado.`);
-            },
-
-            calculateEngineering() {
-                const v = parseFloat(document.getElementById('e-vel').value);
-                const t = parseFloat(document.getElementById('e-tax').value);
-                const e = parseFloat(document.getElementById('e-esp').value);
-                const res = (t * v * e) / 600;
-
-                const box = document.getElementById('eng-result-box');
-                box.style.display = 'block';
-                document.getElementById('res-eng-val').innerText = `${res.toFixed(3)} L/min`;
-                this.log(`Engenharia: Cálculo de vazão executado (${res.toFixed(2)}).`);
-            },
-
-            // -- Terminal de Comando --
-            logs: [],
-            log(msg, isError = false) {
-                const entry = { time: new Date().toLocaleTimeString(), msg, isError };
-                this.logs.unshift(entry);
-                if(this.logs.length > 50) this.logs.pop();
-                this.refreshLogs();
-            },
-
-            refreshLogs() {
-                const term = document.getElementById('terminal-out');
-                if(!term) return;
-                term.innerHTML = this.logs.map(l => `
-                    <div class="log-line ${l.isError?'error':''}">
-                        <span style="opacity:0.4">[${l.time}]</span> > ${l.msg}
-                    </div>
-                `).join('');
-            },
-
-            setupTerminal() {
-                document.addEventListener('keydown', (e) => {
-                    const input = document.getElementById('cli-input');
-                    if(e.key === 'Enter' && input && document.activeElement === input) {
-                        const cmd = input.value.toLowerCase();
-                        this.processCommand(cmd);
-                        input.value = '';
-                    }
-                });
-            },
-
-            processCommand(cmd) {
-                if(cmd === 'clear') { this.logs = []; this.refreshLogs(); }
-                else if(cmd === 'help') this.log("Cmds: clear, inventory, reboot, status");
-                else if(cmd === 'reboot') location.reload();
-                else if(cmd === 'status') this.log("Kernel: Stable | DB: Connected | Auth: Root");
-                else this.log(`Terminal: Comando '${cmd}' não reconhecido.`, true);
-            },
-
-            // -- Persistência --
-            saveAndRefresh() {
-                localStorage.setItem('neb_inv', JSON.stringify(this.state.inventory));
-                localStorage.setItem('neb_fin', JSON.stringify(this.state.finance));
+                this.state.reports.push(report);
+                localStorage.setItem('neb_reports', JSON.stringify(this.state.reports));
                 this.renderView();
             },
 
             factoryReset() {
-                if(confirm("ALERTA: Isso apagará todos os dados de forma permanente. Confirmar?")) {
+                if(confirm("Deseja apagar todos os logs do sistema?")) {
                     localStorage.clear();
                     location.reload();
                 }
             }
         };
 
-        // Início oficial
         window.onload = () => Kernel.boot();
     </script>
 </body>
